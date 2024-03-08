@@ -1,0 +1,1 @@
+SELECT * FROM parine_sa_batangas.visitor;

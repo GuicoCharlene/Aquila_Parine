@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queue</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: YAD1aYG82rc-0, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background-color: rgb(348, 347, 347);
+        }
+
+        .queue-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #010355;
+        }
+
+        .queue-info {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 80%;
+            margin: 0 auto;
+        }
+
+        .queue-info h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .queue-info p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            width: 200px;
+            padding: 10px;
+            border: 1px solid #1db4ff;
+            border-radius: 5px;
+            background-color: #1db4ff;
+            color: rgb(253, 249, 249);
+            cursor: pointer;
+            font-size: 24px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background-color: #0c7abc;
+        }
+    </style>
+</head>
+<body>
+    <div class="queue-container">
+        <div class="queue-info">
+            <h2>Welcome to Parine sa Batangas!</h2>
+            <p>Before you get to explore the beauty of Batangas Province, you will be added to the queue.</p>
+            {% if not view_list %}
+            <a href="?viewlist=true" class="btn-primary">View Queue List</a>
+            {% else %}
+            {% for entry in queue_entries %}
+                <p>Visitor: {{ entry.user.username }} - Priority: {{ entry.prioritylevel }}</p>
+            {% endfor %}
+            {% endif %}
+        </div>
+</div>
+</body>
+</html>
