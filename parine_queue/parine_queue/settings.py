@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -56,7 +57,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'templates',  # Adjusted to point directly to the 'templates' directory
+            BASE_DIR / 'templates', 
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -68,6 +69,17 @@ TEMPLATES = [
         },
     },
 ]
+
+STATIC_ROOT = 'C:\\Users\\guico\\OneDrive\\Desktop\\ParinesaBatangas\\parine_queue\\static'
+
+
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'parine_queue', 'templates', 'images'),  
+]
+
 
 # MEDIA_URL = 'C:\Users\guico\OneDrive\Desktop\ParinesaBatangas\parine_queue\parine_queue\templates\parine_queue\logo_parine.png'
 # MEDIA_ROOT = BASE_DIR / 'logo_parine.png'
