@@ -10,7 +10,7 @@
             "port": 3306,
             "driver": "MySQL",
             "name": "SqlConnect",
-            "database": "parine_sa_batangas",
+            "database": "parine",
             "username": "root",
             "password": "Cg_09355975720"
         }

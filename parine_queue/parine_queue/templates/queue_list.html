@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queue</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: YAD1aYG82rc-0, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background-image: url("{% static 'fortune.jpg' %}");
+            background-size: cover; /* Cover the whole screen */
+            background-position: center; /* Center the background image */
+        }
+
+        .queue-container {
+            text-align: center;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            color: #010355;
+
+        }
+        
+        /* Adjust the sidebar to match the list-container style */
+        .list-container {
+            position: absolute;
+            top: 18%; /* Adjust the position as needed */
+            left: 0;
+            width: 20%; /* Width of sidebar */
+            height: calc(100% - 40%); /* Height is the full height minus the header/footer */
+            overflow-y: auto; /* Enable vertical scrolling */
+            background-color: #ffffff;
+            box-shadow: 3px 0 6px rgba(0,0,0,0.1); /* Optional: Adds shadow to the sidebar */
+            padding: 20px;
+            box-sizing: border-box; /* Ensures padding does not add to width */
+            text-align: center;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            color: #010355;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        
+        /* Flex container for content */
+        .content-container {
+            position: absolute;
+            top: 15%;
+            left: 20%; /* Start to the right of the sidebar */
+            width: 80%; /* Remaining width */
+            height: calc(100% - 40%); /* Height is the full height minus the header/footer */
+            padding: 20px;
+            box-sizing: border-box; /* Ensures padding does not add to width */
+            display: flex;
+            flex-direction: column; /* Stack children vertically */
+        }
+        
+        .kiosk-wrapper {
+            display: flex; /* Use flex layout */
+            flex-wrap: wrap; /* Allow items to wrap */
+            justify-content: flex-start; /* Align items to the start of the container */
+            gap: 10px; /* Space between items */
+            margin-bottom: 20px; /* Space below kiosk list */
+        }
+        
+        .kiosk-container {
+            flex-grow: 1; /* Kiosks will grow to fill available space */
+            min-width: calc(33.333% - 20px); /* Three kiosks per row, adjust space for gap */
+            height: 150px; /* Adjust height as needed */
+            overflow: hidden; /* Hide overflow */
+            background-color: #fff3db;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            box-sizing: border-box; /* Ensures padding does not add to width */
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            color: #010355;
+        }
+        h2 {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            border: 10px solid #1db4ff;
+            border-radius: 5px;
+            background-color: #1db4ff;
+        }
+
+        .sub {
+            font-size: 18px;
+            padding: 5px; /* Adjust padding as needed */
+            border: 1px solid #ccc; /* Add border for visualization */
+            border-radius: 5px; /* Add border radius for styling */
+        }
+
+        .jip-img {
+            position: absolute;
+            top: 12%;
+            left: 5%;
+            transform: translateX(-50%);
+            width: 50%; /* Adjust width as needed */
+            max-width: 100px;
+            z-index: 1; /* Ensure the image stays above other content */
+            animation: moveForth 8s ease-in-out infinite ; /* Adjust animation duration as needed */
+        }
+        
+        @keyframes moveForth {
+            0% {
+                transform: translateX(-190%);
+            }
+            100% {
+                transform: translateX(1850%); /* Adjust the distance the image travels */
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <img src="{% static 'jip.png' %}" class="jip-img" alt="Parine sa Batangas">
+    <div class="queue-container">
+        <h2>PARINE SA BATANGAS</h2>
+    </div>
+    <div class="list-container">
+        <p>QUEUE</p>
+        {% for entry in queue_entries %}
+        <div class=".sub">Visitor: {{ entry.user.username }} - Priority: {{ entry.PriorityLevel }}</div>
+        {% empty %}
+        <div class=".sub">No visitors in the queue.</div>
+        {% endfor %}
+    </div>
+
+    <div class="content-container">
+        <div class="kiosk-wrapper" style="--total-kiosks:{{ total_kiosks }};">
+            {% for _ in total_kiosks %}
+            <div class="kiosk-container">
+                <p>Kiosk {{ forloop.counter }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+</body>
+</html>

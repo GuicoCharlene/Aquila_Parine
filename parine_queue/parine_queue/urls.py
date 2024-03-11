@@ -1,12 +1,9 @@
 from django.urls import path
-from django.shortcuts import redirect
-from .views import homepage, queue
-from django.conf import settings
-from django.conf.urls.static import static
+from .views import landing, homepage, queue, queue_list
 
 urlpatterns = [
-    path('', lambda request: redirect('homepage/', permanent=True)), 
+    path('landing/', landing, name='landing'),
     path('homepage/', homepage, name='homepage'),
     path('queue/', queue, name='queue'),
-
+    path('queue_list/', queue_list, name='queue_list'),
 ]
