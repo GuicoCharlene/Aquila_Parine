@@ -1,9 +1,9 @@
 from django.db import models
 from django.utils import timezone
 
-
 class QueueVisitor(models.Model):
     username = models.CharField(max_length=255, unique=True)
+    password = models.CharField(max_length=255, unique=True)
     pwd = models.BooleanField(default=False)
     reserve = models.BooleanField(default=False) 
     age = models.IntegerField(null=True, blank=True)
@@ -23,11 +23,31 @@ class QueueEntry(models.Model):
     
     class Meta:
         db_table = 'queue'
+
     
 class Kiosk(models.Model):
-    KioskID = models.AutoField(primary_key=True)  # Corrected primary key definition
+    KioskID = models.AutoField(primary_key=True)
     KioskStatus = models.BooleanField(default=False)
-    TimeDuration = models.DateTimeField()
-    
+    TimeDuration = models.DateTimeField(null=True, blank=True)  # Allow null and blank for initial state
+    QueueID = models.ForeignKey(QueueEntry, on_delete=models.CASCADE, db_column='QueueID(Q)')
+
     class Meta:
         db_table = 'kiosk'
+
+    def start_timer(self):
+        self.TimeDuration = timezone.now()
+        self.save()
+
+class Admin(models.Model):
+    AdminID = models.AutoField(primary_key=True)
+    username = models.CharField(max_length=255, unique=True)
+    password = models.CharField(max_length=255, unique=True)  # Add password field for admin
+    class Meta:
+        db_table = 'admin'
+        
+class Queue_Capacity(models.Model):
+    queue_capacity_id = models.IntegerField(primary_key=True)
+    limit = models.IntegerField()
+    class Meta:
+        db_table = 'queue_capacity'
+        

@@ -1,10 +1,12 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Queue</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -12,7 +14,7 @@
             font-family: YAD1aYG82rc-0, sans-serif;
             height: 100vh;
             overflow: hidden;
-            background-image: url("{% static 'fortune.jpg' %}");
+            background-image: url("{% static 'bg.png' %}");
             background-size: cover; /* Cover the whole screen */
             background-position: center; /* Center the background image */
         }
@@ -40,7 +42,6 @@
             text-align: center;
             font-weight: bold;
             font-family: 'Georgia', serif;
-            color: #010355;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
@@ -67,6 +68,7 @@
         }
         
         .kiosk-container {
+            position: relative;
             flex-grow: 1; /* Kiosks will grow to fill available space */
             min-width: calc(33.333% - 20px); /* Three kiosks per row, adjust space for gap */
             height: 150px; /* Adjust height as needed */
@@ -82,6 +84,30 @@
             font-family: 'Georgia', serif;
             color: #010355;
         }
+
+        .kiosk-container .queue, .kiosk-container .time {
+            position: absolute;
+            width: 50%;
+            top: 60%;
+            transform: translateY(-50%);
+            padding: 5px;
+        }
+
+        .kiosk-container .queue {
+            left: 0;
+            background-color: #15375D;
+            color: #ffffff;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+        }
+
+        .kiosk-container .time {
+            right: 0;
+            background-color: yellow;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+
         h2 {
             font-size: 50px;
             margin-bottom: 20px;
@@ -89,6 +115,7 @@
 
         p {
             font-size: 18px;
+            color: #15375D;
             border: 10px solid #1db4ff;
             border-radius: 5px;
             background-color: #1db4ff;
@@ -97,9 +124,18 @@
         .sub {
             font-size: 18px;
             padding: 5px; /* Adjust padding as needed */
-            border: 1px solid #ccc; /* Add border for visualization */
-            border-radius: 5px; /* Add border radius for styling */
+
         }
+        .user-kiosk-button {
+            /* Button styling */
+            padding: 10px 20px;
+            background-color: #04AA6D;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }        
 
         .jip-img {
             position: absolute;
@@ -120,33 +156,150 @@
                 transform: translateX(1850%); /* Adjust the distance the image travels */
             }
         }
+        /* Bounce animation */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
+        }
+        
+        /* Styling for the logged-in user's username */
+        .logged-in-user {
+            color: #06C9EF;
+            animation: bounce 1s infinite;
+        }
 
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
+        }
+        
     </style>
 </head>
-
 <body>
     <img src="{% static 'jip.png' %}" class="jip-img" alt="Parine sa Batangas">
     <div class="queue-container">
         <h2>PARINE SA BATANGAS</h2>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const queue = document.querySelectorAll(".sub");
+            const kiosks = document.querySelectorAll(".kiosk-container");
+
+            function assignUsersToKiosks() {
+                queue.forEach(function(user) {
+                    const username = user.innerText.trim();
+                    const availableKiosk = Array.from(kiosks).find(kiosk => kiosk.querySelector('.queue').textContent === "QUEUE" || kiosk.querySelector('.queue').textContent === "AVAILABLE");
+                    if (availableKiosk) {
+                        availableKiosk.querySelector('.queue').textContent = username;
+            
+                        // Create a button for the user
+                        const userButton = document.createElement("button");
+                        userButton.textContent = "Go to Your Kiosk";
+                        userButton.classList.add("user-kiosk-button"); // Add class for styling if needed
+                        userButton.onclick = function() {
+                            openNewTab(availableKiosk.dataset.kioskId, username);
+                        };
+            
+                        // Append the button to the kiosk container or another appropriate place in the DOM
+                        availableKiosk.appendChild(userButton);
+            
+                        // Remove user from queue
+                        user.remove();
+                    }
+                });
+            }
+            
+
+            // Update the display for each kiosk
+            function updateKioskDisplay() {
+                kiosks.forEach(function(kiosk, index) {
+                    const currentUser = kiosk.querySelector('.queue').textContent;
+                    if (currentUser && currentUser !== 'QUEUE') {
+                        // Start timer if kiosk status is 1
+                        if (kioskStatus[index] === 1) {
+                            startTimer(kiosk, index);
+                        }
+                    } else {
+                        kiosk.querySelector('.time').textContent = "TIME";
+                    }
+                });
+            }
+
+            function startTimer(kiosk, index) {
+                const timerElement = kiosk.querySelector(".time");
+                const startTime = Date.now();
+                const intervalId = setInterval(function() {
+                    const elapsedTime = Date.now() - startTime;
+                    const minutes = Math.floor(elapsedTime / (1000 * 60)); // Calculate minutes
+                    timerElement.textContent = `${minutes} MIN`; // Display minutes only
+                }, 1000);
+                timerElement.setAttribute('data-interval-id', intervalId);
+            }
+
+            // Initialize kiosk display
+            updateKioskDisplay();
+
+            // Assign users to kiosks initially
+            assignUsersToKiosks();
+
+            // Example: Update kiosk display with data from the server
+            // (This part should be updated with your server communication logic)
+            setInterval(function() {
+                // Simulating server response:
+                assignUsersToKiosks();
+                updateKioskDisplay();
+            }, 500); // Update 
+        });
+    </script>
+
+    <!-- Display queue list -->
     <div class="list-container">
         <p>QUEUE</p>
         {% for entry in queue_entries %}
-        <div class=".sub">Visitor: {{ entry.user.username }} - Priority: {{ entry.PriorityLevel }}</div>
+            {% if entry.user.username == logged_in_username %}
+                <div class="sub logged-in-user">{{ entry.user.username }}</div>
+            {% else %}
+                <div class="sub">{{ entry.user.username }}</div>
+            {% endif %}
         {% empty %}
-        <div class=".sub">No visitors in the queue.</div>
+            <div class="sub">No visitors in the queue.</div>
         {% endfor %}
     </div>
 
     <div class="content-container">
-        <div class="kiosk-wrapper" style="--total-kiosks:{{ total_kiosks }};">
-            {% for _ in total_kiosks %}
-            <div class="kiosk-container">
-                <p>Kiosk {{ forloop.counter }}</p>
+        <!-- Display kiosks -->
+        <div class="kiosk-wrapper" style="--total-kiosks:{{ total_kiosks }}">
+            {% for kiosk_data in kiosks_data %}
+            <div class="kiosk-container" data-kiosk-id="{{ kiosk_data.kiosk_id }}">
+                <p>Kiosk {{ forloop.counter }}</p> <!-- Here is where the KioskID number is displayed -->
+                {% if kiosk_data.user %}
+                <div class="queue">{{ kiosk_data.user }}</div>
+                <div class="time">{{ kiosk_data.time_spent | floatformat:0 }} MIN</div>
+                {% else %}
+                <div class="queue">AVAILABLE</div>
+                <div class="time">TIME</div>
+                {% endif %}
             </div>
             {% endfor %}
         </div>
+        
+        
+        </div>
     </div>
-    
 </body>
 </html>

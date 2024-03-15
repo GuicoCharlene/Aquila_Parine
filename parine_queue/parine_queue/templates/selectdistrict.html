@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parine sa Batangas</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #BFF4FF;
+        overflow: hidden;
+    }
+
+
+    .bubble {
+        position: absolute;
+        bottom: 45.5%;
+        transform: translateY(50%);
+        left: 10.5%;
+        font-family: 'Libre Baskerville', serif;
+        font-size: 35px;
+        align-items: center;
+        text-align: center;
+        z-index: 2;
+        color: #15375D;
+    }
+
+    .welcome {
+        position: absolute;
+        bottom: 60px;
+        left: 50px;
+        font-family: 'DM Serif Display', serif;
+        font-size: 44px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        text-align: left;
+        flex-direction: row-reverse;
+        color: #15375D;
+    }
+
+    .welcome img {
+        width: 200px; /* Adjust the width as needed */
+        height: auto;
+        margin-right: 10px; /* Add some spacing between the text and the image */
+        margin-top: 10px;
+        margin-right: 10px;
+    }
+
+    .batangas {
+        position: absolute;
+        left: 60%;
+        bottom: 50%;
+        transform: translate(-50%, 50%);
+        width: 1100px;
+    }
+
+    .bubblechat {
+        position: absolute;
+        top: 47%;
+        left: 45%;
+        transform: translate(-50%, -50%);
+    }
+
+    nav {
+        background-color: #15375D;
+        color: #ecf0f1;
+        padding: 15px;
+        text-align: center;
+        width: 180px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        margin-top: 0;
+        right: 0; /* Set to right side */
+        box-sizing: border-box;
+    }
+
+
+    .district1-button {
+        position: absolute;
+        top: 220px; /* Adjust the top position as needed */
+        left: 620px; /* Adjust the left position as needed */
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #06C9EF;
+        color: #FFFFFF;
+        padding: 10px 20px;
+        border: 3px solid #FFFFFF;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    .district1-button:hover {
+        background-color: #FFFFFF;
+        color: #06C9EF;
+    }
+    .district2-button {
+        position: absolute;
+        top: 180px; /* Adjust the top position as needed */
+        left: 930px; /* Adjust the left position as needed */
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #06C9EF;
+        color: #FFFFFF;
+        padding: 10px 20px;
+        border: 3px solid #FFFFFF;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    .district2-button:hover {
+        background-color: #FFFFFF;
+        color: #06C9EF;
+    }
+    .district3-button {
+        position: absolute;
+        top: 420px; /* Adjust the top position as needed */
+        left: 780px; /* Adjust the left position as needed */
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #06C9EF;
+        color: #FFFFFF;
+        padding: 10px 20px;
+        border: 3px solid #FFFFFF;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    .district3-button:hover {
+        background-color: #FFFFFF;
+        color: #06C9EF;
+    }
+    .district4-button {
+        position: absolute;
+        top:520px; /* Adjust the top position as needed */
+        left: 900px; /* Adjust the left position as needed */
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #06C9EF;
+        color: #FFFFFF;
+        padding: 10px 20px;
+        border: 3px solid #FFFFFF;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    .district4-button:hover {
+        background-color: #FFFFFF;
+        color: #06C9EF;
+    }
+    .district5-button {
+        position: absolute;
+        top: 420px; /* Adjust the top position as needed */
+        left: 1120px; /* Adjust the left position as needed */
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #06C9EF;
+        color: #FFFFFF;
+        padding: 10px 20px;
+        border: 3px solid #FFFFFF;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    .district5-button:hover {
+        background-color: #FFFFFF;
+        color: #06C9EF;
+    }
+    .district6-button {
+        position: absolute;
+        top: 290px; /* Adjust the top position as needed */
+        left: 1050px; /* Adjust the left position as needed */
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #06C9EF;
+        color: #FFFFFF;
+        padding: 10px 20px;
+        border: 3px solid #FFFFFF;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    .district6-button:hover {
+        background-color: #FFFFFF;
+        color: #06C9EF;
+    }
+    .logout-button {
+        margin-left: 5%;
+        text-align: center;
+        font-weight: bold;
+        font-size: 10px;
+        padding: 10px;
+        background-color: #25c8e4;
+        color: rgb(253, 249, 249);
+        border: 2px solid #ffffff;
+        border-radius: 15px;
+        cursor: pointer;
+        width: auto;
+    }
+</style>
+</head>
+<body>
+    {% load static %}
+    <div class="container">
+        <div class="bubble">Select a <br> District to start</div>
+        <div class="welcome">Welcome to <br> Parine sa Batangas! <img src="{% static 'logo.png' %}" alt="logo"></div>
+        <img class="batangas" src="{% static 'all batangas.png' %}" alt="batangas">
+        <img class="bubblechat" src="{% static 'bubblechat.png' %}" alt="bubblechat">
+        <button class="district1-button">DISTRICT I</button>
+        <button class="district2-button">DISTRICT II</button>
+        <button class="district3-button">DISTRICT III</button>
+        <button class="district4-button">DISTRICT IV</button>
+        <button class="district5-button">DISTRICT V</button>
+        <button class="district6-button">DISTRICT VI</button>
+    </div>
+    <nav>
+        <form id="logout-form" action="/kiosk_logout/" method="post">
+            {% csrf_token %}
+            <button type="submit" class="logout-button">LOGOUT</button>
+        </form>
+    </nav>
+
+
+
+</body>
+</html>

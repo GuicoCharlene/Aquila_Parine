@@ -1,0 +1,411 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FDF6EA;
+            overflow-y: hidden;
+        }
+
+        .welcome-message {
+            color: #fff;
+            font-size: 33px;
+            text-align: right;
+            margin-right: 20px;
+            font-family: 'Dm Serif Display', serif;
+            font-weight: bold;
+        }
+
+        header {
+            background-color: #15375D;
+            color: #fff;
+            padding: 15px;
+            text-align: left;
+            font-family: 'Dm Serif Display', serif;
+            width: 100%;
+            z-index: 1;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            position: relative;
+            width: 180px;
+            background-color: rgba(21, 55, 93, 0.7);
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .logo-image {
+            width: 130px;
+            max-height: 80px;
+            height: auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .dashboard-word {
+            position: absolute;
+            top: 50%;
+            right: -170%;
+            transform: translateY(-50%);
+            font-family: 'Georgia', serif;
+            font-size: 55px;
+            color: #15375D;
+        }
+
+        nav {
+            background-color: #15375D;
+            color: #ecf0f1;
+            padding: 15px;
+            text-align: center;
+            width: 180px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            margin-top: 0;
+            box-sizing: border-box;
+        }
+
+        nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            margin: 10px 0;
+        }
+
+        main {
+            padding: 20px;
+            flex: 1;
+            margin-left: 130px;
+            box-sizing: border-box;
+        }
+
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 50px;
+        }
+
+        .card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            font-family: 'Dm Serif Display', serif;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        .queue_capacity_card {
+            width: 40%;
+            height: 60vh;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            box-shadow: 3px 0 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            color: #010355;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            overflow-y: hidden;
+
+        }
+
+        .queue-capacity-container {
+            position: relative;
+        }
+
+        #donutChartContainer {
+            position: relative;
+            margin-top: 20px;
+            /* Adjust the margin as needed */
+        }
+
+        .queue-capacity-container {
+            position: relative;
+            margin-top: 20px;
+            /* Adjust the margin as needed */
+        }
+
+        .queue-label,
+        .queue-input,
+        .max-label {
+            margin-top: -10px;
+            /* Adjust the margin as needed */
+        }
+
+
+        .queue-label {
+            font-size: 33px;
+            /* Adjust the size as needed */
+            margin-bottom: 10px;
+            color: #010355;
+            /* Use the same color as the queue entries */
+        }
+
+        .queue_list {
+            order: 2;
+            width: 18%;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            box-shadow: 3px 0 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            color: #010355;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            overflow-y: hidden;
+
+        }
+
+        .scroll-container {
+            height: calc(48vh - 60px);
+            overflow-y: auto;
+        }
+
+        .priority_levels_card {
+            height: 25vh;
+            /* You can adjust this height based on your design */
+            order: 3;
+            box-shadow: 3px 0 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            color: #010355;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            overflow: hidden;
+            /* Prevent the card from shrinking when the screen height is reduced */
+        }
+
+        .priority-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-bottom: 5px;
+            margin-right: 5px;
+            /* Add margin-right to separate icon and text */
+        }
+
+        .total-queue-card {
+            height: 25vh;
+            order: 4;
+            margin-top: 300px;
+            margin-left: -350px;
+            box-shadow: 3px 0 6px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            box-sizing: border-box;
+            text-align: center;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            color: #010355;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .total-queue-count {
+            font-size: 50px;
+            margin-top: 0px;
+            /* Adjust this value to reduce the space */
+            font-weight: bold;
+        }
+
+        .sub {
+            font-size: 18px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .queue-input {
+            height: 50px;
+            font-size: 20px;
+            width: 30%;
+            margin-left: 3%;
+            box-sizing: border-box;
+        }
+
+
+        .max-label {
+            width: 20%;
+            font-size: 20px;
+            text-align: left;
+            margin-left: 38%;
+        }
+
+        .logout-button {
+            margin-left: 5%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 10px;
+            padding: 10px;
+            background-color: #25c8e4;
+            color: rgb(253, 249, 249);
+            border: 2px solid #ffffff;
+            border-radius: 15px;
+            cursor: pointer;
+            width: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Parine sa Batangas!</h1>
+        <div class="welcome-message">{{ logged_in_username }}</div>
+        </div>
+    </header>
+
+    <div class="logo-container">
+        <img src="{% static 'logo.png' %}" class="logo-image">
+        <div class="dashboard-word">Dashboard</div>
+    </div>
+
+    <nav>
+        <form action="/homepage/" method="get">
+            {% if not submit %}
+            <button class="logout-button">LOGOUT</button>
+            {% endif %}
+        </form>
+    </nav>
+
+    <main>
+        <div class="cards">
+            <div class="card queue_capacity_card">
+                <div class="queue-capacity-container">
+                    <form action="{% url 'update_queue_capacity' %}" method="post">
+                        {% csrf_token %}
+                        <label for="queueCapacity" class="queue-label">Queue Capacity:</label>
+                        <input type="number" id="queueCapacity" class="queue-input" name="queue_capacity"
+                            value="{{ queue_capacity.queue_capacity }}" min="0" max="100" />
+                        <button type="submit">Update</button>
+                    </form>
+                    <span class="max-label">Max: 100</span>
+                    </label>
+                    <div id="donutChartContainer">
+                        <!-- Donut Chart Canvas -->
+                        <canvas id="donutChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="card queue_list">
+                <h2>Queue</h2>
+                <div class="scroll-container">
+                    {% for entry in queue_entries %}
+                    <div class="sub {% if entry.PriorityLevel == 'mid' %}mid-priority{% endif %}"
+                        style="color: {% if entry.PriorityLevel == 'high' %}#18395E{% elif entry.PriorityLevel == 'mid' %}#1ACAEE{% elif entry.PriorityLevel == 'low' %}#F5E3B6{% endif %};">
+                        {{ entry.user.username }}
+                    </div>
+                    {% empty %}
+                    <div class="sub">No visitors in the queue.</div>
+                    {% endfor %}
+                </div>
+                <!-- Hidden counter for mid-priority visitors -->
+                <input type="hidden" id="midPriorityCounter" value="0">
+            </div>
+
+            <div class="card priority_levels_card">
+                <h2>PRIORITY LEVELS</h2>
+                <div>
+                    <div class="priority-icon" style="background-color: #18395E;"></div>
+                    <span>High Priority</span>
+                </div>
+                <div>
+                    <div class="priority-icon" style="background-color: #1ACAEE;"></div>
+                    <span>Mid Priority</span>
+                </div>
+                <div>
+                    <div class="priority-icon" style="background-color: #F5E3B6;"></div>
+                    <span>Low Priority</span>
+                </div>
+            </div>
+            <div class="card total-queue-card">
+                <h2>Total Visitor</h2>
+                <span class="total-queue-count">{{ queue_entries|length }}</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Function to create and update the donut chart
+        function updateDonutChart() {
+
+            // Retrieve the total visitor count from the total-queue-card
+            var totalVisitorCount = parseInt(document.querySelector(".total-queue-count").textContent, 10);
+
+            // Retrieve the number of mid priority entries (reserved)
+            var midPriorityCounter = 0;
+            var queueEntries = document.querySelectorAll(".scroll-container .mid-priority");
+            midPriorityCounter = queueEntries.length;
+            document.getElementById("midPriorityCounter").value = midPriorityCounter;
+
+            // Retrieve the number of high priority and low priority entries
+            var highPriorityCount = document.querySelectorAll(".scroll-container .sub:not(.mid-priority)[style*='color: #18395E']").length;
+            var lowPriorityCount = document.querySelectorAll(".scroll-container .sub:not(.mid-priority)[style*='color: #F5E3B6']").length;
+
+            // Calculate the number of visitors in queue excluding mid priority
+            var inQueueCount = highPriorityCount + lowPriorityCount;
+
+            var queuecap = parseInt(document.getElementById("queueCapacity").value, 10);
+
+            var queueCapacity = parseInt("{{ queue_capacity_value }}", 10);
+            var freeCount = queueCapacity - inQueueCount - midPriorityCounter;
+
+            var donutChartCanvas = document.getElementById("donutChart").getContext("2d");
+
+            new Chart(donutChartCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: ["Reservation", "In Queue", "Free"],
+                    datasets: [{
+                        data: [midPriorityCounter, inQueueCount, freeCount], // Use midPriorityCounter instead of reservedCount
+                        backgroundColor: ["#18395E", "#41B8D5", "#D9D9D9"],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    cutoutPercentage: 80,
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false
+                    },
+                }
+            });
+        }
+
+        // Initial update to reflect default or initial input value
+        updateDonutChart();
+    </script>
+
+
+</body>
+
+</html>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  {% load static %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Parine sa Batangas!</title>
@@ -13,14 +14,23 @@
       overflow: hidden;
     }
     #video-background {
-      position: fixed;
+      position: absolute;
+      top: 0;
       right: 0;
-      bottom: 0;
-      min-width: 70%;
-      min-height: 100%;
+      bottom:  0;
+      min-width: 30%; /* Adjusted to cover the entire width of the screen */
+      min-height: 10%; /* Adjusted to cover the entire height of the screen */
       width: auto;
       height: auto;
       z-index: -1000;
+    }
+    
+    /* Media query for smaller screens */
+    @media only screen and (max-width: 768px) {
+      #video-background {
+        min-width: 100%;
+        min-height: 100%;
+      }
     }
     .login-container {
       position: absolute;
@@ -55,20 +65,21 @@
       margin-left: 60px; 
 
     }
-
-    .admin-label {
-      float: right;
-      margin-top: 10px; /* Adjust margin as needed */
-    }
     
     .admin-checkbox {
       cursor: pointer;
       float: right;
       margin-top: 12px; /* Adjust margin as needed */
     }
+    
+    .admin-label {
+      float: right;
+      margin-top: 10px; /* Adjust margin as needed */
+    }
 
     .login-form input[type="text"],
     .login-form input[type="password"] {
+      top: 10px;
       width: 100%;
       padding: 10px;
       margin: 10px 0;
@@ -78,9 +89,9 @@
     }
 
     .login-form input[type="submit"] {
-      width: 100%;
+      width: 50%;
       padding: 10px;
-      border: 1px solid #1db4ff;
+      border: 1px solid #ffffff;
       border-radius: 5px;
       background-color: #1db4ff;
       color: rgb(253, 249, 249);
@@ -90,7 +101,7 @@
       animation: heartbeat 1s infinite;
       position: absolute;
       bottom: -50px; 
-      left: -0%;
+      margin-left: -20%;
       transform: translateX(-50%);
     }
 
@@ -109,6 +120,7 @@
 
     /* Hover effect */
     .login-form input[type="submit"]:hover {
+      background-color: #0c7abc;
       transform: scale(1.1);
     }
 
@@ -118,36 +130,38 @@
   </style>
 </head>
 <body>
-  {% load static %}
   <video autoplay muted loop id="video-background">
-    <source src="{% static 'parine.mp4' %}" type="video/mp4">
+    <source src="{% static 'aquila.mp4' %}" type="video/mp4">
     Your browser does not support HTML5 video.
   </video>
 
-  <img src="{% static 'all batangas.png' %}" style="width: auto; max-width: auto; display: block; margin: 0 auto;">
+  <img src="{% static 'all batangas.png' %}" style="width: auto; max-width: 1500px; display: block; margin: 0 auto;">
   
   <div class="login-container">
     <div class="login-form">
 
       <div class="header-container">
         <img src="{% static 'logo.png' %}" alt="Parine sa Batangas" style="width: 50%; max-width: 100px;">
-        <h2>Welcome to Parine sa Batangas!</h2>
-
+        {% csrf_token %}
+        <h2>Welcome to <br> Parine sa Batangas!</h2>
 
       </div>
-      
+
+      <hr style="border-top: 5px solid #06C9EF; width: 100%; margin: 0 auto;">
+
       <form method="post">
         {% csrf_token %}
         <input type="text" name="username" placeholder="Username" required><br>
         <input type="password" name="password" placeholder="Password" required><br>
-
-        <label for="admin-checkbox" class="admin-label">Admin</label>
-        <input type="checkbox" name="admin" id="admin-checkbox" class="admin-checkbox"><br>
-
+      
+        <input type="checkbox" name="validate_only_admin" id="admin-checkbox" class="admin-checkbox">
+        <label for="admin-checkbox" class="admin-label">Admin</label><br>
+      
         {% if not submit %}
         <input type="submit" value="Login">
-         {% endif %}
+        {% endif %}
       </form>
+      
     </div>
   </div>
 </body>
