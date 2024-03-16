@@ -40,7 +40,7 @@
 
         .logo-container {
             position: relative;
-            width: 180px;
+            width: 200px;
             background-color: rgba(21, 55, 93, 0.7);
             display: flex;
             align-items: center;
@@ -60,7 +60,7 @@
         .dashboard-word {
             position: absolute;
             top: 50%;
-            right: -170%;
+            right: -150%;
             transform: translateY(-50%);
             font-family: 'Georgia', serif;
             font-size: 55px;
@@ -72,7 +72,7 @@
             color: #ecf0f1;
             padding: 15px;
             text-align: center;
-            width: 180px;
+            width: 200px;
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -120,16 +120,13 @@
             padding: 20px;
             font-weight: bold;
             font-family: 'Georgia', serif;
-            color: #010355;
+            color: #15375D;
             border: 1px solid #ccc;
             border-radius: 50px;
             overflow-y: hidden;
 
         }
 
-        .queue-capacity-container {
-            position: relative;
-        }
 
         #donutChartContainer {
             position: relative;
@@ -140,22 +137,44 @@
         .queue-capacity-container {
             position: relative;
             margin-top: 20px;
+
             /* Adjust the margin as needed */
         }
 
-        .queue-label,
+
         .queue-input,
         .max-label {
             margin-top: -10px;
+
             /* Adjust the margin as needed */
         }
 
+        .queue-input {
+            height: 50px;
+            font-size: 20px;
+            width: 30%;
+            margin-left: 3%;
+            box-sizing: border-box;
+            /* Default background color */
+            border: 1px solid lightgray;
+            /* Add transparent border by default */
+        }
+
+        .queue-input:hover,
+        .queue-input:focus {
+            background-color: white;
+            /* Change to white when hovered or clicked */
+            border: 1px solid black;
+            /* Add black border when hovered or clicked */
+        }
 
         .queue-label {
+
             font-size: 33px;
             /* Adjust the size as needed */
-            margin-bottom: 10px;
-            color: #010355;
+            color: #15375D;
+
+
             /* Use the same color as the queue entries */
         }
 
@@ -168,7 +187,7 @@
             padding: 20px;
             font-weight: bold;
             font-family: 'Georgia', serif;
-            color: #010355;
+            color: #15375D;
             border: 1px solid #ccc;
             border-radius: 50px;
             overflow-y: hidden;
@@ -190,7 +209,7 @@
             text-align: center;
             font-weight: bold;
             font-family: 'Georgia', serif;
-            color: #010355;
+            color: #15375D;
             border: 1px solid #ccc;
             border-radius: 50px;
             display: flex;
@@ -222,7 +241,7 @@
             text-align: center;
             font-weight: bold;
             font-family: 'Georgia', serif;
-            color: #010355;
+            color: #15375D;
             border: 1px solid #ccc;
             border-radius: 50px;
             display: flex;
@@ -262,9 +281,10 @@
 
         .logout-button {
             margin-left: 5%;
+            margin-top: 20%;
             text-align: center;
             font-weight: bold;
-            font-size: 10px;
+            font-size: 15px;
             padding: 10px;
             background-color: #25c8e4;
             color: rgb(253, 249, 249);
@@ -272,6 +292,87 @@
             border-radius: 15px;
             cursor: pointer;
             width: auto;
+            /* Ensure button width adjusts to content */
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            /* Add transition for smooth effect */
+        }
+
+        .logout-button:hover {
+            background-color: #1aa4c2;
+            /* Change background color on hover */
+            color: #ffffff;
+            /* Change text color on hover */
+            border-color: #1aa4c2;
+            /* Change border color on hover */
+        }
+
+        .district-container {
+            height: 90px;
+            width: 170px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+
+        .district-image {
+            width: 70px;
+            /* Adjust the size as needed */
+            height: 60px;
+            border: 1px solid #ccc;
+            margin-right: 5px;
+            /* Add some space between image and label */
+            border-radius: 15px;
+        }
+
+        .district-button {
+            background-color: #15375D;
+            /* Set initial background color */
+            color: #ecf0f1;
+            width: 150px;
+            height: 60px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Dm Serif Display', serif;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            /* Add transition for smooth effect */
+        }
+
+        .district-button:hover,
+        .district-button:active {
+            background-color: #1E4C79;
+            /* Change background color on hover or click */
+        }
+
+
+        .district-info-content {
+            position: absolute;
+            /* Adjust as needed */
+            left: calc(100% + 14px);
+            /* Position the content to the right of the button */
+            width: 175px;
+            height: 200px;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            background-color: #15375D;
+            /* Set the background color to non-transparent */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+        }
+
+        /* Adjustments when content is displayed */
+        .district-container:hover .district-info-content {
+            display: block;
+
+        }
+
+        .district-info-content.hidden {
+            display: none;
+        
         }
     </style>
 </head>
@@ -288,7 +389,72 @@
         <div class="dashboard-word">Dashboard</div>
     </div>
 
+
+
     <nav>
+
+        <div class="district-container">
+            <img src="{% static 'district 1-1.png' %}" class="district-image">
+            <button class="district-button">DISTRICT 1</button>
+            <div class="district-info-content hidden">
+                <!-- New container content goes here -->
+                BALAYAN
+                CALACA
+                CALATAGAN
+                LEMERY
+                LIAN
+                NASUGBU
+                TAAL
+                TUY
+            </div>
+
+        </div>
+        <div class="district-container">
+            <img src="{% static 'district 2-1.png' %}" class="district-image">
+            <button class="district-button">DISTRICT 2</button>
+            <div class="district-info-content hidden">
+                <!-- New container content goes here -->
+                2
+            </div>
+
+        </div>
+        <div class="district-container">
+            <img src="{% static 'district 3-1.png' %}" class="district-image">
+            <button class="district-button">DISTRICT 3</button>
+            <div class="district-info-content hidden">
+                <!-- New container content goes here -->
+                3
+            </div>
+
+        </div>
+        <div class="district-container">
+            <img src="{% static 'district 4-1.png' %}" class="district-image">
+            <button class="district-button ">DISTRICT 4</button>
+            <div class="district-info-content hidden">
+                <!-- New container content goes here -->
+                4
+            </div>
+
+        </div>
+        <div class="district-container">
+            <img src="{% static 'district 5-1.png' %}" class="district-image">
+            <button class="district-button">DISTRICT 5</button>
+            <div class="district-info-content hidden">
+                <!-- New container content goes here -->
+                5
+            </div>
+
+        </div>
+        <div class="district-container">
+            <img src="{% static 'district 6-1.png' %}" class="district-image">
+            <button class="district-button">DISTRICT 6</button>
+            <div class="district-info-content hidden">
+                <!-- New container content goes here -->
+                6
+            </div>
+
+        </div>
+
         <form action="/homepage/" method="get">
             {% if not submit %}
             <button class="logout-button">LOGOUT</button>
@@ -296,24 +462,26 @@
         </form>
     </nav>
 
+
     <main>
         <div class="cards">
             <div class="card queue_capacity_card">
                 <div class="queue-capacity-container">
                     <form action="{% url 'update_queue_capacity' %}" method="post">
                         {% csrf_token %}
-                        <label for="queueCapacity" class="queue-label">Queue Capacity:</label>
+                        <!-- Place the text directly before the input field -->
+                        <span class="queue-label">Queue Capacity:</span>
                         <input type="number" id="queueCapacity" class="queue-input" name="queue_capacity"
                             value="{{ queue_capacity.queue_capacity }}" min="0" max="100" />
                         <button type="submit">Update</button>
                     </form>
                     <span class="max-label">Max: 100</span>
-                    </label>
-                    <div id="donutChartContainer">
-                        <!-- Donut Chart Canvas -->
-                        <canvas id="donutChart" width="400" height="400"></canvas>
-                    </div>
                 </div>
+                <div id="donutChartContainer">
+                    <!-- Donut Chart Canvas -->
+                    <canvas id="donutChart" width="400" height="400"></canvas>
+                </div>
+
             </div>
             <div class="card queue_list">
                 <h2>Queue</h2>
@@ -404,7 +572,66 @@
         // Initial update to reflect default or initial input value
         updateDonutChart();
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get all district buttons
+            const districtButtons = document.querySelectorAll('.district-button');
+            // Get all district info containers
+            const districtInfoContainers = document.querySelectorAll('.district-info-content');
+            // Variable to keep track of currently displayed district info
+            let currentDistrictInfo = null;
 
+            // Function to hide all district info containers
+            function hideAllDistrictInfo() {
+                districtInfoContainers.forEach(container => {
+                    container.classList.add('hidden');
+                });
+            }
+
+            // Add click event listener to each district button
+            districtButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const districtInfo = button.nextElementSibling;
+                    if (districtInfo) {
+                        // Hide all district info containers except the one associated with the clicked button
+                        hideAllDistrictInfo();
+                        districtInfo.classList.toggle('hidden');
+                        // Update the currentDistrictInfo variable
+                        currentDistrictInfo = districtInfo;
+                        // Stop event propagation to prevent hiding the district info when clicking the button
+                        event.stopPropagation();
+                    } else {
+                        console.error('District info container not found.');
+                    }
+                });
+            });
+
+            // Add mouseenter event listener to each district button
+            districtButtons.forEach(button => {
+                button.addEventListener('mouseenter', () => {
+                    // If there's a district info currently displayed and it's not associated with the hovered button, hide it
+                    if (currentDistrictInfo && currentDistrictInfo.previousElementSibling !== button) {
+                        currentDistrictInfo.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Add click event listener to the document body
+            document.body.addEventListener('click', () => {
+                // Hide all district info containers when clicking outside
+                hideAllDistrictInfo();
+                // Reset the currentDistrictInfo variable
+                currentDistrictInfo = null;
+            });
+
+            // Prevent hiding the district info when clicking inside the district info container
+            districtInfoContainers.forEach(container => {
+                container.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                });
+            });
+        });
+    </script>
 
 </body>
 

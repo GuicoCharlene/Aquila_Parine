@@ -18,25 +18,19 @@ class QueueEntry(models.Model):
     PriorityLevel = models.CharField(max_length=10)
     QueueStatus = models.CharField(max_length=45)
     QueueLimit = models.CharField(max_length=45)
-    StartTime = models.DateTimeField(default=timezone.now)
-    EndTime = models.DateTimeField(default=timezone.now)
+    StartTime = models.DateTimeField(null=True, blank=True)  # Track the start time when user enters the kiosk
+    EndTime = models.DateTimeField(null=True, blank=True)  # Track the end time when user exits the kiosk
     
     class Meta:
         db_table = 'queue'
-
     
 class Kiosk(models.Model):
     KioskID = models.AutoField(primary_key=True)
     KioskStatus = models.BooleanField(default=False)
-    TimeDuration = models.DateTimeField(null=True, blank=True)  # Allow null and blank for initial state
+    TimeDuration = models.DateTimeField(null=True, blank=True)  
     QueueID = models.ForeignKey(QueueEntry, on_delete=models.CASCADE, db_column='QueueID(Q)')
-
     class Meta:
         db_table = 'kiosk'
-
-    def start_timer(self):
-        self.TimeDuration = timezone.now()
-        self.save()
 
 class Admin(models.Model):
     AdminID = models.AutoField(primary_key=True)

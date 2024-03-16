@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from .utils import ensure_kiosk_count
-from .views import landing, homepage, queue, queue_list, adminpage, selectdistrict, update_queue_capacity, kiosk_logout, kiosk_login, trigger_kiosk_count
+from .views import landing, homepage, queue, queue_list, adminpage, selectdistrict, update_queue_capacity, kiosk_logout, kiosk_login, trigger_kiosk_count, get_queue_data
 
 ensure_kiosk_count()
 
@@ -16,4 +16,5 @@ urlpatterns = [
     path('kiosk_logout/', kiosk_logout, name='kiosk_logout'),
     path('kiosk_login/<int:kiosk_id>/', views.kiosk_login, name='kiosk_login'),
     path('kiosk_login/<int:kiosk_id>/selectdistrict/', views.selectdistrict, name='selectdistrict'),
+    path('get_queue_data/', get_queue_data, name='get_queue_data'),
 ]

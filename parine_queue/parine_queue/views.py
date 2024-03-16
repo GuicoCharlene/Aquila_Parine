@@ -5,11 +5,16 @@ from django.utils import timezone
 from datetime import timedelta
 from django.http import HttpResponseRedirect, JsonResponse
 from .models import QueueEntry, Kiosk
-from django.template.defaultfilters import floatformat
-from django.urls import reverse
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from .utils import ensure_kiosk_count
+from django.core.exceptions import ObjectDoesNotExist
+import logging
+from django.db import transaction
+from django.urls import reverse
+
+
+logger = logging.getLogger(__name__)
 
 
 # Define a view that triggers the function
@@ -55,8 +60,7 @@ def homepage(request):
                     # Determining priority based on pwd and reserve values
                     priority = "high" if visitor.pwd else "mid" if visitor.reserve else "low"
                     
-                    # Creating or fetching the QueueEntry instance
-                    queue_entry, created = QueueEntry.objects.get_or_create(user=visitor, defaults={'PriorityLevel': priority})
+                    queue_entry, created = QueueEntry.objects.get_or_create(user=visitor, defaults={'PriorityLevel': priority, 'QueueStatus': 'WAITING', 'StartTime': timezone.now()})
                     
                     if created:
                         messages.success(request, 'You have been successfully added to the queue.')
@@ -79,80 +83,60 @@ def homepage(request):
 def queue(request):
     return render(request, 'queue.html')
 
-#Views for the kiosk and queuelist
-from django.utils import timezone
-
+#views for queue and kiosk
 def queue_list(request):
-    if request.method == 'POST' and 'logout_button' in request.POST:
-        # Clear the user's queue entry if they log out
-        user = request.session.get('logged_in_username')
-        if user:
-            QueueEntry.objects.filter(user__username=user).delete()
-        return redirect('/kiosk_logout/')  # Redirect to logout page
-
-    # Determine if the user is an admin
     is_admin = request.session.get('is_admin', False)
+    
+    # Update kiosk status and delete associated queue entries for timed-out sessions
+    for kiosk in Kiosk.objects.filter(KioskStatus=True):
+        if kiosk.TimeDuration and (timezone.now() - kiosk.TimeDuration > timedelta(minutes=5)):
+            if kiosk.QueueID:
+                kiosk.QueueID.delete()  # Delete the associated queue entry
+            kiosk.KioskStatus = False
+            kiosk.QueueID = None
+            kiosk.TimeDuration = None
+            kiosk.save()
 
-    # Fetch all queue entries ordered by priority
-    queue_entries = QueueEntry.objects.select_related('user').order_by('PriorityLevel')
+    # Assign users from the queue to available kiosks
+    for queue_entry in QueueEntry.objects.exclude(QueueStatus='IN KIOSK').select_related('user').order_by('PriorityLevel'):
+        available_kiosk = Kiosk.objects.filter(KioskStatus=False).first()
+        if available_kiosk:
+            available_kiosk.KioskStatus = True
+            available_kiosk.QueueID = queue_entry
+            available_kiosk.TimeDuration = timezone.now()
+            available_kiosk.save()
+            # Update queue entry status and end time
+            queue_entry.EndTime = timezone.now()
+            queue_entry.QueueStatus = 'IN KIOSK'
+            queue_entry.save(update_fields=['QueueStatus', 'EndTime'])
 
-    # Fetch available kiosks
-    available_kiosks = Kiosk.objects.filter(KioskStatus=False)
-
-    # If there are queue entries and available kiosks, assign users to kiosks
-    if queue_entries.exists() and available_kiosks.exists():
-        # Iterate over queue entries to assign users to available kiosks
-        for queue_entry in queue_entries:
-            # Check if the user is already assigned to a kiosk
-            if Kiosk.objects.filter(QueueID=queue_entry).exists():
-                continue  # Skip assigning the user if they are already in a kiosk
-            
-            # If there are available kiosks, assign user to the first one
-            available_kiosk = available_kiosks.first()
-
-            if available_kiosk:  # Check if available_kiosk is not None
-                # Update kiosk status and assign user
-                available_kiosk.KioskStatus = True
-                available_kiosk.QueueID = queue_entry
-                available_kiosk.TimeDuration = timezone.now()  # Start the timer
-                available_kiosk.save()
-
-                # Update queue entry status and remove it from the queue
-                queue_entry.QueueStatus = 'IN KIOSK'
-                queue_entry.save()
-
-                # Remove the assigned kiosk from the list of available kiosks
-                available_kiosks = available_kiosks.exclude(pk=available_kiosk.pk)
-
-                # Remove user from the queue list
-                queue_entries = queue_entries.exclude(pk=queue_entry.pk)
-
-    # Update kiosk status for users who have finished
-    for kiosk in Kiosk.objects.filter(KioskStatus=True, TimeDuration__lte=timezone.now()):
-        kiosk.KioskStatus = False
-        kiosk.QueueID = None
-        kiosk.save(update_fields=['KioskStatus', 'QueueID'])
-
-    # Fetch all kiosks data
+    # Prepare data for displaying in the template
     kiosks_data = []
     for kiosk in Kiosk.objects.all():
-        if kiosk.KioskStatus:
-            # Calculate time spent inside the kiosk in minutes
-            time_spent = (timezone.now() - kiosk.TimeDuration).total_seconds() / 60
-            kiosks_data.append({'KioskID': kiosk.KioskID, 'user': kiosk.QueueID.user.username, 'time_spent': time_spent})
-        else:
-            # If the kiosk is available, display "AVAILABLE"
-            kiosks_data.append({'KioskID': kiosk.KioskID, 'status': 'AVAILABLE'})
+        user = "AVAILABLE"
+        start_time = "N/A"
+        time_spent = "N/A"
+        if kiosk.KioskStatus and kiosk.TimeDuration:
+            start_time = kiosk.TimeDuration.strftime('%Y-%m-%dT%H:%M:%S')
+            elapsed_time = timezone.now() - kiosk.TimeDuration
+            time_spent = f"{int(elapsed_time.total_seconds() // 3600)}h {int((elapsed_time.total_seconds() // 60) % 60)}m"
+            user = kiosk.QueueID.user.username if kiosk.QueueID and kiosk.QueueID.user else "N/A"
+        kiosks_data.append({
+            'KioskID': kiosk.KioskID,
+            'user': user,
+            'time_spent': time_spent,
+            'start_time': start_time,
+            'status': '0' if not kiosk.KioskStatus else '1'
+        })
 
     context = {
-        'queue_entries': queue_entries,
+        'queue_entries': QueueEntry.objects.exclude(QueueStatus='IN KIOSK').select_related('user').order_by('PriorityLevel'),
         'kiosks_data': kiosks_data,
         'is_admin': is_admin,
         'logged_in_username': request.session.get('logged_in_username', None),
     }
 
     return render(request, 'queue_list.html', context)
-
 
 # View for the admin page
 def adminpage(request):
@@ -196,6 +180,7 @@ def update_queue_capacity(request):
                 return JsonResponse({'success': False, 'message': 'Queue Capacity object with queue_capacity_id 1 does not exist'})
     return JsonResponse({'success': False, 'message': 'Invalid request method or missing queue_capacity value'})
 
+# Views for the select district
 def selectdistrict(request, kiosk_id):
     logged_in_username = None
     
@@ -213,68 +198,93 @@ def selectdistrict(request, kiosk_id):
         else:
             messages.error(request, 'No user is currently logged in.')
 
-        # Redirect to the logout page or any desired URL
         return redirect('/kiosk_logout/')  
 
-    # # Remove QueueID for users who entered the queue more than 5 minutes ago
-    # five_minutes_ago = timezone.now() - timezone.timedelta(minutes=5)
-    # QueueEntry.objects.filter(kiosk=kiosk_id, StartTime__lt=five_minutes_ago).delete()
-
+    # Ensure that the kiosk data is refreshed
+    ensure_kiosk_count()
+    
+        # # Remove QueueID for users who entered the queue more than 5 minutes ago
+    five_minutes_ago = timezone.now() - timezone.timedelta(minutes=5)
+    QueueEntry.objects.filter(kiosk=kiosk_id, StartTime__lt=five_minutes_ago).delete()
+    
     return render(request, 'selectdistrict.html')
 
-
+#THIS IS THE VIEW TO GET THE NEEDED DATA
 def get_queue_data(request):
-    # Get queue list data
-    queue_entries = QueueEntry.objects.all()
-    queue_data = [{'username': entry.user.username} for entry in queue_entries]
+    try:
+        kiosks = Kiosk.objects.all()
+        kiosk_data = []
+        for kiosk in kiosks:
+            # Initialize the dictionary for this kiosk
+            kiosk_info = {
+                'KioskID': kiosk.KioskID,
+                'user': None,
+                'start_time': None,
+            }
+            
+            # Check if kiosk has an associated QueueID and user
+            if kiosk.QueueID_id and kiosk.QueueID.user:  # Using QueueID_id to avoid unnecessary DB hit
+                kiosk_info['user'] = kiosk.QueueID.user.username
+                # Format start time if available
+                if kiosk.TimeDuration:
+                    kiosk_info['start_time'] = kiosk.TimeDuration.strftime('%Y-%m-%dT%H:%M:%S')
 
-    # Get kiosk status data
-    kiosks = Kiosk.objects.all()
-    kiosk_data = []
-    for kiosk in kiosks:
-        if kiosk.KioskStatus:
-            # Calculate time spent inside the kiosk in minutes
-            time_spent = (timezone.now() - kiosk.TimeDuration).total_seconds() / 60
-            kiosk_data.append({
-                'kiosk_id': kiosk.KioskID,
-                'user': kiosk.user.username if kiosk.user else None,
-                'time_spent': time_spent
-            })
-        else:
-            kiosk_data.append({'kiosk_id': kiosk.KioskID, 'user': None, 'time_spent': None})
+            # Append the info for this kiosk to the list
+            kiosk_data.append(kiosk_info)
 
-    return JsonResponse({'queue_entries': queue_data, 'kiosk_data': kiosk_data})
+        return JsonResponse({'kiosk_data': kiosk_data})
+    except Exception as e:
+        logger.error(f"Error fetching kiosk data: {e}", exc_info=True)
+        return JsonResponse({'error': 'Internal Server Error'}, status=500)
 
+# Views for user login at the kiosk
 def kiosk_login(request, kiosk_id):
     try:
         # Assuming kioskID is the relevant kiosk
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
         kiosk_username = kiosk.QueueID.user.username if kiosk.QueueID else None
-        
-        # Check if the kiosk timer has started and the user hasn't logged in within 5 minutes
-        if kiosk.TimeDuration and timezone.now() - kiosk.TimeDuration > timedelta(minutes=5):
-            # Remove the user from the queue entry associated with this kiosk
-            if kiosk.QueueID:
-                queue_entry = kiosk.QueueID
-                queue_entry.delete()
-                kiosk.QueueID = None
-                kiosk.KioskStatus = False  # Set KioskStatus back to 0
+        if kiosk.QueueID:  # Ensure there is a user assigned to the kiosk
+            # Use timezone.now() instead of now()
+            time_elapsed_since_assignment = timezone.now() - (kiosk.TimeDuration or timezone.now())
+            if time_elapsed_since_assignment.total_seconds() > 300:  # 5 minutes in seconds
+                # If more than 5 minutes have passed, delete QueueEntry and reset Kiosk
+                if kiosk.QueueID:
+                    kiosk.QueueID.delete()  # This will delete the user from the queue
+                    kiosk.QueueID = None
+                    kiosk.KioskStatus = False
+                    kiosk.TimeDuration = None
+                    kiosk.save()
+                messages.error(request, "Time exceeded. You have been removed from the queue.")
+        else:
+            # If no QueueID is associated, assign the user to this kiosk
+            logged_in_username = request.session.get('logged_in_username')
+            if logged_in_username:
+                # Retrieve the user's queue entry
+                queue_entry = QueueEntry.objects.get(user__username=logged_in_username)
+                # Associate the user's queue entry with this kiosk
+                kiosk.QueueID = queue_entry
+                kiosk.KioskStatus = True
+                kiosk.TimeDuration = timezone.now()
                 kiosk.save()
-            messages.error(request, 'You have exceeded the login time limit. Please try again later.')
-            return redirect('homepage')
-        
-        # Start the timer if it hasn't started already
-        if not kiosk.TimeDuration:
-            kiosk.start_timer()
-    except Kiosk.DoesNotExist:
-        kiosk_username = None
+            else:
+                # If no user is logged in, delete the user from the queue database
+                messages.error(request, "No user is currently logged in.")
+                return HttpResponse(status=403)  # Return forbidden status
 
+    except Kiosk.DoesNotExist:
+        messages.error(request, "Invalid Kiosk.")
+
+    # Proceed with login if within time limit and QueueID exists
     context = {
+        'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': request.session.get('logged_in_username', None),
     }
     return render(request, f'kiosk{kiosk_id}_login.html', context)
 
+
+#Views for logout in kiosk
+@transaction.atomic
 def kiosk_logout(request):
     if request.method == 'POST':
         # Get the username of the logged-in user
@@ -284,19 +294,19 @@ def kiosk_logout(request):
                 # Retrieve the user's queue entry
                 queue_entry = QueueEntry.objects.get(user__username=logged_in_username)
                 
-                # Check if the queue entry has a corresponding kiosk and update its QueueID to None
+                # Retrieve the associated kiosk using the foreign key relationship
                 kiosk = get_object_or_404(Kiosk, QueueID=queue_entry)
+                
+                # Delete the queue entry and update the kiosk's QueueID to None
+                queue_entry.delete()
                 kiosk.QueueID = None
                 kiosk.save()
-                
-                # Delete the queue entry
-                queue_entry.delete()
                 
                 # Remove the logged-in username from the session
                 del request.session['logged_in_username']
                 
-                # Redirect to kiosk_logout.html
-                return HttpResponseRedirect(reverse('kiosk_logout'))
+                # Redirect to the kiosk_logout URL
+                return HttpResponseRedirect(reverse('kiosk_logout.html'))
             except QueueEntry.DoesNotExist:
                 # Handle the case where no queue entry is found for the logged-in user
                 pass

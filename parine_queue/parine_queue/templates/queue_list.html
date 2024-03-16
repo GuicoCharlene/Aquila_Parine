@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Queue</title>
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
         body {
@@ -24,13 +23,12 @@
             font-weight: bold;
             font-family: 'Georgia', serif;
             color: #010355;
-
         }
         
         /* Adjust the sidebar to match the list-container style */
         .list-container {
             position: absolute;
-            top: 18%; /* Adjust the position as needed */
+            top: 23%; /* Adjust the position as needed */
             left: 0;
             width: 20%; /* Width of sidebar */
             height: calc(100% - 40%); /* Height is the full height minus the header/footer */
@@ -49,7 +47,7 @@
         /* Flex container for content */
         .content-container {
             position: absolute;
-            top: 15%;
+            top: 20%;
             left: 20%; /* Start to the right of the sidebar */
             width: 80%; /* Remaining width */
             height: calc(100% - 40%); /* Height is the full height minus the header/footer */
@@ -110,7 +108,7 @@
 
         h2 {
             font-size: 50px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         p {
@@ -126,6 +124,29 @@
             padding: 5px; /* Adjust padding as needed */
 
         }
+        .kiosk-container .time {
+            position: absolute;
+            width: 50%;
+            top: 60%;
+            transform: translateY(-50%);
+            padding: 5px;
+            right: 0;
+            background-color: yellow;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .time-background {
+            position: absolute;
+            width: 50%;
+            height: 0%;
+            top: 0;
+            right: 0;
+            background-color: yellow; /* Same as the time background color */
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+        
         .user-kiosk-button {
             /* Button styling */
             padding: 10px 20px;
@@ -139,13 +160,13 @@
 
         .jip-img {
             position: absolute;
-            top: 12%;
+            top: 17%;
             left: 5%;
             transform: translateX(-50%);
             width: 50%; /* Adjust width as needed */
             max-width: 100px;
             z-index: 1; /* Ensure the image stays above other content */
-            animation: moveForth 8s ease-in-out infinite ; /* Adjust animation duration as needed */
+            animation: moveForth 8s ease-in-out infinite, glow 1s ease-in-out infinite alternate; /* Adjust animation duration and glow effect */
         }
         
         @keyframes moveForth {
@@ -153,9 +174,19 @@
                 transform: translateX(-190%);
             }
             100% {
-                transform: translateX(1850%); /* Adjust the distance the image travels */
+                transform: translateX(1850%);
             }
         }
+        
+        @keyframes glow {
+            0% {
+                filter: drop-shadow(0 0 20px #FFFFFF); /* Initial glow color and radius */
+            }
+            100% {
+                filter: drop-shadow(0 0 20px #FFFFF); /* Final glow color and radius */
+            }
+        }
+        
         /* Bounce animation */
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {
@@ -196,78 +227,68 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const queue = document.querySelectorAll(".sub");
-            const kiosks = document.querySelectorAll(".kiosk-container");
-
-            function assignUsersToKiosks() {
-                queue.forEach(function(user) {
-                    const username = user.innerText.trim();
-                    const availableKiosk = Array.from(kiosks).find(kiosk => kiosk.querySelector('.queue').textContent === "QUEUE" || kiosk.querySelector('.queue').textContent === "AVAILABLE");
-                    if (availableKiosk) {
-                        availableKiosk.querySelector('.queue').textContent = username;
-            
-                        // Create a button for the user
-                        const userButton = document.createElement("button");
-                        userButton.textContent = "Go to Your Kiosk";
-                        userButton.classList.add("user-kiosk-button"); // Add class for styling if needed
-                        userButton.onclick = function() {
-                            openNewTab(availableKiosk.dataset.kioskId, username);
-                        };
-            
-                        // Append the button to the kiosk container or another appropriate place in the DOM
-                        availableKiosk.appendChild(userButton);
-            
-                        // Remove user from queue
-                        user.remove();
-                    }
-                });
+        function startTimer(startTime, timerElement) {
+            if (!startTime) {
+                console.error('Invalid start time:', startTime);
+                return;
             }
-            
 
-            // Update the display for each kiosk
-            function updateKioskDisplay() {
-                kiosks.forEach(function(kiosk, index) {
-                    const currentUser = kiosk.querySelector('.queue').textContent;
-                    if (currentUser && currentUser !== 'QUEUE') {
-                        // Start timer if kiosk status is 1
-                        if (kioskStatus[index] === 1) {
-                            startTimer(kiosk, index);
+            const startTimestamp = new Date(startTime).getTime();
+            const intervalId = setInterval(function() {
+                const elapsedTime = new Date().getTime() - startTimestamp;
+                const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')} Mins ${seconds.toString().padStart(2, '0')} Secs`;
+            }, 1000);
+            timerElement.setAttribute('data-interval-id', intervalId);
+        }
+
+        function updateKioskDisplay() {
+            $.ajax({
+                url: "/get_queue_data/", // Corrected URL
+                type: "GET",
+                success: function(response) {
+                    const kiosksData = response.kiosk_data;
+                    kiosksData.forEach(kioskData => {
+                        const kioskContainer = document.querySelector(`[data-kiosk-id="${kioskData.KioskID}"]`);
+                        if (kioskContainer) {
+                            const timerElement = kioskContainer.querySelector(".time");
+                            const startTime = kioskData.start_time;
+                            if (startTime) {
+                                startTimer(startTime, timerElement);
+                            } else {
+                                timerElement.textContent = "TIME";
+                            }
                         }
-                    } else {
-                        kiosk.querySelector('.time').textContent = "TIME";
-                    }
-                });
-            }
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching kiosk data:", error);
+                }
+            });
+        }
 
-            function startTimer(kiosk, index) {
-                const timerElement = kiosk.querySelector(".time");
-                const startTime = Date.now();
-                const intervalId = setInterval(function() {
-                    const elapsedTime = Date.now() - startTime;
-                    const minutes = Math.floor(elapsedTime / (1000 * 60)); // Calculate minutes
-                    timerElement.textContent = `${minutes} MIN`; // Display minutes only
-                }, 1000);
-                timerElement.setAttribute('data-interval-id', intervalId);
-            }
-
-            // Initialize kiosk display
+        document.addEventListener("DOMContentLoaded", function() {
             updateKioskDisplay();
-
-            // Assign users to kiosks initially
-            assignUsersToKiosks();
-
-            // Example: Update kiosk display with data from the server
-            // (This part should be updated with your server communication logic)
-            setInterval(function() {
-                // Simulating server response:
-                assignUsersToKiosks();
-                updateKioskDisplay();
-            }, 500); // Update 
+            setInterval(updateKioskDisplay, 10000); // Update every seconds
         });
     </script>
 
-    <!-- Display queue list -->
+    <script>
+        setTimeout(function(){
+            // Fade out the body
+            document.body.style.transition = "opacity 0.1s ease-out";
+            document.body.style.opacity = "0";
+    
+            // Reload the page after the fade-out effect
+            setTimeout(function(){
+                window.location.reload(true);
+            }, 100); // Delay matches the transition duration
+        }, 10000); // Delay before reload
+    </script>
+    
+    
+
     <div class="list-container">
         <p>QUEUE</p>
         {% for entry in queue_entries %}
@@ -280,25 +301,23 @@
             <div class="sub">No visitors in the queue.</div>
         {% endfor %}
     </div>
-
+    
     <div class="content-container">
-        <!-- Display kiosks -->
         <div class="kiosk-wrapper" style="--total-kiosks:{{ total_kiosks }}">
             {% for kiosk_data in kiosks_data %}
-            <div class="kiosk-container" data-kiosk-id="{{ kiosk_data.kiosk_id }}">
-                <p>Kiosk {{ forloop.counter }}</p> <!-- Here is where the KioskID number is displayed -->
-                {% if kiosk_data.user %}
-                <div class="queue">{{ kiosk_data.user }}</div>
-                <div class="time">{{ kiosk_data.time_spent | floatformat:0 }} MIN</div>
-                {% else %}
-                <div class="queue">AVAILABLE</div>
-                <div class="time">TIME</div>
-                {% endif %}
-            </div>
+                <div class="kiosk-container" data-kiosk-id="{{ kiosk_data.KioskID }}" data-start-time="{{ kiosk_data.start_time }}">
+                    <p>Kiosk {{ kiosk_data.KioskID }}</p>
+                    {% if kiosk_data.user %}
+                        <div class="queue">{{ kiosk_data.user }}</div>
+                        <div class="time"></div>
+                        <div class="time-background"></div>
+                    {% else %}
+                        <div class="queue">AVAILABLE</div>
+                        <div class="time">TIME</div>
+                        <div class="time-background"></div>
+                    {% endif %}
+                </div>
             {% endfor %}
-        </div>
-        
-        
         </div>
     </div>
 </body>
