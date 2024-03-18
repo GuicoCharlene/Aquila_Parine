@@ -81,8 +81,9 @@ STATICFILES_DIRS = [
 ]
 
 
-# MEDIA_URL = 'C:\Users\guico\OneDrive\Desktop\ParinesaBatangas\parine_queue\parine_queue\templates\parine_queue\logo_parine.png'
-# MEDIA_ROOT = BASE_DIR / 'logo_parine.png'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'parine_queue', 'templates', 'media')
+
 
 WSGI_APPLICATION = 'parine_queue.wsgi.application'
 
@@ -129,3 +130,5 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Specify the custom user model
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'

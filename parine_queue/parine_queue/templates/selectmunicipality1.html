@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parine sa Batangas</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        height: 100%;
+        background-color: #15375D;
+        overflow: hidden;
+    }
+    #imageButtonContainer {
+        position: fixed;
+        top: 20px; /* Adjust top distance as needed */
+        right: 30px; /* Adjust right distance as needed */
+        z-index: 1000; /* Ensure it's above other content */
+      }
+      
+      #imageButton {
+        width: 70px; /* Set width of the image button */
+        height: auto; /* Set height of the image button */
+        cursor: pointer; /* Show pointer cursor on hover */
+        transition: transform 0.2s; /* Add a transition for the transform property */
+    }
+    
+    #imageButton:active {
+        transform: scale(0.5); /* Scale down the button when clicked */
+    }
+      #rightPanel {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 100vh;
+        background-color: #f4f4f4;
+        z-index: 999;
+        padding: 20px;
+        box-sizing: border-box;
+        border-top-left-radius: 15px; /* Radius for top-left corner */
+        border-bottom-left-radius: 15px;
+    }
+    #usertopPanel {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 105px;
+        background-color: #06C9EF;
+        z-index: 1;
+    }
+
+    #backButton {
+        position: absolute;
+        top: 6px;
+        left: 4px;
+        margin-bottom: 10px;
+        width: 30px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        padding: 5px 10px;
+        text-align: center;
+        z-index: 100;
+        transition: transform 0.2s; /* Add a transition for the transform property */
+    }
+    
+    #backButton:active {
+        transform: scale(0.5); /* Scale down the button when clicked */
+    }
+
+    #logout-button {
+        position: absolute;
+        bottom: 10%; /* Adjust the top position as needed */
+        left: 32%;
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 20px;
+        font-weight: bold;
+        background-color: #06C9EF;
+        color: #FFFFFF;
+        padding: 10px 20px;
+        border: 3px solid #FFFFFF;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+        z-index: 100;
+        transition: transform 0.2s; /* Add a transition for the transform property */
+    }
+    
+    #logout-button:active {
+        transform: scale(0.5); /* Scale down the button when clicked */
+    }
+
+    .title {
+        position: absolute;
+        top: 5%;
+        left: 33.1%;
+        font-family: 'Fira Sans', sans-serif;
+        font-size: 50px;
+        font-weight: bold;
+        text-align: center;
+        color: #FDF6EA;
+    }
+    .test
+    {
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'Fira Sans', sans-serif;
+        font-size: 50px;
+        font-weight: bold;
+        text-align: center;
+        color: #FDF6EA;
+    }
+    .barrier
+    {
+        position: absolute;
+        top: 5%;
+        left: 52.48%;
+        transform: translateX(-50%);
+        font-family: 'Fira Sans', sans-serif;
+        font-size: 50px;
+        font-weight: bold;
+        text-align: center;
+        color: #FAED23;
+    }
+    
+    .district
+    {
+        position: absolute;
+        top: 5%;
+        left: 53.82%;
+        font-family: 'Fira Sans', sans-serif;
+        font-size: 50px;
+        font-weight: bold;
+        text-align: center;
+        color: #06C9EF;
+    }
+    
+
+    .district1 {
+        position: absolute;
+        left: 5%;
+        bottom: -45%;
+        width: 1420px;
+    }
+    .square {
+        position: absolute;
+        top: 46%;
+        left: 70%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+  
+        color: #010355;
+        border: 1px solid #1db4ff;
+        border-radius: 10px;
+  
+        width: 500px; 
+        height: 250px;
+        background: #ffffff;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        text-align: left;
+        font-family: 'DM Serif Display', serif;
+        font-weight: bold;
+        display: flex;
+        color: #15375D;
+      }
+      .header img {
+        width: 200px; /* Adjust the width as needed */
+        height: auto;
+        margin-right: 10px; /* Add some spacing between the text and the image */
+        margin-top: 10px;
+        margin-left: 0px;
+    }
+    .select{
+        position: absolute;
+        bottom: 22%;
+        left: 10%;
+        font-family: 'TT Commons Pro', sans-serif;
+        font-size: 24px;
+        align-items: center;
+        text-align: center;
+        z-index: 2;
+        color: #15375D;
+    }
+    /*---------DISTRICT---------*/
+    .district1N-button {
+        position: absolute;
+        background: none;
+        border: none;
+        top: 12.5%; /* Adjust the top position as needed */
+        left: 16.6%; /* Adjust the left position as needed */
+        padding: -200px;
+        border: 3px solid transparent; /* Transparent border for outline effect */
+        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-decoration: none; /* Remove underline for links */
+        color: #FFF; /* Text color */
+        transform-origin: center;
+    }
+    
+    .district1N-button img {
+        width: 329px;
+    }
+
+    .district1N-button.clicked {
+        transform: scale(1.4); /* Scale when clicked */
+        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+        z-index: 5;
+    }
+    /*---------EXPLORE---------*/
+.exploreN {
+    display: none; /* Hide the container by default */
+    position: absolute;
+    top: 335px;
+    left: 1075px;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+    color: #010355;
+    border: 1px solid #1db4ff;
+    border-radius: 10px;
+
+    width: 500px; 
+    height: 250px;
+    background: #ffffff;
+}
+
+.exploreN-button {
+    position: absolute;
+    top: 160px; /* Adjust the top position as needed */
+    left: 154px; /* Adjust the left position as needed */
+    font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #FFFFFF;
+    color: #06C9EF;
+    padding: 10px 20px;
+    border: 3px solid #0097B2;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    z-index: 2;
+}
+.exploreN-button:hover {
+    background-color: #06C9EF;
+    color: #FFFFFF;
+}
+/*---------DISTRICT---------*/
+.district1L-button {
+    position: absolute;
+    background: none;
+    border: none;
+    top: 291px; /* Adjust the top position as needed */
+    left: 291px; /* Adjust the left position as needed */
+    padding: -200px;
+    border: 3px solid transparent; /* Transparent border for outline effect */
+    transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none; /* Remove underline for links */
+    color: #FFF; /* Text color */
+    transform-origin: center;
+}
+
+.district1L-button img {
+    width: 113px;
+}
+
+.district1L-button.clicked {
+    transform: scale(1.4); /* Scale when clicked */
+    filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+    z-index: 5;
+}
+/*---------EXPLORE---------*/
+.exploreL {
+display: none; /* Hide the container by default */
+position: absolute;
+top: 335px;
+left: 1075px;
+transform: translate(-50%, -50%);
+text-align: center;
+
+color: #010355;
+border: 1px solid #1db4ff;
+border-radius: 10px;
+
+width: 500px; 
+height: 250px;
+background: #ffffff;
+}
+
+.exploreL-button {
+position: absolute;
+top: 160px; /* Adjust the top position as needed */
+left: 154px; /* Adjust the left position as needed */
+font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+font-size: 30px;
+font-weight: bold;
+background-color: #FFFFFF;
+color: #06C9EF;
+padding: 10px 20px;
+border: 3px solid #0097B2;
+border-radius: 30px;
+cursor: pointer;
+transition: background-color 0.3s, color 0.3s;
+z-index: 2;
+}
+.exploreL-button:hover {
+background-color: #06C9EF;
+color: #FFFFFF;
+}
+/*---------DISTRICT---------*/
+.district1T-button {
+    position: absolute;
+    background: none;
+    border: none;
+    top: 268px; /* Adjust the top position as needed */
+    left: 393px; /* Adjust the left position as needed */
+    padding: -200px;
+    border: 3px solid transparent; /* Transparent border for outline effect */
+    transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none; /* Remove underline for links */
+    color: #FFF; /* Text color */
+    transform-origin: center;
+}
+
+.district1T-button img {
+    width: 140px;
+    z-index: 3;
+}
+
+.district1T-button.clicked {
+    transform: scale(1.4); /* Scale when clicked */
+    filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+    z-index: 5;
+}
+/*---------EXPLORE---------*/
+.exploreT {
+display: none; /* Hide the container by default */
+position: absolute;
+top: 335px;
+left: 1075px;
+transform: translate(-50%, -50%);
+text-align: center;
+
+color: #010355;
+border: 1px solid #1db4ff;
+border-radius: 10px;
+
+width: 500px; 
+height: 250px;
+background: #ffffff;
+}
+
+.exploreT-button {
+position: absolute;
+top: 160px; /* Adjust the top position as needed */
+left: 154px; /* Adjust the left position as needed */
+font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+font-size: 30px;
+font-weight: bold;
+background-color: #FFFFFF;
+color: #06C9EF;
+padding: 10px 20px;
+border: 3px solid #0097B2;
+border-radius: 30px;
+cursor: pointer;
+transition: background-color 0.3s, color 0.3s;
+z-index: 3;
+}
+.exploreT-button:hover {
+background-color: #06C9EF;
+color: #FFFFFF;
+}
+/*---------DISTRICT---------*/
+.district1B-button {
+    position: absolute;
+    background: none;
+    border: none;
+    top: 296px; /* Adjust the top position as needed */
+    left: 369px; /* Adjust the left position as needed */
+    padding: -200px;
+    border: 3px solid transparent; /* Transparent border for outline effect */
+    transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none; /* Remove underline for links */
+    color: #FFF; /* Text color */
+    transform-origin: center;
+}
+
+.district1B-button img {
+    width: 195px;
+}
+
+.district1B-button.clicked {
+    transform: scale(1.4); /* Scale when clicked */
+    filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+    z-index: 5;
+}
+/*---------EXPLORE---------*/
+.exploreB {
+display: none; /* Hide the container by default */
+position: absolute;
+top: 335px;
+left: 1075px;
+transform: translate(-50%, -50%);
+text-align: center;
+
+color: #010355;
+border: 1px solid #1db4ff;
+border-radius: 10px;
+
+width: 500px; 
+height: 250px;
+background: #ffffff;
+}
+
+.exploreB-button {
+position: absolute;
+top: 160px; /* Adjust the top position as needed */
+left: 154px; /* Adjust the left position as needed */
+font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+font-size: 30px;
+font-weight: bold;
+background-color: #FFFFFF;
+color: #06C9EF;
+padding: 10px 20px;
+border: 3px solid #0097B2;
+border-radius: 30px;
+cursor: pointer;
+transition: background-color 0.3s, color 0.3s;
+z-index: 2;
+}
+.exploreB-button:hover {
+background-color: #06C9EF;
+color: #FFFFFF;
+}
+/*---------DISTRICT---------*/
+.district1CL-button {
+    position: absolute;
+    background: none;
+    border: none;
+    top: 295px; /* Adjust the top position as needed */
+    left: 498px; /* Adjust the left position as needed */
+    padding: -200px;
+    border: 3px solid transparent; /* Transparent border for outline effect */
+    transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none; /* Remove underline for links */
+    color: #FFF; /* Text color */
+    transform-origin: center;
+    z-index: 1;
+}
+
+.district1CL-button img {
+    width: 121px;
+}
+
+.district1CL-button.clicked {
+    transform: scale(1.4); /* Scale when clicked */
+    filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+    z-index: 5;
+}
+/*---------EXPLORE---------*/
+.exploreCL {
+display: none; /* Hide the container by default */
+position: absolute;
+top: 335px;
+left: 1075px;
+transform: translate(-50%, -50%);
+text-align: center;
+
+color: #010355;
+border: 1px solid #1db4ff;
+border-radius: 10px;
+
+width: 500px; 
+height: 250px;
+background: #ffffff;
+}
+
+.exploreCL-button {
+position: absolute;
+top: 160px; /* Adjust the top position as needed */
+left: 154px; /* Adjust the left position as needed */
+font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+font-size: 30px;
+font-weight: bold;
+background-color: #FFFFFF;
+color: #06C9EF;
+padding: 10px 20px;
+border: 3px solid #0097B2;
+border-radius: 30px;
+cursor: pointer;
+transition: background-color 0.3s, color 0.3s;
+z-index: 2;
+}
+.exploreCL-button:hover {
+background-color: #06C9EF;
+color: #FFFFFF;
+}
+/*---------DISTRICT---------*/
+.district1C-button {
+    position: absolute;
+    background: none;
+    border: none;
+    top: 459px; /* Adjust the top position as needed */
+    left: 300px; /* Adjust the left position as needed */
+    padding: -200px;
+    border: 3px solid transparent; /* Transparent border for outline effect */
+    transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none; /* Remove underline for links */
+    color: #FFF; /* Text color */
+    transform-origin: center;
+}
+
+.district1C-button img {
+    width: 143px;
+}
+
+.district1C-button.clicked {
+    transform: scale(1.4); /* Scale when clicked */
+    filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+    z-index: 5;
+}
+/*---------EXPLORE---------*/
+.exploreC {
+display: none; /* Hide the container by default */
+position: absolute;
+top: 335px;
+left: 1075px;
+transform: translate(-50%, -50%);
+text-align: center;
+
+color: #010355;
+border: 1px solid #1db4ff;
+border-radius: 10px;
+
+width: 500px; 
+height: 250px;
+background: #ffffff;
+}
+
+.exploreC-button {
+position: absolute;
+top: 160px; /* Adjust the top position as needed */
+left: 154px; /* Adjust the left position as needed */
+font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+font-size: 30px;
+font-weight: bold;
+background-color: #FFFFFF;
+color: #06C9EF;
+padding: 10px 20px;
+border: 3px solid #0097B2;
+border-radius: 30px;
+cursor: pointer;
+transition: background-color 0.3s, color 0.3s;
+z-index: 2;
+}
+.exploreC-button:hover {
+background-color: #06C9EF;
+color: #FFFFFF;
+}
+/*---------DISTRICT---------*/
+.district1LM-button {
+    position: absolute;
+    background: none;
+    border: none;
+    top: 322px; /* Adjust the top position as needed */
+    left: 583px; /* Adjust the left position as needed */
+    padding: -200px;
+    border: 3px solid transparent; /* Transparent border for outline effect */
+    transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none; /* Remove underline for links */
+    color: #FFF; /* Text color */
+    transform-origin: center;
+}
+
+.district1LM-button img {
+    width: 102px;
+}
+
+.district1LM-button.clicked {
+    transform: scale(1.4); /* Scale when clicked */
+    filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+    z-index: 5;
+}
+/*---------EXPLORE---------*/
+.exploreLM {
+display: none; /* Hide the container by default */
+position: absolute;
+top: 335px;
+left: 1075px;
+transform: translate(-50%, -50%);
+text-align: center;
+
+color: #010355;
+border: 1px solid #1db4ff;
+border-radius: 10px;
+
+width: 500px; 
+height: 250px;
+background: #ffffff;
+}
+
+.exploreLM-button {
+position: absolute;
+top: 160px; /* Adjust the top position as needed */
+left: 154px; /* Adjust the left position as needed */
+font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+font-size: 30px;
+font-weight: bold;
+background-color: #FFFFFF;
+color: #06C9EF;
+padding: 10px 20px;
+border: 3px solid #0097B2;
+border-radius: 30px;
+cursor: pointer;
+transition: background-color 0.3s, color 0.3s;
+z-index: 2;
+}
+.exploreLM-button:hover {
+background-color: #06C9EF;
+color: #FFFFFF;
+}
+/*---------DISTRICT---------*/
+.district1TL-button {
+    position: absolute;
+    background: none;
+    border: none;
+    top: 477px; /* Adjust the top position as needed */
+    left: 669px; /* Adjust the left position as needed */
+    padding: -200px;
+    border: 3px solid transparent; /* Transparent border for outline effect */
+    transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none; /* Remove underline for links */
+    color: #FFF; /* Text color */
+    transform-origin: center;
+}
+
+.district1TL-button img {
+    width: 71px;
+}
+
+.district1TL-button.clicked {
+    transform: scale(1.4); /* Scale when clicked */
+    filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+    z-index: 5;
+}
+/*---------EXPLORE---------*/
+.exploreTL {
+display: none; /* Hide the container by default */
+position: absolute;
+top: 335px;
+left: 1075px;
+transform: translate(-50%, -50%);
+text-align: center;
+
+color: #010355;
+border: 1px solid #1db4ff;
+border-radius: 10px;
+
+width: 500px; 
+height: 250px;
+background: #ffffff;
+}
+
+.exploreTL-button {
+position: absolute;
+top: 160px; /* Adjust the top position as needed */
+left: 154px; /* Adjust the left position as needed */
+font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+font-size: 30px;
+font-weight: bold;
+background-color: #FFFFFF;
+color: #06C9EF;
+padding: 10px 20px;
+border: 3px solid #0097B2;
+border-radius: 30px;
+cursor: pointer;
+transition: background-color 0.3s, color 0.3s;
+z-index: 2;
+}
+.exploreTL-button:hover {
+background-color: #06C9EF;
+color: #FFFFFF;
+}
+</style>
+</head>
+<body>
+{% load static %}
+<div class="container">
+    <div id="imageButtonContainer">
+        <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
+    </div>
+    <div id="rightPanel">
+        <img id="backButton" src="{% static 'backbutton.png' %}" alt="Back Button" />
+        <div id="usertopPanel"></div>
+        <button id="logout-button" onclick="window.location.href='{% url 'kiosk_logout' %}'">Logout</button>
+        <!-- Add other content for the right panel here -->
+    </div>
+    <div class="title">BATANGAS</div>
+    <div class="test">BATANGAS | District I</div>
+    <div class="barrier">|</div>
+    <div class="district">District I</div>
+    <img class="district1" src="{% static 'district 1-1.png' %}" alt="district1">
+    <!-- MUNICIPALITIES -->
+    <button class="district1N-button" onclick="toggleButton(this)">
+        <img src="{% static 'D1-N.png' %}" alt="District 1-N">
+    </button>
+    
+    <div class="square">
+    <div class="header">
+        <span class="select">Select a part of Batangas Province <br> District 1 to start</span>
+        <img src="{% static 'logo.png' %}" alt="header" style="width: 50%; max-width: 100px;">
+        <h2>Welcome to <br> Parine sa Batangas!</h2> 
+        </div>
+    </div>
+    <!-- EXPLORE -->
+    <!-- Single container for all explore sections -->
+    <div class="explore-container">
+        <!-- Explore sections for each district -->
+        <div class="explore" id="exploreN" style="display: none;">
+            <!-- Content for District N -->
+        </div>
+        <div class="explore" id="exploreL" style="display: none;">
+            <!-- Content for District L -->
+        </div>
+        <div class="explore" id="exploreT" style="display: none;">
+            <!-- Content for District T -->
+        </div>
+        <div class="explore" id="exploreB" style="display: none;">
+            <!-- Content for District B -->
+        </div>
+        <div class="explore" id="exploreCL" style="display: none;">
+            <!-- Content for District CL -->
+        </div>
+        <div class="explore" id="exploreC" style="display: none;">
+            <!-- Content for District C -->
+        </div>
+        <div class="explore" id="exploreLM" style="display: none;">
+            <!-- Content for District LM -->
+        </div>
+        <div class="explore" id="exploreTL" style="display: none;">
+            <!-- Content for District TL -->
+        </div>
+    </div>
+</div>
+<script>
+// JavaScript code for toggling explore sections
+function toggleButton(button) {
+    // Hide all explore sections
+    var explores = document.querySelectorAll('.explore');
+    explores.forEach(function(explore) {
+        explore.style.display = 'none';
+    });
+    // Show explore section based on clicked button
+    var district = button.className.split(' ')[0];
+    var exploreId = 'explore' + district.slice(8); // Extract district number from class name
+    document.getElementById(exploreId).style.display = 'block';
+}
+</script>
+</body>
+</html>
+
+

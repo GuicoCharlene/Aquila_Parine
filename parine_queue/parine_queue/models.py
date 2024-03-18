@@ -1,3 +1,4 @@
+from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.utils import timezone
 
@@ -45,3 +46,13 @@ class Queue_Capacity(models.Model):
     class Meta:
         db_table = 'queue_capacity'
         
+class DistrictModules(models.Model):
+    DistrictModuleID = models.AutoField(primary_key=True)
+    ModuleName = models.CharField(max_length=100)
+    ModuleContent = models.FileField(upload_to='module_content/')  # store files in 'media/module_content/'
+    ModuleFile = models.TextField()  # Use TextField for longtext
+    KioskID = models.ForeignKey('Kiosk', on_delete=models.CASCADE, db_column='KioskID')
+    AdminID = models.ForeignKey('Admin', on_delete=models.CASCADE, db_column='AdminID(DM)')
+
+    class Meta:
+        db_table = 'districtmodule'

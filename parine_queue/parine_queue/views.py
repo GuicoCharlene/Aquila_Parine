@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from .models import QueueVisitor, QueueEntry, Kiosk, Admin, Queue_Capacity
+from .models import QueueVisitor, QueueEntry, Kiosk, Admin, Queue_Capacity, DistrictModules
 from django.utils import timezone
 from datetime import timedelta
 from django.http import HttpResponseRedirect, JsonResponse
@@ -12,6 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import logging
 from django.db import transaction
 from django.urls import reverse
+from django.db.models import F
 
 
 logger = logging.getLogger(__name__)
@@ -83,19 +84,21 @@ def homepage(request):
 def queue(request):
     return render(request, 'queue.html')
 
-#views for queue and kiosk
+#Views for the queuelist and kiosk
 def queue_list(request):
     is_admin = request.session.get('is_admin', False)
     
     # Update kiosk status and delete associated queue entries for timed-out sessions
     for kiosk in Kiosk.objects.filter(KioskStatus=True):
-        if kiosk.TimeDuration and (timezone.now() - kiosk.TimeDuration > timedelta(minutes=5)):
+        if kiosk.TimeDuration and (timezone.now() - kiosk.TimeDuration > timedelta(minutes=1)):
             if kiosk.QueueID:
-                kiosk.QueueID.delete()  # Delete the associated queue entry
-            kiosk.KioskStatus = False
-            kiosk.QueueID = None
-            kiosk.TimeDuration = None
-            kiosk.save()
+                # Remove the user from the queue entry
+                kiosk.QueueID.delete()
+                # Decrement the queue count by 1
+                kiosk.KioskStatus = False
+                kiosk.QueueID = None
+                kiosk.TimeDuration = None
+                kiosk.save()
 
     # Assign users from the queue to available kiosks
     for queue_entry in QueueEntry.objects.exclude(QueueStatus='IN KIOSK').select_related('user').order_by('PriorityLevel'):
@@ -106,9 +109,15 @@ def queue_list(request):
             available_kiosk.TimeDuration = timezone.now()
             available_kiosk.save()
             # Update queue entry status and end time
-            queue_entry.EndTime = timezone.now()
+            queue_entry.EndTime = timezone.now()  # Update EndTime to match current time
+            if queue_entry.StartTime:
+                time_spent = timezone.now() - queue_entry.StartTime
+                hours = int(time_spent.total_seconds() // 3600)
+                minutes = int((time_spent.total_seconds() % 3600) // 60)
+                queue_entry.EndTime = queue_entry.StartTime + timedelta(hours=hours, minutes=minutes)
             queue_entry.QueueStatus = 'IN KIOSK'
             queue_entry.save(update_fields=['QueueStatus', 'EndTime'])
+            # Decrement the queue count by 1
 
     # Prepare data for displaying in the template
     kiosks_data = []
@@ -153,8 +162,7 @@ def adminpage(request):
     context = {
         'queue_entries': queue_entries,
         'view_list': view_list,
-        'logged_in_username': request.session.get('logged_in_username', None),
-         'queue_capacity_value': queue_capacity_value,
+        'queue_capacity_value': queue_capacity_value,
     }
     return render(request, 'adminpage.html', context)
 
@@ -198,7 +206,7 @@ def selectdistrict(request, kiosk_id):
         else:
             messages.error(request, 'No user is currently logged in.')
 
-        return redirect('/kiosk_logout/')  
+        return redirect('kiosk_logout')  
 
     # Ensure that the kiosk data is refreshed
     ensure_kiosk_count()
@@ -243,18 +251,21 @@ def kiosk_login(request, kiosk_id):
         # Assuming kioskID is the relevant kiosk
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
         kiosk_username = kiosk.QueueID.user.username if kiosk.QueueID else None
+        
         if kiosk.QueueID:  # Ensure there is a user assigned to the kiosk
-            # Use timezone.now() instead of now()
-            time_elapsed_since_assignment = timezone.now() - (kiosk.TimeDuration or timezone.now())
-            if time_elapsed_since_assignment.total_seconds() > 300:  # 5 minutes in seconds
-                # If more than 5 minutes have passed, delete QueueEntry and reset Kiosk
-                if kiosk.QueueID:
-                    kiosk.QueueID.delete()  # This will delete the user from the queue
-                    kiosk.QueueID = None
-                    kiosk.KioskStatus = False
-                    kiosk.TimeDuration = None
-                    kiosk.save()
-                messages.error(request, "Time exceeded. You have been removed from the queue.")
+            # Update the district module database with kiosk credentials
+            DistrictModules(kiosk_id, kiosk_username)
+            
+            # Save the kiosk ID to the district module database
+            kiosk_data = {'kiosk_id': kiosk_id}  # Data to be sent to the district module database
+            # Call a function or method to store kiosk data in the district module database
+            # For example, DistrictModules.store_kiosk_data(kiosk_data)
+            
+            # Update the TimeDuration to current time
+            kiosk.TimeDuration = timezone.now()
+            kiosk.save()
+            
+            # No need to check for time elapsed or delete the queue entry here
         else:
             # If no QueueID is associated, assign the user to this kiosk
             logged_in_username = request.session.get('logged_in_username')
@@ -264,10 +275,10 @@ def kiosk_login(request, kiosk_id):
                 # Associate the user's queue entry with this kiosk
                 kiosk.QueueID = queue_entry
                 kiosk.KioskStatus = True
-                kiosk.TimeDuration = timezone.now()
+                kiosk.TimeDuration = timezone.now()  # Start the timer
                 kiosk.save()
             else:
-                # If no user is logged in, delete the user from the queue database
+                # If no user is logged in, return an error
                 messages.error(request, "No user is currently logged in.")
                 return HttpResponse(status=403)  # Return forbidden status
 
@@ -281,7 +292,6 @@ def kiosk_login(request, kiosk_id):
         'logged_in_username': request.session.get('logged_in_username', None),
     }
     return render(request, f'kiosk{kiosk_id}_login.html', context)
-
 
 #Views for logout in kiosk
 @transaction.atomic
@@ -297,16 +307,21 @@ def kiosk_logout(request):
                 # Retrieve the associated kiosk using the foreign key relationship
                 kiosk = get_object_or_404(Kiosk, QueueID=queue_entry)
                 
-                # Delete the queue entry and update the kiosk's QueueID to None
-                queue_entry.delete()
-                kiosk.QueueID = None
-                kiosk.save()
+                # Update the end time of the queue entry and save it
+                queue_entry.EndTime = timezone.now()
+                queue_entry.save()
                 
                 # Remove the logged-in username from the session
                 del request.session['logged_in_username']
                 
-                # Redirect to the kiosk_logout URL
-                return HttpResponseRedirect(reverse('kiosk_logout.html'))
+                # If user logs out, delete the associated queue entry from the Kiosk database
+                kiosk.QueueID = None
+                kiosk.KioskStatus = False
+                kiosk.TimeDuration = None
+                kiosk.save()
+                
+                # Delete the kiosk data from the district module database
+                
             except QueueEntry.DoesNotExist:
                 # Handle the case where no queue entry is found for the logged-in user
                 pass
@@ -315,3 +330,62 @@ def kiosk_logout(request):
                 pass
     # Render the logout page template if the request is not a POST request
     return render(request, 'kiosk_logout.html')
+
+
+def admin_district_1(request):
+   
+    return render(request, 'admin_district_1.html')
+
+def admin_district_2(request):
+   
+    return render(request, 'admin_district_2.html')
+
+def admin_district_3(request):
+   
+    return render(request, 'admin_district_3.html')
+
+def admin_district_4(request):
+   
+    return render(request, 'admin_district_4.html')
+
+def admin_district_5(request):
+   
+    return render(request, 'admin_district_5.html')
+
+def admin_district_6(request):
+   
+    return render(request, 'admin_district_6.html')
+
+def selectmunicipality1(request):
+    return render(request, 'selectmunicipality1.html')
+
+def selectmunicipality2(request):
+    return render(request, 'selectmunicipality2.html')
+
+def selectmunicipality3(request):
+    return render(request, 'selectmunicipality3.html')
+
+def selectmunicipality4(request):
+    return render(request, 'selectmunicipality4.html')
+
+def selectmunicipality5(request):
+    return render(request, 'selectmunicipality5.html')
+
+def selectmunicipality6(request):
+    return render(request, 'selectmunicipality6.html')
+
+def module_tourist(request):
+    modules = DistrictModules.objects.filter(DistrictModuleID__startswith='t') # DistrictModules for the tourist attractions from the database
+    return render(request, 'module_tourist.html', {'modules': modules})
+
+def module_food(request):
+    modules = DistrictModules.objects.filter(DistrictModuleID__startswith='f')  # DistrictModules for the food from the database
+    return render(request, 'module_food.html', {'modules': modules}) 
+
+def module_craft(request):
+    modules = DistrictModules.objects.filter(DistrictModuleID__startswith='c')  # DistrictModules for the craft from the database
+    return render(request, 'module_craft.html', {'modules': modules}) 
+
+def selectmodule(request):
+    modules = DistrictModules.objects.all()  # Retrieve all DistrictModules objects from the database
+    return render(request, 'selectmodule.html', {'modules': modules}) 

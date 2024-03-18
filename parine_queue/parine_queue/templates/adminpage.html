@@ -4,8 +4,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=1920, height=1080, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -15,13 +16,26 @@
             overflow-y: hidden;
         }
 
-        .welcome-message {
-            color: #fff;
-            font-size: 33px;
-            text-align: right;
-            margin-right: 20px;
-            font-family: 'Dm Serif Display', serif;
-            font-weight: bold;
+        #home-container {
+            display: inline-block;
+            margin: 10px;
+        }
+
+        #home-link {
+            display: inline-block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .home-icon {
+            font-size: 40px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .home-icon:hover {
+            color: #1aa4c2;
+            transform: scale(1.1);
+
         }
 
         header {
@@ -354,13 +368,18 @@
             /* Adjust as needed */
             left: calc(100% + 14px);
             /* Position the content to the right of the button */
-            width: 175px;
-            height: 200px;
+            width: 150px;
+            /* Adjusted width to accommodate longer text */
+            height: auto;
             font-weight: bold;
             font-family: 'Georgia', serif;
             background-color: #15375D;
             /* Set the background color to non-transparent */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            /* Ensure content wraps properly */
+            white-space: normal;
+            word-wrap: break-word;
 
         }
 
@@ -372,7 +391,36 @@
 
         .district-info-content.hidden {
             display: none;
-        
+
+        }
+
+        .district-info-content ul {
+            list-style-type: none;
+            /* Remove default list styling */
+            padding: 0;
+            /* Remove default padding */
+            margin: 0;
+            /* Remove default margin */
+        }
+
+        .district-info-content li {
+            margin-bottom: 5px;
+            /* Add some space between list items */
+        }
+
+        .district-info-content li button {
+            width: 100%;
+            background-color: #15375D;
+            color: #ecf0f1;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .district-info-content li button:hover {
+            background-color: #1E4C79;
         }
     </style>
 </head>
@@ -380,7 +428,10 @@
 <body>
     <header>
         <h1>Parine sa Batangas!</h1>
-        <div class="welcome-message">{{ logged_in_username }}</div>
+        <div id="home-container">
+            <a href="#" id="home-link">
+                <span class="fas fa-home home-icon " title="Home"></span>
+            </a>
         </div>
     </header>
 
@@ -397,15 +448,16 @@
             <img src="{% static 'district 1-1.png' %}" class="district-image">
             <button class="district-button">DISTRICT 1</button>
             <div class="district-info-content hidden">
-                <!-- New container content goes here -->
-                BALAYAN
-                CALACA
-                CALATAGAN
-                LEMERY
-                LIAN
-                NASUGBU
-                TAAL
-                TUY
+                <ul>
+                    <li><button class="district1-button">BALAYAN</button></li>
+                    <li><button class="district1-button">CALACA</button></li>
+                    <li><button class="district1-button">CALATAGAN</button></li>
+                    <li><button class="district1-button">LEMERY</button></li>
+                    <li><button class="district1-button">LIAN</button></li>
+                    <li><button class="district1-button">NASUGBU</button></li>
+                    <li><button class="district1-button">TAAL</button></li>
+                    <li><button class="district1-button">TUY</button></li>
+                </ul>
             </div>
 
         </div>
@@ -413,8 +465,14 @@
             <img src="{% static 'district 2-1.png' %}" class="district-image">
             <button class="district-button">DISTRICT 2</button>
             <div class="district-info-content hidden">
-                <!-- New container content goes here -->
-                2
+                <ul>
+                    <li><button class="district2-button">BAUAN </button></li>
+                    <li><button class="district2-button">LOBO</button></li>
+                    <li><button class="district2-button">MABINI</button></li>
+                    <li><button class="district2-button">SAN LUIS</button></li>
+                    <li><button class="district2-button">SAN PASCUAL</button></li>
+                    <li><button class="district2-button">TINGLOY</button></li>
+                </ul>
             </div>
 
         </div>
@@ -422,8 +480,20 @@
             <img src="{% static 'district 3-1.png' %}" class="district-image">
             <button class="district-button">DISTRICT 3</button>
             <div class="district-info-content hidden">
-                <!-- New container content goes here -->
-                3
+                <ul>
+                    <li><button class="district3-button">AGONCILLO</button></li>
+                    <li><button class="district3-button">ALITAGTAG</button></li>
+                    <li><button class="district3-button">BALETE</button></li>
+                    <li><button class="district3-button">CUENCA</button></li>
+                    <li><button class="district3-button">LAUREL</button></li>
+                    <li><button class="district3-button">MALVAR</button></li>
+                    <li><button class="district3-button">MATAASNAKAHOY</button></li>
+                    <li><button class="district3-button">SAN NICOLAS</button></li>
+                    <li><button class="district3-button">SAN TERESITA</button></li>
+                    <li><button class="district3-button">STO. TOMAS</button></li>
+                    <li><button class="district3-button">TALISAY</button></li>
+                    <li><button class="district3-button">TANUAN</button></li>
+                </ul>
             </div>
 
         </div>
@@ -431,8 +501,14 @@
             <img src="{% static 'district 4-1.png' %}" class="district-image">
             <button class="district-button ">DISTRICT 4</button>
             <div class="district-info-content hidden">
-                <!-- New container content goes here -->
-                4
+                <ul>
+                    <li><button class="district4-button">IBAAN</button></li>
+                    <li><button class="district4-button">PADRE GARCIA</button></li>
+                    <li><button class="district4-button">ROSARIO</button></li>
+                    <li><button class="district4-button">SAN JOSE</button></li>
+                    <li><button class="district4-button">SAN JUAN</button></li>
+                    <li><button class="district4-button">TAYSAN</button></li>
+                </ul>
             </div>
 
         </div>
@@ -440,8 +516,10 @@
             <img src="{% static 'district 5-1.png' %}" class="district-image">
             <button class="district-button">DISTRICT 5</button>
             <div class="district-info-content hidden">
-                <!-- New container content goes here -->
-                5
+                <ul>
+                    <li><button class="district5-button">BATANGAS CITY</button></li>
+
+                </ul>
             </div>
 
         </div>
@@ -449,8 +527,9 @@
             <img src="{% static 'district 6-1.png' %}" class="district-image">
             <button class="district-button">DISTRICT 6</button>
             <div class="district-info-content hidden">
-                <!-- New container content goes here -->
-                6
+                <ul>
+                    <li><button class="district6-button">LIPA CITY</button></li>
+                </ul>
             </div>
 
         </div>
@@ -631,6 +710,64 @@
                 });
             });
         });
+        document.addEventListener('DOMContentLoaded', function () {
+            const district1Buttons = document.querySelectorAll('.district1-button');
+            const district2Buttons = document.querySelectorAll('.district2-button');
+            const district3Buttons = document.querySelectorAll('.district3-button');
+            const district4Buttons = document.querySelectorAll('.district4-button');
+            const district5Buttons = document.querySelectorAll('.district5-button');
+            const district6Buttons = document.querySelectorAll('.district6-button');
+
+            // Add event listeners to each district button
+            district1Buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    window.location.href = '/adminpage/admin_district_1';
+                });
+            });
+
+            district2Buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    window.location.href = '/adminpage/admin_district_2';
+                });
+            });
+
+            district3Buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    window.location.href = '/adminpage/admin_district_3';
+                });
+            });
+
+            district4Buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    window.location.href = '/adminpage/admin_district_4';
+                });
+            });
+
+            district5Buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    window.location.href = '/adminpage/admin_district_5';
+                });
+            });
+
+            district6Buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    window.location.href = '/adminpage/admin_district_6';
+                });
+            });
+        });
+
+        document.getElementById("home-link").onclick = function (event) {
+            var clickedHref = event.target.getAttribute("href");
+            if (clickedHref === "adminpage") {
+                // For adminpage link, allow default behavior
+                return true;
+            } else {
+                // For other links, redirect to the original HTML path
+                var originalPath = window.location.pathname.split("/").pop();
+                window.location.href = originalPath;
+                return false;
+            }
+        };
     </script>
 
 </body>

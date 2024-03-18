@@ -1,6 +1,7 @@
 from .models import Kiosk
 import logging
 from django.db import connection, OperationalError
+import os
 
 # Create a logger instance
 logger = logging.getLogger(__name__)

@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parine sa Batangas</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        height: 100%;
+        background-color: #15375D;
+        overflow: hidden;
+    }
+    .top-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 105px;
+        background-color: #15375D; /* Same as the background color */
+        z-index: 1; /* Ensure it's behind other elements */
+    }
+    #imageButtonContainer {
+        position: fixed;
+        top: 20px; /* Adjust top distance as needed */
+        right: 30px; /* Adjust right distance as needed */
+        z-index: 1000; /* Ensure it's above other content */
+      }
+      
+      #imageButton {
+        width: 70px; /* Set width of the image button */
+        height: auto; /* Set height of the image button */
+        cursor: pointer; /* Show pointer cursor on hover */
+        /* Add any additional styling for the button */
+      }
+      #rightPanel {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 100vh;
+        background-color: #f4f4f4;
+        z-index: 999;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    #usertopPanel {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 105px;
+        background-color: #06C9EF;
+        z-index: 1;
+    }
+
+    #backButton {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #545454;
+        color: white;
+        padding: 5px 10px;
+        text-align: center;
+        z-index: 100;
+    }
+    
+    #backButton:hover {
+        background-color: #000000;
+    }
+    #logout-button {
+        position: absolute;
+        bottom: 100px; /* Adjust the top position as needed */
+        left: 100px;
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 20px;
+        font-weight: bold;
+        background-color: #06C9EF;
+        color: #FFFFFF;
+        padding: 10px 20px;
+        border: 3px solid #FFFFFF;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+        z-index: 100;
+    }
+    
+    #logout-button:hover {
+        background-color: #FFFFFF;
+        color: #06C9EF;
+    }
+    .title {
+        position: absolute;
+        top: 5%;
+        left: 494px;
+        font-family: 'Fira Sans', sans-serif;
+        font-size: 50px;
+        font-weight: bold;
+        text-align: center;
+        color: #FDF6EA;
+        z-index: 2;
+    }
+    .test
+    {
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'Fira Sans', sans-serif;
+        font-size: 50px;
+        font-weight: bold;
+        text-align: center;
+        color: #FDF6EA;
+        z-index: 2;
+    }
+
+    .barrier
+    {
+        position: absolute;
+        top: 5%;
+        left: 790px;
+        transform: translateX(-50%);
+        font-family: 'Fira Sans', sans-serif;
+        font-size: 50px;
+        font-weight: bold;
+        text-align: center;
+        color: #FAED23;
+        z-index: 2;
+    }
+    
+    .district
+    {
+        position: absolute;
+        top: 5%;
+        left: 810px;
+        font-family: 'Fira Sans', sans-serif;
+        font-size: 50px;
+        font-weight: bold;
+        text-align: center;
+        color: #06C9EF;
+        z-index: 2;
+    }
+    
+    .district3 {
+        position: absolute;
+        left: 15%;
+        bottom: -8%;
+        width: 1100px;
+        z-index: 0;
+    }
+    .square {
+        position: absolute;
+        top: 46%;
+        left: 25%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+  
+        color: #010355;
+        border: 1px solid #1db4ff;
+        border-radius: 10px;
+  
+        width: 500px; 
+        height: 250px;
+        background: #ffffff;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        text-align: left;
+        font-family: 'DM Serif Display', serif;
+        font-weight: bold;
+        display: flex;
+        color: #15375D;
+      }
+      .header img {
+        width: 200px; /* Adjust the width as needed */
+        height: auto;
+        margin-right: 10px; /* Add some spacing between the text and the image */
+        margin-top: 0px;
+        margin-left: 0px;
+    }
+    
+    .select{
+        position: absolute;
+        bottom: 22%;
+        left: 10%;
+        font-family: 'TT Commons Pro', sans-serif;
+        font-size: 24px;
+        align-items: center;
+        text-align: center;
+        z-index: 2;
+        color: #15375D;
+    }
+
+    .district3ST-button {
+        position: absolute;
+        background: none;
+        border: none;
+        top: 115px; /* Adjust the top position as needed */
+        left: 891px; /* Adjust the left position as needed */
+        padding: -200px;
+        border: 3px solid transparent; /* Transparent border for outline effect */
+        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-decoration: none; /* Remove underline for links */
+        color: #FFF; /* Text color */
+        transform-origin: center;
+    }
+    
+    .district3ST-button img {
+        width: 105px;
+    }
+
+    .district3ST-button.clicked {
+        transform: scale(1.4); /* Scale when clicked */
+        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+        z-index: 5;
+    }
+
+
+/* ----------------- */
+    .district3M-button {
+        position: absolute;
+        background: none;
+        border: none;
+        top: 198px; /* Adjust the top position as needed */
+        left: 868px; /* Adjust the left position as needed */
+        padding: -200px;
+        border: 3px solid transparent; /* Transparent border for outline effect */
+        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-decoration: none; /* Remove underline for links */
+        color: #FFF; /* Text color */
+        transform-origin: center;
+        z-index: 2;
+    }
+    
+    .district3M-button img {
+        width: 79px;
+    }
+    .district3M-button.clicked {
+        transform: scale(1.4); /* Scale when clicked */
+        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+        z-index: 100;
+    }
+    /* ----------------- */
+    .district3TN-button {
+        position: absolute;
+        background: none;
+        border: none;
+        top: 105px; /* Adjust the top position as needed */
+        left: 818px; /* Adjust the left position as needed */
+        padding: -200px;
+        border: 3px solid transparent; /* Transparent border for outline effect */
+        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-decoration: none; /* Remove underline for links */
+        color: #FFF; /* Text color */
+        transform-origin: center;
+    }
+    
+    .district3TN-button img {
+        width: 104px;
+    }
+    .district3TN-button.clicked {
+        transform: scale(1.4); /* Scale when clicked */
+        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+        z-index: 5;
+    }
+
+    /* ----------------- */
+    .district3T-button {
+        position: absolute;
+        background: none;
+        border: none;
+        top: 132px; /* Adjust the top position as needed */
+        left: 741px; /* Adjust the left position as needed */
+        padding: -200px;
+        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-decoration: none; /* Remove underline for links */
+        color: #FFF; /* Text color */
+        transform-origin: center;
+    }
+    
+    .district3T-button img {
+        width: 90px;
+
+    }
+    .district3T-button.clicked {
+        transform: scale(1.4); /* Scale when clicked */
+        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+        z-index: 100;
+    }
+    /* ----------------- */
+    .district3A-button {
+        position: absolute;
+        background: none;
+        border: none;
+        top: 244px; /* Adjust the top position as needed */
+        left: 685px; /* Adjust the left position as needed */
+        padding: -200px;
+        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform-origin: center;
+        transition: transform 0.3s;
+    }
+    
+    .district3A-button img {
+        width: 52px;
+
+    }
+    .district3A-button.clicked {
+        transform: scale(1.4); /* Scale when clicked */
+        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+        z-index: 2;
+    }
+    /* ----------------- */
+    .district3SN-button {
+        position: absolute;
+        background: none;
+        border: none;
+        top: 323px; /* Adjust the top position as needed */
+        left: 714px; /* Adjust the left position as needed */
+        padding: -200px;
+        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform-origin: center;
+        transition: transform 0.3s;
+    }
+    
+    .district3SN-button img {
+        width: 52px;
+
+    }
+    .district3SN-button.clicked {
+        transform: scale(1.4); /* Scale when clicked */
+        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+        z-index: 2;
+    }
+    /* ----------------- */
+    .district3B-button {
+        position: absolute;
+        background: none;
+        border: none;
+        top: 225px; /* Adjust the top position as needed */
+        left: 850px; /* Adjust the left position as needed */
+        padding: -200px;
+        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform-origin: center;
+        transition: transform 0.3s;
+        z-index: 4;
+    }
+    
+    .district3B-button img {
+        width: 60px;
+
+    }
+    .district3B-button.clicked {
+        transform: scale(1.4); /* Scale when clicked */
+        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+        z-index: 2;
+    }
+    /* ----------------- */
+    .district3MK-button {
+        position: absolute;
+        background: none;
+        border: none;
+        top: 247px; /* Adjust the top position as needed */
+        left: 849px; /* Adjust the left position as needed */
+        padding: -200px;
+        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform-origin: center;
+        transition: transform 0.3s;
+        z-index: 3;
+    }
+    
+    .district3MK-button img {
+        width: 45px;
+
+    }
+    .district3MK-button.clicked {
+        transform: scale(1.4); /* Scale when clicked */
+        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+        z-index: 2;
+    }
+    /* ----------------- */
+    .district3STR-button {
+        position: absolute;
+        background: none;
+        border: none;
+        top: 345px; /* Adjust the top position as needed */
+        left: 727px; /* Adjust the left position as needed */
+        padding: -200px;
+        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform-origin: center;
+        transition: transform 0.3s;
+        z-index: 3;
+    }
+    
+    .district3STR-button img {
+        width: 45px;
+
+    }
+    .district3STR-button.clicked {
+        transform: scale(1.4); /* Scale when clicked */
+        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+        z-index: 2;
+    }
+    /* ----------------- */
+    .district3C-button {
+        position: absolute;
+        background: none;
+        border: none;
+        top: 316px; /* Adjust the top position as needed */
+        left: 801px; /* Adjust the left position as needed */
+        padding: -200px;
+        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform-origin: center;
+        transition: transform 0.3s;
+        z-index: 3;
+    }
+    
+    .district3C-button img {
+        width: 45px;
+
+    }
+    .district3C-button.clicked {
+        transform: scale(1.4); /* Scale when clicked */
+        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+        z-index: 100;
+    }
+    /* ----------------- */
+    .district3AG-button {
+        position: absolute;
+        background: none;
+        border: none;
+        top: 361px; /* Adjust the top position as needed */
+        left: 757px; /* Adjust the left position as needed */
+        padding: -200px;
+        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform-origin: center;
+        transition: transform 0.3s;
+        z-index: 3;
+    }
+    
+    .district3AG-button img {
+        width: 59px;
+
+    }
+    .district3AG-button.clicked {
+        transform: scale(1.4); /* Scale when clicked */
+        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+        z-index: 100;
+    }
+    /* ----------------- */
+    .district3L-button {
+        position: absolute;
+        background: none;
+        border: none;
+        top: 170px; /* Adjust the top position as needed */
+        left: 634px; /* Adjust the left position as needed */
+        padding: -200px;
+        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform-origin: center;
+        transition: transform 0.3s;
+        z-index: 3;
+    }
+    
+    .district3L-button img {
+        width: 109px;
+
+    }
+    .district3L-button.clicked {
+        transform: scale(1.4); /* Scale when clicked */
+        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
+        z-index: 100;
+    }
+    /* -------------------------------------- EXPLORE-----------------------------------------*/
+
+    .exploreST {
+        display: none; /* Hide the container by default */
+        position: absolute;
+        top: 335px;
+        left: 385px;
+        transform: translate(-50%, -50%);
+        text-align: center;
+  
+        color: #010355;
+        border: 1px solid #1db4ff;
+        border-radius: 10px;
+  
+        width: 500px; 
+        height: 250px;
+        background: #ffffff;
+    }
+    .backST {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #15375D;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .exploreST-button {
+        position: absolute;
+        top: 160px; /* Adjust the top position as needed */
+        left: 154px; /* Adjust the left position as needed */
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 30px;
+        font-weight: bold;
+        background-color: #FFFFFF;
+        color: #06C9EF;
+        padding: 10px 20px;
+        border: 3px solid #0097B2;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+        z-index: 2;
+    }
+    .exploreST-button:hover {
+        background-color: #06C9EF;
+        color: #FFFFFF;
+    }
+    /*-------------------*/
+    .exploreA {
+        display: none; /* Hide the container by default */
+        position: absolute;
+        top: 335px;
+        left: 385px;
+        transform: translate(-50%, -50%);
+        text-align: center;
+  
+        color: #010355;
+        border: 1px solid #1db4ff;
+        border-radius: 10px;
+  
+        width: 500px; 
+        height: 250px;
+        background: #ffffff;
+    }
+
+    .backA {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #15375D;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .exploreA-button {
+        position: absolute;
+        top: 160px; /* Adjust the top position as needed */
+        left: 154px; /* Adjust the left position as needed */
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 30px;
+        font-weight: bold;
+        background-color: #FFFFFF;
+        color: #06C9EF;
+        padding: 10px 20px;
+        border: 3px solid #0097B2;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    .exploreA-button:hover {
+        background-color: #06C9EF;
+        color: #FFFFFF;
+    }
+    .exploreT {
+        display: none; /* Hide the container by default */
+        position: absolute;
+        top: 335px;
+        left: 385px;
+        transform: translate(-50%, -50%);
+        text-align: center;
+  
+        color: #010355;
+        border: 1px solid #1db4ff;
+        border-radius: 10px;
+  
+        width: 500px; 
+        height: 250px;
+        background: #ffffff;
+
+    }
+    .backT {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #15375D;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .exploreT-button {
+        position: absolute;
+        top: 160px; /* Adjust the top position as needed */
+        left: 154px; /* Adjust the left position as needed */
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 30px;
+        font-weight: bold;
+        background-color: #FFFFFF;
+        color: #06C9EF;
+        padding: 10px 20px;
+        border: 3px solid #0097B2;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+        z-index: 2;
+    }
+    .exploreT-button:hover {
+        background-color: #06C9EF;
+        color: #FFFFFF;
+    }
+    .exploreTN {
+        display: none; /* Hide the container by default */
+        position: absolute;
+        top: 335px;
+        left: 385px;
+        transform: translate(-50%, -50%);
+        text-align: center;
+  
+        color: #010355;
+        border: 1px solid #1db4ff;
+        border-radius: 10px;
+  
+        width: 500px; 
+        height: 250px;
+        background: #ffffff;
+    }
+    .backTN {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #15375D;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .exploreTN-button {
+        position: absolute;
+        top: 160px; /* Adjust the top position as needed */
+        left: 154px; /* Adjust the left position as needed */
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 30px;
+        font-weight: bold;
+        background-color: #FFFFFF;
+        color: #06C9EF;
+        padding: 10px 20px;
+        border: 3px solid #0097B2;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+        z-index: 2;
+    }
+    .exploreTN-button:hover {
+        background-color: #06C9EF;
+        color: #FFFFFF;
+    }
+    
+    .exploreM {
+        display: none; /* Hide the container by default */
+        position: absolute;
+        top: 335px;
+        left: 385px;
+        transform: translate(-50%, -50%);
+        text-align: center;
+  
+        color: #010355;
+        border: 1px solid #1db4ff;
+        border-radius: 10px;
+  
+        width: 500px; 
+        height: 250px;
+        background: #ffffff;
+    }
+    .backM {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #15375D;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .exploreM-button {
+        position: absolute;
+        top: 160px; /* Adjust the top position as needed */
+        left: 154px; /* Adjust the left position as needed */
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 30px;
+        font-weight: bold;
+        background-color: #FFFFFF;
+        color: #06C9EF;
+        padding: 10px 20px;
+        border: 3px solid #0097B2;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+        z-index: 2;
+    }
+    .exploreM-button:hover {
+        background-color: #06C9EF;
+        color: #FFFFFF;
+    }
+/*-------------------------*/
+.exploreSN {
+    display: none; /* Hide the container by default */
+    position: absolute;
+    top: 335px;
+    left: 385px;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+    color: #010355;
+    border: 1px solid #1db4ff;
+    border-radius: 10px;
+
+    width: 500px; 
+    height: 250px;
+    background: #ffffff;
+}
+.backSN {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #15375D;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.exploreSN-button {
+    position: absolute;
+    top: 160px; /* Adjust the top position as needed */
+    left: 154px; /* Adjust the left position as needed */
+    font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #FFFFFF;
+    color: #06C9EF;
+    padding: 10px 20px;
+    border: 3px solid #0097B2;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    z-index: 2;
+}
+.exploreSN-button:hover {
+    background-color: #06C9EF;
+    color: #FFFFFF;
+}
+/*-------------------------*/
+.exploreB {
+    display: none; /* Hide the container by default */
+    position: absolute;
+    top: 335px;
+    left: 385px;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+    color: #010355;
+    border: 1px solid #1db4ff;
+    border-radius: 10px;
+
+    width: 500px; 
+    height: 250px;
+    background: #ffffff;
+}
+.backB {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #15375D;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.exploreB-button {
+    position: absolute;
+    top: 160px; /* Adjust the top position as needed */
+    left: 154px; /* Adjust the left position as needed */
+    font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #FFFFFF;
+    color: #06C9EF;
+    padding: 10px 20px;
+    border: 3px solid #0097B2;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    z-index: 2;
+}
+.exploreB-button:hover {
+    background-color: #06C9EF;
+    color: #FFFFFF;
+}
+/*-------------------------*/
+.exploreMK {
+    display: none; /* Hide the container by default */
+    position: absolute;
+    top: 335px;
+    left: 385px;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+    color: #010355;
+    border: 1px solid #1db4ff;
+    border-radius: 10px;
+
+    width: 500px; 
+    height: 250px;
+    background: #ffffff;
+}
+.backMK {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #15375D;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.exploreMK-button {
+    position: absolute;
+    top: 160px; /* Adjust the top position as needed */
+    left: 154px; /* Adjust the left position as needed */
+    font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #FFFFFF;
+    color: #06C9EF;
+    padding: 10px 20px;
+    border: 3px solid #0097B2;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    z-index: 2;
+}
+.exploreMK-button:hover {
+    background-color: #06C9EF;
+    color: #FFFFFF;
+}
+/*-------------------------*/
+.exploreSTR {
+    display: none; /* Hide the container by default */
+    position: absolute;
+    top: 335px;
+    left: 385px;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+    color: #010355;
+    border: 1px solid #1db4ff;
+    border-radius: 10px;
+
+    width: 500px; 
+    height: 250px;
+    background: #ffffff;
+}
+.backSTR {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #15375D;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.exploreSTR-button {
+    position: absolute;
+    top: 160px; /* Adjust the top position as needed */
+    left: 154px; /* Adjust the left position as needed */
+    font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #FFFFFF;
+    color: #06C9EF;
+    padding: 10px 20px;
+    border: 3px solid #0097B2;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    z-index: 2;
+}
+.exploreSTR-button:hover {
+    background-color: #06C9EF;
+    color: #FFFFFF;
+}
+/*-------------------------*/
+.exploreC {
+    display: none; /* Hide the container by default */
+    position: absolute;
+    top: 335px;
+    left: 385px;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+    color: #010355;
+    border: 1px solid #1db4ff;
+    border-radius: 10px;
+
+    width: 500px; 
+    height: 250px;
+    background: #ffffff;
+}
+.backC {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #15375D;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.exploreC-button {
+    position: absolute;
+    top: 160px; /* Adjust the top position as needed */
+    left: 154px; /* Adjust the left position as needed */
+    font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #FFFFFF;
+    color: #06C9EF;
+    padding: 10px 20px;
+    border: 3px solid #0097B2;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    z-index: 2;
+}
+.exploreC-button:hover {
+    background-color: #06C9EF;
+    color: #FFFFFF;
+}
+/*-------------------------*/
+.exploreAG {
+    display: none; /* Hide the container by default */
+    position: absolute;
+    top: 335px;
+    left: 385px;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+    color: #010355;
+    border: 1px solid #1db4ff;
+    border-radius: 10px;
+
+    width: 500px; 
+    height: 250px;
+    background: #ffffff;
+}
+
+.exploreAG-button {
+    position: absolute;
+    top: 160px; /* Adjust the top position as needed */
+    left: 154px; /* Adjust the left position as needed */
+    font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #FFFFFF;
+    color: #06C9EF;
+    padding: 10px 20px;
+    border: 3px solid #0097B2;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    z-index: 2;
+}
+.exploreAG-button:hover {
+    background-color: #06C9EF;
+    color: #FFFFFF;
+}
+/*-------------------------*/
+.exploreL {
+    display: none; /* Hide the container by default */
+    position: absolute;
+    top: 335px;
+    left: 385px;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+    color: #010355;
+    border: 1px solid #1db4ff;
+    border-radius: 10px;
+
+    width: 500px; 
+    height: 250px;
+    background: #ffffff;
+}
+
+.exploreL-button {
+    position: absolute;
+    top: 160px; /* Adjust the top position as needed */
+    left: 154px; /* Adjust the left position as needed */
+    font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #FFFFFF;
+    color: #06C9EF;
+    padding: 10px 20px;
+    border: 3px solid #0097B2;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    z-index: 2;
+}
+.exploreL-button:hover {
+    background-color: #06C9EF;
+    color: #FFFFFF;
+}
+
+
+</style>
+</head>
+<body>
+    </div>
+    {% load static %}
+    <div class="container">
+        <div id="imageButtonContainer">
+            <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
+        </div>
+        <div id="rightPanel">
+            <button id="backButton">Back</button>
+            <div id="usertopPanel"></div>
+            <button id="logout-button" onclick="window.location.href='{% url 'kiosk_logout' %}'">Logout</button>
+            <!-- Add other content for the right panel here -->
+        </div>
+        <div class="top-panel"></div>
+        <span class="title">BATANGAS</span>
+        <span class="barrier">|</span>
+        <span class="district">District II</span>
+        <img class="district3" src="{% static 'district 3-1.png' %}"  alt="district3">
+        <!-- MUNICIPALITIES -->
+        <button class="district3ST-button" onclick="toggleButton(this)">
+            <img src="{% static 'D3-ST.png' %}" alt="District 3-ST">
+        </button>
+        <button class="district3A-button" onclick="toggleButton(this)">
+            <img src="{% static 'D3-A.png' %}" alt="District 3-A">
+        </button>
+        <button class="district3T-button" onclick="toggleButton(this)">
+            <img src="{% static 'D3-T.png' %}" alt="District 3-T">
+        </button>
+        <button class="district3TN-button" onclick="toggleButton(this)">
+            <img src="{% static 'D3-TN.png' %}" alt="District 3-TN">
+        </button>
+        <button class="district3M-button" onclick="toggleButton(this)">
+            <img src="{% static 'D3-M.png' %}" alt="District 3-M">
+        </button>
+        <button class="district3SN-button" onclick="toggleButton(this)">
+            <img src="{% static 'D3-SN.png' %}" alt="District 3-SN">
+        </button>
+        <button class="district3B-button" onclick="toggleButton(this)">
+            <img src="{% static 'D3-B.png' %}" alt="District 3-B">
+        </button>
+        <button class="district3MK-button" onclick="toggleButton(this)">
+            <img src="{% static 'D3-MK.png' %}" alt="District 3-MK">
+        </button>
+        <button class="district3STR-button" onclick="toggleButton(this)">
+            <img src="{% static 'D3-STR.png' %}" alt="District 3-STR">
+        </button>
+        <button class="district3C-button" onclick="toggleButton(this)">
+            <img src="{% static 'D3-C.png' %}" alt="District 3-C">
+        </button>
+        <button class="district3AG-button" onclick="toggleButton(this)">
+            <img src="{% static 'D3-AG.png' %}" alt="District 3-AG">
+        </button>
+        <button class="district3L-button" onclick="toggleButton(this)">
+            <img src="{% static 'D3-L.png' %}" alt="District 3-L">
+        </button>
+
+        <div class="square">
+            <div class="header">
+                <span class="select">Select a part of Batangas Province <br> District 3 to start</span>
+                <img src="{% static 'logo.png' %}" alt="header" style="width: 50%; max-width: 100px;">
+                <h2>Welcome to <br> Parine sa Batangas!</h2>    
+                    <p></p>
+                </div>
+            </div>
+        </div>
+        <!-- EXPLORE -->
+        <div class="exploreST" id="exploreST" style="display: none;">
+            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> STO.TOMAS!</p>
+            <button class="exploreST-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+        </div>
+
+        <div class="exploreA" id="exploreA" style="display: none;">
+            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> AGONCILLO!</p>
+            <button class="exploreA-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+        </div>
+        <div class="exploreT" id="exploreT" style="display: none;">
+            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> TALISAY!</p>
+            <button class="exploreT-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+        </div>
+        <div class="exploreTN" id="exploreTN" style="display: none;">
+            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> TANAUAN!</p>
+            <button class="exploreTN-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+        </div>
+        <div class="exploreM" id="exploreM" style="display: none;">
+            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> MALVAR!</p>
+            <button class="exploreM-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+        </div>
+        <div class="exploreSN" id="exploreSN" style="display: none;">
+            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> SAN NICOLAS!</p>
+            <button class="exploreSN-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+        </div>
+        <div class="exploreB" id="exploreB" style="display: none;">
+            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> BALETE!</p>
+            <button class="exploreB-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+        </div>
+        <div class="exploreMK" id="exploreMK" style="display: none;">
+            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> MATAAS NA KAHOY!</p>
+            <button class="exploreMK-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+        </div>
+        <div class="exploreSTR" id="exploreSTR" style="display: none;">
+            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> STA. TERESITA!</p>
+            <button class="exploreSTR-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+        </div>
+        <div class="exploreC" id="exploreC" style="display: none;">
+            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> CUENCA!</p>
+            <button class="exploreC-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+        </div>
+        <div class="exploreAG" id="exploreAG" style="display: none;">
+            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> ALITAGTAG!</p>
+            <button class="exploreAG-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+        </div>
+        <div class="exploreL" id="exploreL" style="display: none;">
+            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> LAUREL!</p>
+            <button class="exploreL-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+        </div>
+
+
+
+
+
+
+    <script>
+        const imageButton = document.getElementById('imageButton');
+        const rightPanel = document.getElementById('rightPanel');
+        const backButton = document.getElementById('backButton');
+
+        imageButton.addEventListener('click', () => {
+            rightPanel.style.display = 'block';
+        });
+
+        backButton.addEventListener('click', () => {
+            rightPanel.style.display = 'none';
+        });
+
+        let activeButton = null;
+
+        function toggleButton(button) {
+            if (activeButton === button) {
+                button.classList.remove('clicked');
+                activeButton = null;
+                hideAdditionalContainers();
+            } else {
+                if (activeButton) {
+                    activeButton.classList.remove('clicked');
+                }
+                button.classList.add('clicked');
+                activeButton = button;
+                hideAdditionalContainers();
+            }
+        }
+        function hideAdditionalContainers() {
+            document.querySelectorAll('.exploreST, .exploreA, .exploreT, .exploreTN, .exploreM, .exploreSN, .exploreB, .exploreMK, .exploreSTR, .exploreC, .exploreL, .exploreAG').forEach(container => {
+                if (container.previousElementSibling !== activeButton) {
+                    container.style.display = 'none';
+                }
+            });
+        }
+        function hideAdditionalContainerST() {
+            var additionalContainer = document.getElementById("exploreST");
+            additionalContainer.style.display = "none";
+        }
+        
+        document.querySelector('.district3ST-button').addEventListener('click', function() {
+            var additionalContainer = document.getElementById("exploreST");
+            additionalContainer.style.display = "block";
+            this.classList.toggle('container');
+            
+        });
+
+        function hideAdditionalContainerA() {
+            var additionalContainer = document.getElementById("exploreA");
+            additionalContainer.style.display = "none";
+        }
+        
+        document.querySelector('.district3A-button').addEventListener('click', function() {
+            var additionalContainer = document.getElementById("exploreA");
+            additionalContainer.style.display = "block";
+            this.classList.toggle('container');
+        });
+        function hideAdditionalContainerT() {
+            var additionalContainer = document.getElementById("exploreT");
+            additionalContainer.style.display = "none";
+        }
+        
+        document.querySelector('.district3T-button').addEventListener('click', function() {
+            var additionalContainer = document.getElementById("exploreT");
+            additionalContainer.style.display = "block";
+            this.classList.toggle('container');
+        });
+        function hideAdditionalContainerTN() {
+            var additionalContainer = document.getElementById("exploreTN");
+            additionalContainer.style.display = "none";
+        }
+        
+        document.querySelector('.district3TN-button').addEventListener('click', function() {
+            var additionalContainer = document.getElementById("exploreTN");
+            additionalContainer.style.display = "block";
+            this.classList.toggle('container');
+            
+        });
+        function hideAdditionalContainerM() {
+            var additionalContainer = document.getElementById("exploreM");
+            additionalContainer.style.display = "none";
+        }
+        
+        document.querySelector('.district3M-button').addEventListener('click', function() {
+            var additionalContainer = document.getElementById("exploreM");
+            additionalContainer.style.display = "block";
+            this.classList.toggle('container');
+            
+        });
+        function hideAdditionalContainerSN() {
+            var additionalContainer = document.getElementById("exploreSN");
+            additionalContainer.style.display = "none";
+        }
+        
+        document.querySelector('.district3SN-button').addEventListener('click', function() {
+            var additionalContainer = document.getElementById("exploreSN");
+            additionalContainer.style.display = "block";
+            this.classList.toggle('container');
+            
+        });
+        function hideAdditionalContainerB() {
+            var additionalContainer = document.getElementById("exploreB");
+            additionalContainer.style.display = "none";
+        }
+        
+        document.querySelector('.district3B-button').addEventListener('click', function() {
+            var additionalContainer = document.getElementById("exploreB");
+            additionalContainer.style.display = "block";
+            this.classList.toggle('container');
+            
+        });
+        function hideAdditionalContainerMK() {
+            var additionalContainer = document.getElementById("exploreMK");
+            additionalContainer.style.display = "none";
+        }
+        
+        document.querySelector('.district3MK-button').addEventListener('click', function() {
+            var additionalContainer = document.getElementById("exploreMK");
+            additionalContainer.style.display = "block";
+            this.classList.toggle('container');
+            
+        });
+        function hideAdditionalContainerSTR() {
+            var additionalContainer = document.getElementById("exploreSTR");
+            additionalContainer.style.display = "none";
+        }
+        
+        document.querySelector('.district3STR-button').addEventListener('click', function() {
+            var additionalContainer = document.getElementById("exploreSTR");
+            additionalContainer.style.display = "block";
+            this.classList.toggle('container');
+            
+        });
+        function hideAdditionalContainerC() {
+            var additionalContainer = document.getElementById("exploreC");
+            additionalContainer.style.display = "none";
+        }
+        
+        document.querySelector('.district3C-button').addEventListener('click', function() {
+            var additionalContainer = document.getElementById("exploreC");
+            additionalContainer.style.display = "block";
+            this.classList.toggle('container');
+            
+        });
+        function hideAdditionalContainerAG() {
+            var additionalContainer = document.getElementById("exploreAG");
+            additionalContainer.style.display = "none";
+        }
+        
+        document.querySelector('.district3AG-button').addEventListener('click', function() {
+            var additionalContainer = document.getElementById("exploreAG");
+            additionalContainer.style.display = "block";
+            this.classList.toggle('container');
+            
+        });
+        function hideAdditionalContainerL() {
+            var additionalContainer = document.getElementById("exploreL");
+            additionalContainer.style.display = "none";
+        }
+        
+        document.querySelector('.district3L-button').addEventListener('click', function() {
+            var additionalContainer = document.getElementById("exploreL");
+            additionalContainer.style.display = "block";
+            this.classList.toggle('container');
+            
+        });
+    </script>
+    </body>
+    </html>
+
+

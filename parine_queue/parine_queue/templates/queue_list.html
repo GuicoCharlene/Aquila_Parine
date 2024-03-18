@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     {% load static %}
     <meta charset="UTF-8">
@@ -14,8 +15,10 @@
             height: 100vh;
             overflow: hidden;
             background-image: url("{% static 'bg.png' %}");
-            background-size: cover; /* Cover the whole screen */
-            background-position: center; /* Center the background image */
+            background-size: cover;
+            /* Cover the whole screen */
+            background-position: center;
+            /* Center the background image */
         }
 
         .queue-container {
@@ -24,66 +27,88 @@
             font-family: 'Georgia', serif;
             color: #010355;
         }
-        
+
         /* Adjust the sidebar to match the list-container style */
         .list-container {
             position: absolute;
-            top: 23%; /* Adjust the position as needed */
+            top: 23%;
+            /* Adjust the position as needed */
             left: 0;
-            width: 20%; /* Width of sidebar */
-            height: calc(100% - 40%); /* Height is the full height minus the header/footer */
-            overflow-y: auto; /* Enable vertical scrolling */
+            width: 20%;
+            /* Width of sidebar */
+            height: calc(100% - 40%);
+            /* Height is the full height minus the header/footer */
+            overflow-y: auto;
+            /* Enable vertical scrolling */
             background-color: #ffffff;
-            box-shadow: 3px 0 6px rgba(0,0,0,0.1); /* Optional: Adds shadow to the sidebar */
+            box-shadow: 3px 0 6px rgba(0, 0, 0, 0.1);
+            /* Optional: Adds shadow to the sidebar */
             padding: 20px;
-            box-sizing: border-box; /* Ensures padding does not add to width */
+            box-sizing: border-box;
+            /* Ensures padding does not add to width */
             text-align: center;
             font-weight: bold;
             font-family: 'Georgia', serif;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        
+
         /* Flex container for content */
         .content-container {
             position: absolute;
             top: 20%;
-            left: 20%; /* Start to the right of the sidebar */
-            width: 80%; /* Remaining width */
-            height: calc(100% - 40%); /* Height is the full height minus the header/footer */
+            left: 20%;
+            /* Start to the right of the sidebar */
+            width: 80%;
+            /* Remaining width */
+            height: calc(100% - 40%);
+            /* Height is the full height minus the header/footer */
             padding: 20px;
-            box-sizing: border-box; /* Ensures padding does not add to width */
+            box-sizing: border-box;
+            /* Ensures padding does not add to width */
             display: flex;
-            flex-direction: column; /* Stack children vertically */
+            flex-direction: column;
+            /* Stack children vertically */
         }
-        
+
         .kiosk-wrapper {
-            display: flex; /* Use flex layout */
-            flex-wrap: wrap; /* Allow items to wrap */
-            justify-content: flex-start; /* Align items to the start of the container */
-            gap: 10px; /* Space between items */
-            margin-bottom: 20px; /* Space below kiosk list */
+            display: flex;
+            /* Use flex layout */
+            flex-wrap: wrap;
+            /* Allow items to wrap */
+            justify-content: flex-start;
+            /* Align items to the start of the container */
+            gap: 10px;
+            /* Space between items */
+            margin-bottom: 20px;
+            /* Space below kiosk list */
         }
-        
+
         .kiosk-container {
             position: relative;
-            flex-grow: 1; /* Kiosks will grow to fill available space */
-            min-width: calc(33.333% - 20px); /* Three kiosks per row, adjust space for gap */
-            height: 150px; /* Adjust height as needed */
-            overflow: hidden; /* Hide overflow */
+            flex-grow: 1;
+            /* Kiosks will grow to fill available space */
+            min-width: calc(33.333% - 20px);
+            /* Three kiosks per row, adjust space for gap */
+            height: 150px;
+            /* Adjust height as needed */
+            overflow: hidden;
+            /* Hide overflow */
             background-color: #fff3db;
             border: 1px solid #ccc;
             border-radius: 5px;
             padding: 10px;
-            box-sizing: border-box; /* Ensures padding does not add to width */
-            box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+            /* Ensures padding does not add to width */
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
             font-weight: bold;
             font-family: 'Georgia', serif;
             color: #010355;
         }
 
-        .kiosk-container .queue, .kiosk-container .time {
+        .kiosk-container .queue,
+        .kiosk-container .time {
             position: absolute;
             width: 50%;
             top: 60%;
@@ -121,9 +146,10 @@
 
         .sub {
             font-size: 18px;
-            padding: 5px; /* Adjust padding as needed */
-
+            padding: 5px;
+            /* Adjust padding as needed */
         }
+
         .kiosk-container .time {
             position: absolute;
             width: 50%;
@@ -135,18 +161,19 @@
             border-top-right-radius: 5px;
             border-bottom-right-radius: 5px;
         }
-        
+
         .time-background {
             position: absolute;
             width: 50%;
             height: 0%;
             top: 0;
             right: 0;
-            background-color: yellow; /* Same as the time background color */
+            background-color: yellow;
+            /* Same as the time background color */
             border-top-right-radius: 5px;
             border-bottom-right-radius: 5px;
         }
-        
+
         .user-kiosk-button {
             /* Button styling */
             padding: 10px 20px;
@@ -156,70 +183,72 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-        }        
+        }
 
         .jip-img {
             position: absolute;
             top: 17%;
             left: 5%;
             transform: translateX(-50%);
-            width: 50%; /* Adjust width as needed */
+            width: 50%;
+            /* Adjust width as needed */
             max-width: 100px;
-            z-index: 1; /* Ensure the image stays above other content */
-            animation: moveForth 8s ease-in-out infinite, glow 1s ease-in-out infinite alternate; /* Adjust animation duration and glow effect */
+            z-index: 1;
+            /* Ensure the image stays above other content */
+            animation: moveForth 8s ease-in-out infinite, glow 1s ease-in-out infinite alternate;
+            /* Adjust animation duration and glow effect */
         }
-        
+
         @keyframes moveForth {
             0% {
                 transform: translateX(-190%);
             }
+
             100% {
                 transform: translateX(1850%);
             }
         }
-        
+
         @keyframes glow {
             0% {
-                filter: drop-shadow(0 0 20px #FFFFFF); /* Initial glow color and radius */
+                filter: drop-shadow(0 0 20px #FFFFFF);
+                /* Initial glow color and radius */
             }
+
             100% {
-                filter: drop-shadow(0 0 20px #FFFFF); /* Final glow color and radius */
+                filter: drop-shadow(0 0 20px #FFFFF);
+                /* Final glow color and radius */
             }
         }
-        
+
         /* Bounce animation */
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
                 transform: translateY(0);
             }
+
             40% {
                 transform: translateY(-30px);
             }
+
             60% {
                 transform: translateY(-15px);
             }
         }
-        
+
         /* Styling for the logged-in user's username */
         .logged-in-user {
             color: #06C9EF;
             animation: bounce 1s infinite;
         }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-30px);
-            }
-            60% {
-                transform: translateY(-15px);
-            }
-        }
-        
     </style>
 </head>
+
 <body>
     <img src="{% static 'jip.png' %}" class="jip-img" alt="Parine sa Batangas">
     <div class="queue-container">
@@ -227,6 +256,7 @@
     </div>
 
     <script>
+
         function startTimer(startTime, timerElement) {
             if (!startTime) {
                 console.error('Invalid start time:', startTime);
@@ -234,7 +264,7 @@
             }
 
             const startTimestamp = new Date(startTime).getTime();
-            const intervalId = setInterval(function() {
+            const intervalId = setInterval(function () {
                 const elapsedTime = new Date().getTime() - startTimestamp;
                 const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
@@ -247,7 +277,7 @@
             $.ajax({
                 url: "/get_queue_data/", // Corrected URL
                 type: "GET",
-                success: function(response) {
+                success: function (response) {
                     const kiosksData = response.kiosk_data;
                     kiosksData.forEach(kioskData => {
                         const kioskContainer = document.querySelector(`[data-kiosk-id="${kioskData.KioskID}"]`);
@@ -262,63 +292,63 @@
                         }
                     });
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("Error fetching kiosk data:", error);
                 }
             });
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             updateKioskDisplay();
             setInterval(updateKioskDisplay, 10000); // Update every seconds
         });
     </script>
 
     <script>
-        setTimeout(function(){
+        setTimeout(function () {
             // Fade out the body
             document.body.style.transition = "opacity 0.1s ease-out";
             document.body.style.opacity = "0";
-    
+
             // Reload the page after the fade-out effect
-            setTimeout(function(){
+            setTimeout(function () {
                 window.location.reload(true);
             }, 100); // Delay matches the transition duration
         }, 10000); // Delay before reload
     </script>
-    
-    
 
     <div class="list-container">
         <p>QUEUE</p>
         {% for entry in queue_entries %}
-            {% if entry.user.username == logged_in_username %}
-                <div class="sub logged-in-user">{{ entry.user.username }}</div>
-            {% else %}
-                <div class="sub">{{ entry.user.username }}</div>
-            {% endif %}
+        {% if entry.user.username == logged_in_username %}
+        <div class="sub logged-in-user">{{ entry.user.username }}</div>
+        {% else %}
+        <div class="sub">{{ entry.user.username }}</div>
+        {% endif %}
         {% empty %}
-            <div class="sub">No visitors in the queue.</div>
+        <div class="sub">No visitors in the queue.</div>
         {% endfor %}
     </div>
-    
+
     <div class="content-container">
         <div class="kiosk-wrapper" style="--total-kiosks:{{ total_kiosks }}">
             {% for kiosk_data in kiosks_data %}
-                <div class="kiosk-container" data-kiosk-id="{{ kiosk_data.KioskID }}" data-start-time="{{ kiosk_data.start_time }}">
-                    <p>Kiosk {{ kiosk_data.KioskID }}</p>
-                    {% if kiosk_data.user %}
-                        <div class="queue">{{ kiosk_data.user }}</div>
-                        <div class="time"></div>
-                        <div class="time-background"></div>
-                    {% else %}
-                        <div class="queue">AVAILABLE</div>
-                        <div class="time">TIME</div>
-                        <div class="time-background"></div>
-                    {% endif %}
-                </div>
+            <div class="kiosk-container" data-kiosk-id="{{ kiosk_data.KioskID }}"
+                data-start-time="{{ kiosk_data.start_time }}">
+                <p>Kiosk {{ kiosk_data.KioskID }}</p>
+                {% if kiosk_data.user %}
+                <div class="queue">{{ kiosk_data.user }}</div>
+                <div class="time"></div>
+                <div class="time-background"></div>
+                {% else %}
+                <div class="queue">AVAILABLE</div>
+                <div class="time">TIME</div>
+                <div class="time-background"></div>
+                {% endif %}
+            </div>
             {% endfor %}
         </div>
     </div>
 </body>
+
 </html>
