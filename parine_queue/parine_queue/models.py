@@ -48,11 +48,34 @@ class Queue_Capacity(models.Model):
         
 class DistrictModules(models.Model):
     DistrictModuleID = models.AutoField(primary_key=True)
+    Municipality = models.CharField(max_length=100)
     ModuleName = models.CharField(max_length=100)
-    ModuleContent = models.FileField(upload_to='module_content/')  # store files in 'media/module_content/'
+    ModuleContent = models.FileField(upload_to='module_content/')
     ModuleFile = models.TextField()  # Use TextField for longtext
     KioskID = models.ForeignKey('Kiosk', on_delete=models.CASCADE, db_column='KioskID')
     AdminID = models.ForeignKey('Admin', on_delete=models.CASCADE, db_column='AdminID(DM)')
 
     class Meta:
         db_table = 'districtmodule'
+        
+class TriviaQuestion(models.Model):
+    TriviaQuestionID = models.AutoField(primary_key=True)
+    QuestionContent = models.TextField() #HOLDS THE QUESTION
+    QuestionAnswer = models.TextField() #HOLDS THE ANSWER
+    DistrictModuleID = models.ForeignKey('Kiosk', on_delete=models.CASCADE, db_column='DistrictModuleID(TQ)')
+    AdminID = models.ForeignKey('Admin', on_delete=models.CASCADE, db_column='AdminID(TQ)')
+
+    class Meta:
+        db_table = 'triviaquestion'
+        
+class RewardPoints(models.Model):
+    RewardPointsID = models.AutoField(primary_key=True)
+    TotalPoints =  models.CharField(max_length=45)
+    create_time = models.DateTimeField(null=True, blank=True)
+    update_time = models.DateTimeField(null=True, blank=True)
+    user = models.ForeignKey(QueueVisitor, on_delete=models.CASCADE, db_column='VisitorID(RP)')
+    DistrictModuleID = models.ForeignKey(DistrictModules, on_delete=models.CASCADE, db_column='DistrictModuleID(RP)')
+    TriviaQuestionID = models.ForeignKey(TriviaQuestion, on_delete=models.CASCADE, db_column='TriviaQuestionID(RP)')
+
+    class Meta:
+        db_table = 'rewardpoints'

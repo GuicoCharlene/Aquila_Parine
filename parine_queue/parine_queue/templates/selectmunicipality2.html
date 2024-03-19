@@ -18,91 +18,98 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 105px;
+        height: 6.8359375vw;
         background-color: #15375D; /* Same as the background color */
         z-index: 1; /* Ensure it's behind other elements */
     }
     #imageButtonContainer {
         position: fixed;
-        top: 20px; /* Adjust top distance as needed */
-        right: 30px; /* Adjust right distance as needed */
+        top: 1.3020833333333333vw; /* Adjust top distance as needed */
+        right: 1.953125vw; /* Adjust right distance as needed */
         z-index: 1000; /* Ensure it's above other content */
       }
       
       #imageButton {
-        width: 70px; /* Set width of the image button */
+        width: 4.557291666666667vw; /* Set width of the image button */
         height: auto; /* Set height of the image button */
         cursor: pointer; /* Show pointer cursor on hover */
-        /* Add any additional styling for the button */
-      }
+        transition: transform 0.2s; /* Add a transition for the transform property */
+    }
+    
+    #imageButton:active {
+        transform: scale(0.5); /* Scale down the button when clicked */
+    }
       #rightPanel {
         display: none;
         position: fixed;
         top: 0;
         right: 0;
-        width: 300px;
+        width:  19.53125vw;
         height: 100vh;
         background-color: #f4f4f4;
         z-index: 999;
         padding: 20px;
         box-sizing: border-box;
+        border-top-left-radius: 15px; /* Radius for top-left corner */
+        border-bottom-left-radius: 15px;
     }
     #usertopPanel {
         position: absolute;
         top: 0;
         right: 0;
-        width: 300px;
-        height: 105px;
+        width: 19.53125vw;
+        height: 6.8359375vw;
         background-color: #06C9EF;
         z-index: 1;
     }
 
     #backButton {
         position: absolute;
-        top: 10px;
-        left: 10px;
+        top: 0.390625vw;
+        left:  0.2604166666666667vw;
         margin-bottom: 10px;
+        width: 1.953125vw;
         cursor: pointer;
         border: none;
-        border-radius: 5px;
-        background-color: #545454;
+        border-radius: 0.3255208333333333vw;
         color: white;
-        padding: 5px 10px;
+        padding: 0.3255208333333333vw 0.6510416666666666vw;
         text-align: center;
         z-index: 100;
+        transition: transform 0.2s; /* Add a transition for the transform property */
     }
     
-    #backButton:hover {
-        background-color: #000000;
+    #backButton:active {
+        transform: scale(0.5); /* Scale down the button when clicked */
     }
+
     #logout-button {
         position: absolute;
-        bottom: 100px; /* Adjust the top position as needed */
-        left: 100px;
+        bottom: 6.510416666666667vw; /* Adjust the top position as needed */
+        left: 6.510416666666667vw;
         font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
-        font-size: 20px;
+        font-size: 1.3020833333333333vw;
         font-weight: bold;
         background-color: #06C9EF;
         color: #FFFFFF;
-        padding: 10px 20px;
-        border: 3px solid #FFFFFF;
-        border-radius: 30px;
+        padding: 0.6510416666666666vw 1.3020833333333333vw;
+        border: 0.1953125vw solid #FFFFFF;
+        border-radius: 1.953125vw;
         cursor: pointer;
         transition: background-color 0.3s, color 0.3s;
         z-index: 100;
+        transition: transform 0.2s; /* Add a transition for the transform property */
     }
     
-    #logout-button:hover {
-        background-color: #FFFFFF;
-        color: #06C9EF;
+    #logout-button:active {
+        transform: scale(0.5); /* Scale down the button when clicked */
     }
-
     .title {
         position: absolute;
-        top: 5%;
-        left: 504px;
+        top: 2.4088541666666665vw;
+        left: 32.747395833333336vw;
         font-family: 'Fira Sans', sans-serif;
-        font-size: 50px;
+        font-size: 3.2552083333333335vw;
         font-weight: bold;
         text-align: center;
         color: #FDF6EA;
@@ -115,7 +122,7 @@
         left: 50%;
         transform: translateX(-50%);
         font-family: 'Fira Sans', sans-serif;
-        font-size: 50px;
+        font-size: 3.2552083333333335vw;
         font-weight: bold;
         text-align: center;
         color: #FDF6EA;
@@ -123,11 +130,11 @@
     .barrier
     {
         position: absolute;
-        top: 5%;
-        left: 800px;
+        top: 2.4088541666666665vw;
+        left: 52.083333333333336vw;
         transform: translateX(-50%);
         font-family: 'Fira Sans', sans-serif;
-        font-size: 50px;
+        font-size: 3.2552083333333335vw;
         font-weight: bold;
         text-align: center;
         color: #FAED23;
@@ -137,10 +144,10 @@
     .district
     {
         position: absolute;
-        top: 5%;
-        left: 820px;
+        top: 2.4088541666666665vw;
+        left: 53.385416666666664vw;
         font-family: 'Fira Sans', sans-serif;
-        font-size: 50px;
+        font-size: 3.2552083333333335vw;
         font-weight: bold;
         text-align: center;
         color: #06C9EF;
@@ -156,8 +163,8 @@
 
     .square {
         position: absolute;
-        top: 46%;
-        left: 25%;
+        top: 21.809895833333332vw;
+        left: 25.065104166666668vw;
         transform: translate(-50%, -50%);
         text-align: center;
   
@@ -165,8 +172,8 @@
         border: 1px solid #1db4ff;
         border-radius: 10px;
   
-        width: 500px; 
-        height: 250px;
+        width: 32.552083333333336vw; 
+        height: 16.276041666666668vw;
         background: #ffffff;
       }
 
@@ -174,28 +181,26 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
+        font-size: 1.4322916666666667vw;
         text-align: left;
         font-family: 'DM Serif Display', serif;
-        font-weight: bold;
         display: flex;
         color: #15375D;
       }
       .header img {
-        width: 200px; /* Adjust the width as needed */
+        width: 13.020833333333334vw; /* Adjust the width as needed */
         height: auto;
-        margin-right: 10px; /* Add some spacing between the text and the image */
-        margin-top: 10px;
+        margin-right:  0.6510416666666666vw; /* Add some spacing between the text and the image */
+        margin-top:  0.6510416666666666vw;
         margin-left: 0px;
     }
     .select{
         position: absolute;
-        bottom: 22%;
-        left: 10%;
-        font-family: 'TT Commons Pro', sans-serif;
-        font-size: 24px;
-        align-items: center;
+        top:  9.114583333333334vw;
+        left: 4.231770833333333vw;
         text-align: center;
+        font-family: 'TT Commons Pro', sans-serif;
+        font-size: 1.5625vw;
         z-index: 2;
         color: #15375D;
     }
@@ -204,14 +209,11 @@
         position: absolute;
         background: none;
         border: none;
-        top: 255px; /* Adjust the top position as needed */
-        left: 735px; /* Adjust the left position as needed */
-        padding: -200px;
-        border: 3px solid transparent; /* Transparent border for outline effect */
+        top: 16.6015625vw; /* Adjust the top position as needed */
+        left: 47.8515625vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
@@ -222,7 +224,7 @@
     }
     
     .district2SL-button img {
-        width: 110px;
+        width: 7.161458333333333vw;
     }
     
     .district2SL-button.clicked {
@@ -234,30 +236,30 @@
     .exploreSL {
         display: none; /* Hide the container by default */
         position: absolute;
-        top: 335px;
-        left: 385px;
+        top: 21.809895833333332vw;
+        left: 25.065104166666668vw;
         transform: translate(-50%, -50%);
         text-align: center;
-    
+  
         color: #010355;
         border: 1px solid #1db4ff;
         border-radius: 10px;
-    
-        width: 500px; 
-        height: 250px;
+  
+        width: 32.552083333333336vw; 
+        height: 16.276041666666668vw;
         background: #ffffff;
     }
     
     .exploreSL-button {
         position: absolute;
-        top: 160px; /* Adjust the top position as needed */
-        left: 154px; /* Adjust the left position as needed */
+        top: 10.416666666666666vw; /* Adjust the top position as needed */
+        left: 10.026041666666666vw; /* Adjust the left position as needed */
         font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
-        font-size: 30px;
+        font-size: 1.953125vw;
         font-weight: bold;
         background-color: #FFFFFF;
         color: #06C9EF;
-        padding: 10px 20px;
+        padding: 0.6510416666666666vw 1.3020833333333333vw;
         border: 3px solid #0097B2;
         border-radius: 30px;
         cursor: pointer;
@@ -273,14 +275,11 @@
         position: absolute;
         background: none;
         border: none;
-        top: 281px; /* Adjust the top position as needed */
-        left: 748px; /* Adjust the left position as needed */
-        padding: -200px;
-        border: 3px solid transparent; /* Transparent border for outline effect */
+        top: 18.294270833333332vw; /* Adjust the top position as needed */
+        left: 48.697916666666664vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
@@ -290,7 +289,7 @@
     }
     
     .district2B-button img {
-        width: 128px;
+        width: 8.333333333333334vw;
     }
     
     .district2B-button.clicked {
@@ -302,30 +301,30 @@
     .exploreB {
         display: none; /* Hide the container by default */
         position: absolute;
-        top: 335px;
-        left: 385px;
+        top: 21.809895833333332vw;
+        left: 25.065104166666668vw;
         transform: translate(-50%, -50%);
         text-align: center;
-    
+  
         color: #010355;
         border: 1px solid #1db4ff;
         border-radius: 10px;
-    
-        width: 500px; 
-        height: 250px;
+  
+        width: 32.552083333333336vw; 
+        height: 16.276041666666668vw;
         background: #ffffff;
     }
     
     .exploreB-button {
         position: absolute;
-        top: 160px; /* Adjust the top position as needed */
-        left: 154px; /* Adjust the left position as needed */
+        top: 10.416666666666666vw; /* Adjust the top position as needed */
+        left: 10.026041666666666vw; /* Adjust the left position as needed */
         font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
-        font-size: 30px;
+        font-size: 1.953125vw;
         font-weight: bold;
         background-color: #FFFFFF;
         color: #06C9EF;
-        padding: 10px 20px;
+        padding: 0.6510416666666666vw 1.3020833333333333vw;
         border: 3px solid #0097B2;
         border-radius: 30px;
         cursor: pointer;
@@ -341,14 +340,11 @@
         position: absolute;
         background: none;
         border: none;
-        top: 264px; /* Adjust the top position as needed */
-        left: 860px; /* Adjust the left position as needed */
-        padding: -200px;
-        border: 3px solid transparent; /* Transparent border for outline effect */
+        top: 17.1875vw; /* Adjust the top position as needed */
+        left: 55.989583333333336vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
@@ -358,7 +354,7 @@
     }
     
     .district2SP-button img {
-        width: 73px;
+        width: 4.752604166666667vw;
     }
     
     .district2SP-button.clicked {
@@ -370,30 +366,30 @@
     .exploreSP {
         display: none; /* Hide the container by default */
         position: absolute;
-        top: 335px;
-        left: 385px;
+        top: 21.809895833333332vw;
+        left: 25.065104166666668vw;
         transform: translate(-50%, -50%);
         text-align: center;
-    
+  
         color: #010355;
         border: 1px solid #1db4ff;
         border-radius: 10px;
-    
-        width: 500px; 
-        height: 250px;
+  
+        width: 32.552083333333336vw; 
+        height: 16.276041666666668vw;
         background: #ffffff;
     }
     
     .exploreSP-button {
         position: absolute;
-        top: 160px; /* Adjust the top position as needed */
-        left: 154px; /* Adjust the left position as needed */
+        top: 10.416666666666666vw; /* Adjust the top position as needed */
+        left: 10.026041666666666vw; /* Adjust the left position as needed */
         font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
-        font-size: 30px;
+        font-size: 1.953125vw;
         font-weight: bold;
         background-color: #FFFFFF;
         color: #06C9EF;
-        padding: 10px 20px;
+        padding: 0.6510416666666666vw 1.3020833333333333vw;
         border: 3px solid #0097B2;
         border-radius: 30px;
         cursor: pointer;
@@ -409,14 +405,11 @@
         position: absolute;
         background: none;
         border: none;
-        top: 376px; /* Adjust the top position as needed */
-        left: 700px; /* Adjust the left position as needed */
-        padding: -200px;
-        border: 3px solid transparent; /* Transparent border for outline effect */
+        top: 24.479166666666668vw; /* Adjust the top position as needed */
+        left: 45.572916666666664vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
@@ -426,7 +419,7 @@
     }
     
     .district2M-button img {
-        width: 106px;
+        width: 6.901041666666667vw;
     }
     
     .district2M-button.clicked {
@@ -438,30 +431,30 @@
     .exploreM {
         display: none; /* Hide the container by default */
         position: absolute;
-        top: 335px;
-        left: 385px;
+        top: 21.809895833333332vw;
+        left: 25.065104166666668vw;
         transform: translate(-50%, -50%);
         text-align: center;
-    
+  
         color: #010355;
         border: 1px solid #1db4ff;
         border-radius: 10px;
-    
-        width: 500px; 
-        height: 250px;
+  
+        width: 32.552083333333336vw; 
+        height: 16.276041666666668vw;
         background: #ffffff;
     }
     
     .exploreM-button {
         position: absolute;
-        top: 160px; /* Adjust the top position as needed */
-        left: 154px; /* Adjust the left position as needed */
+        top: 10.416666666666666vw; /* Adjust the top position as needed */
+        left: 10.026041666666666vw; /* Adjust the left position as needed */
         font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
-        font-size: 30px;
+        font-size: 1.953125vw;
         font-weight: bold;
         background-color: #FFFFFF;
         color: #06C9EF;
-        padding: 10px 20px;
+        padding: 0.6510416666666666vw 1.3020833333333333vw;
         border: 3px solid #0097B2;
         border-radius: 30px;
         cursor: pointer;
@@ -477,14 +470,11 @@
         position: absolute;
         background: none;
         border: none;
-        top: 464px; /* Adjust the top position as needed */
-        left: 642px; /* Adjust the left position as needed */
-        padding: -200px;
-        border: 3px solid transparent; /* Transparent border for outline effect */
+        top: 30.208333333333332vw; /* Adjust the top position as needed */
+        left: 41.796875vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
@@ -494,7 +484,7 @@
     }
     
     .district2T-button img {
-        width: 146px;
+        width: 9.505208333333334vw;
     }
     
     .district2T-button.clicked {
@@ -506,30 +496,30 @@
     .exploreT {
         display: none; /* Hide the container by default */
         position: absolute;
-        top: 335px;
-        left: 385px;
+        top: 21.809895833333332vw;
+        left: 25.065104166666668vw;
         transform: translate(-50%, -50%);
         text-align: center;
-    
+  
         color: #010355;
         border: 1px solid #1db4ff;
         border-radius: 10px;
-    
-        width: 500px; 
-        height: 250px;
+  
+        width: 32.552083333333336vw; 
+        height: 16.276041666666668vw;
         background: #ffffff;
     }
     
     .exploreT-button {
         position: absolute;
-        top: 160px; /* Adjust the top position as needed */
-        left: 154px; /* Adjust the left position as needed */
+        top: 10.416666666666666vw; /* Adjust the top position as needed */
+        left: 10.026041666666666vw; /* Adjust the left position as needed */
         font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
-        font-size: 30px;
+        font-size: 1.953125vw;
         font-weight: bold;
         background-color: #FFFFFF;
         color: #06C9EF;
-        padding: 10px 20px;
+        padding: 0.6510416666666666vw 1.3020833333333333vw;
         border: 3px solid #0097B2;
         border-radius: 30px;
         cursor: pointer;
@@ -545,14 +535,11 @@
         position: absolute;
         background: none;
         border: none;
-        top: 424px; /* Adjust the top position as needed */
-        left: 1058px; /* Adjust the left position as needed */
-        padding: -200px;
-        border: 3px solid transparent; /* Transparent border for outline effect */
+        top: 27.604166666666668vw; /* Adjust the top position as needed */
+        left: 68.88020833333333vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
@@ -562,7 +549,7 @@
     }
     
     .district2L-button img {
-        width: 240px;
+        width: 15.625vw;
     }
     
     .district2L-button.clicked {
@@ -574,30 +561,30 @@
     .exploreL {
         display: none; /* Hide the container by default */
         position: absolute;
-        top: 335px;
-        left: 385px;
+        top: 21.809895833333332vw;
+        left: 25.065104166666668vw;
         transform: translate(-50%, -50%);
         text-align: center;
-    
+  
         color: #010355;
         border: 1px solid #1db4ff;
         border-radius: 10px;
-    
-        width: 500px; 
-        height: 250px;
+  
+        width: 32.552083333333336vw; 
+        height: 16.276041666666668vw;
         background: #ffffff;
     }
     
     .exploreL-button {
         position: absolute;
-        top: 160px; /* Adjust the top position as needed */
-        left: 154px; /* Adjust the left position as needed */
+        top: 10.416666666666666vw; /* Adjust the top position as needed */
+        left: 10.026041666666666vw; /* Adjust the left position as needed */
         font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
-        font-size: 30px;
+        font-size: 1.953125vw;
         font-weight: bold;
         background-color: #FFFFFF;
         color: #06C9EF;
-        padding: 10px 20px;
+        padding: 0.6510416666666666vw 1.3020833333333333vw;
         border: 3px solid #0097B2;
         border-radius: 30px;
         cursor: pointer;
@@ -620,16 +607,15 @@
         <div id="rightPanel">
             <button id="backButton">Back</button>
             <div id="usertopPanel"></div>
-            <button id="logout-button" onclick="window.location.href='{% url 'kiosk_logout' %}'">Logout</button>
-            <!-- Add other content for the right panel here -->
+            <form method="post" action="{% url 'kiosk_logout' kiosk_id=kiosk_id %}">
+                {% csrf_token %}
+                <button id="logout-button" type="submit">Logout</button>
+            </form>
         </div>
         <div class="top-panel"></div>
         <div class="title">BATANGAS</div>
-        <div class="test">BATANGAS | District II</div>
         <div class="barrier">|</div>
         <div class="district">District II</div>
-        <img class="district2" src="{% static 'district 2-1.png' %}" alt="district2">
-
         <!-- MUNICIPALITIES -->
         <button class="district2SL-button" onclick="toggleButton(this)">
             <img src="{% static 'D2-SL.png' %}" alt="District 2-SL">
@@ -653,7 +639,7 @@
          <div class="square">
             <div class="header">
                 <span class="select">Select a part of Batangas Province <br> District 2 to start</span>
-                <img src="{% static 'logo.png' %}" alt="header" style="width: 50%; max-width: 100px;">
+                <img src="{% static 'logo.png' %}" alt="header" style="width: 6.510416666666667vw;">
                 <h2>Welcome to <br> Parine sa Batangas!</h2>    
                     <p></p>
                 </div>
@@ -661,33 +647,33 @@
         </div>
              <!-- EXPLORE -->
      <div class="exploreSL" id="exploreSL" style="display: none;">
-        <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
-        <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> SAN LUIS!</p>
+        <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> SAN LUIS!</p>
         <button class="exploreSL-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
     </div>
     <div class="exploreB" id="exploreB" style="display: none;">
-        <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
-        <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> BAUAN!</p>
+        <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> BAUAN!</p>
         <button class="exploreB-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
     </div>
     <div class="exploreSP" id="exploreSP" style="display: none;">
-        <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
-        <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> SAN PASCUAL!</p>
+        <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> SAN PASCUAL!</p>
         <button class="exploreSP-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
     </div>
     <div class="exploreM" id="exploreM" style="display: none;">
-        <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
-        <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> MABINI!</p>
+        <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> MABINI!</p>
         <button class="exploreM-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
     </div>
     <div class="exploreT" id="exploreT" style="display: none;">
-        <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
-        <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> TINGLOY!</p>
+        <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> TINGLOY!</p>
         <button class="exploreT-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
     </div>
     <div class="exploreL" id="exploreL" style="display: none;">
-        <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 120px; height: auto; display: inline-block; vertical-align: middle;">
-        <p style="font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> LOBO!</p>
+        <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> LAUREL!</p>
         <button class="exploreL-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
     </div>
 
@@ -722,7 +708,7 @@
             }
         }
         function hideAdditionalContainers() {
-            document.querySelectorAll('.exploreSL, .exploreB, .exploreSP, .exploreM, .exploreT, .exploreL').forEach(container => {
+            document.querySelectorAll('.square, .exploreSL, .exploreB, .exploreSP, .exploreM, .exploreT, .exploreL').forEach(container => {
                 if (container.previousElementSibling !== activeButton) {
                     container.style.display = 'none';
                 }

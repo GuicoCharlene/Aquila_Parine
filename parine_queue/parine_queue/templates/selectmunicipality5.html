@@ -13,128 +13,148 @@
         background-color: #15375D;
         overflow: hidden;
     }
+    .top-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6.8359375vw;
+        background-color: #15375D; /* Same as the background color */
+        z-index: 1; /* Ensure it's behind other elements */
+    }
     #imageButtonContainer {
         position: fixed;
-        top: 20px; /* Adjust top distance as needed */
-        right: 30px; /* Adjust right distance as needed */
+        top: 1.3020833333333333vw; /* Adjust top distance as needed */
+        right: 1.953125vw; /* Adjust right distance as needed */
         z-index: 1000; /* Ensure it's above other content */
       }
       
       #imageButton {
-        width: 70px; /* Set width of the image button */
+        width: 4.557291666666667vw; /* Set width of the image button */
         height: auto; /* Set height of the image button */
         cursor: pointer; /* Show pointer cursor on hover */
-        /* Add any additional styling for the button */
-      }
+        transition: transform 0.2s; /* Add a transition for the transform property */
+    }
+    
+    #imageButton:active {
+        transform: scale(0.5); /* Scale down the button when clicked */
+    }
       #rightPanel {
         display: none;
         position: fixed;
         top: 0;
         right: 0;
-        width: 300px;
+        width:  19.53125vw;
         height: 100vh;
         background-color: #f4f4f4;
         z-index: 999;
         padding: 20px;
         box-sizing: border-box;
+        border-top-left-radius: 15px; /* Radius for top-left corner */
+        border-bottom-left-radius: 15px;
     }
     #usertopPanel {
         position: absolute;
         top: 0;
         right: 0;
-        width: 300px;
-        height: 105px;
+        width: 19.53125vw;
+        height: 6.8359375vw;
         background-color: #06C9EF;
         z-index: 1;
     }
 
     #backButton {
         position: absolute;
-        top: 10px;
-        left: 10px;
+        top: 0.390625vw;
+        left:  0.2604166666666667vw;
         margin-bottom: 10px;
+        width: 1.953125vw;
         cursor: pointer;
         border: none;
-        border-radius: 5px;
-        background-color: #545454;
+        border-radius: 0.3255208333333333vw;
         color: white;
-        padding: 5px 10px;
+        padding: 0.3255208333333333vw 0.6510416666666666vw;
         text-align: center;
         z-index: 100;
+        transition: transform 0.2s; /* Add a transition for the transform property */
     }
     
-    #backButton:hover {
-        background-color: #000000;
+    #backButton:active {
+        transform: scale(0.5); /* Scale down the button when clicked */
     }
+
     #logout-button {
         position: absolute;
-        bottom: 100px; /* Adjust the top position as needed */
-        left: 100px;
+        bottom: 6.510416666666667vw; /* Adjust the top position as needed */
+        left: 6.510416666666667vw;
         font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
-        font-size: 20px;
+        font-size: 1.3020833333333333vw;
         font-weight: bold;
         background-color: #06C9EF;
         color: #FFFFFF;
-        padding: 10px 20px;
-        border: 3px solid #FFFFFF;
-        border-radius: 30px;
+        padding: 0.6510416666666666vw 1.3020833333333333vw;
+        border: 0.1953125vw solid #FFFFFF;
+        border-radius: 1.953125vw;
         cursor: pointer;
         transition: background-color 0.3s, color 0.3s;
         z-index: 100;
+        transition: transform 0.2s; /* Add a transition for the transform property */
     }
     
-    #logout-button:hover {
-        background-color: #FFFFFF;
-        color: #06C9EF;
+    #logout-button:active {
+        transform: scale(0.5); /* Scale down the button when clicked */
     }
 
     .title {
         position: absolute;
-        top: 5%;
-        left: 500px;
+        top: 2.4088541666666665vw;
+        left: 32.552083333333336vw;
         font-family: 'Fira Sans', sans-serif;
-        font-size: 50px;
+        font-size: 3.2552083333333335vw;
         font-weight: bold;
         text-align: center;
         color: #FDF6EA;
+        z-index: 2;
     }
 
     .barrier
     {
         position: absolute;
-        top: 5%;
-        left: 796px;
+        top: 2.4088541666666665vw;
+        left: 51.822916666666664vw;
         transform: translateX(-50%);
         font-family: 'Fira Sans', sans-serif;
-        font-size: 50px;
+        font-size: 3.2552083333333335vw;
         font-weight: bold;
         text-align: center;
         color: #FAED23;
+        z-index: 2;
     }
     
     .district
     {
         position: absolute;
-        top: 5%;
-        left: 816.5px;
+        top: 2.4088541666666665vw;
+        left: 53.157552083333336vw;
         font-family: 'Fira Sans', sans-serif;
-        font-size: 50px;
+        font-size: 3.2552083333333335vw;
         font-weight: bold;
         text-align: center;
         color: #06C9EF;
+        z-index: 2;
     }
     
 
     .district5 {
         position: absolute;
-        left: 10%;
-        bottom: -8%;
-        width: 1100px;
+        left: 5.208333333333333vw;
+        top: -16.927083333333332vw;
+        width: 84.63541666666667vw;
     }
     .square {
         position: absolute;
-        top: 46%;
-        left: 25%;
+        top: 21.809895833333332vw;
+        left: 25.065104166666668vw;
         transform: translate(-50%, -50%);
         text-align: center;
   
@@ -142,8 +162,8 @@
         border: 1px solid #1db4ff;
         border-radius: 10px;
   
-        width: 500px; 
-        height: 250px;
+        width: 32.552083333333336vw; 
+        height: 16.276041666666668vw;
         background: #ffffff;
       }
 
@@ -151,7 +171,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 23px;
+        font-size:  1.4973958333333333vw;
         text-align: left;
         font-family: 'DM Serif Display', serif;
         font-weight: bold;
@@ -159,9 +179,9 @@
         color: #15375D;
       }
       .header img {
-        width: 200px; /* Adjust the width as needed */
+        width: 13.020833333333334vw; /* Adjust the width as needed */
         height: auto;
-        margin-right: 10px; /* Add some spacing between the text and the image */
+        margin-right: 0.6510416666666666vw; /* Add some spacing between the text and the image */
         margin-top: 0px;
         margin-left: 0px;
     }
@@ -169,10 +189,10 @@
     
     .district5-button {
         position: absolute;
-        top: 413px; /* Adjust the top position as needed */
-        left: 725px; /* Adjust the left position as needed */
-        padding: -200px;
-        border: 3px solid transparent; /* Transparent border for outline effect */
+        top: 17.96875vw; /* Adjust the top position as needed */
+        left: 49.088541666666664vw; /* Adjust the left position as needed */
+        padding: -13.020833333333334vw;
+        border: 0.1953125vw solid transparent; /* Transparent border for outline effect */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
@@ -187,22 +207,22 @@
     }
     
     .district5-button img {
-        width: 148px;
+        width: 11.263020833333334vw;
 
     }
 
     .explore-button {
         position: absolute;
-        top: 360px; /* Adjust the top position as needed */
-        left: 280px; /* Adjust the left position as needed */
+        top:  23.4375vw; /* Adjust the top position as needed */
+        left: 18.229166666666668vw; /* Adjust the left position as needed */
         font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
-        font-size: 30px;
+        font-size: 1.953125vw;
         font-weight: bold;
         background-color: #FFFFFF;
         color: #06C9EF;
-        padding: 10px 20px;
-        border: 3px solid #0097B2;
-        border-radius: 30px;
+        padding: 0.6510416666666666vw 1.3020833333333333vw;
+        border: 0.1953125vw solid #0097B2;
+        border-radius: 1.953125vw;
         cursor: pointer;
         transition: background-color 0.3s, color 0.3s;
         z-index: 2;
@@ -219,16 +239,18 @@
     </div>
     {% load static %}
     <div class="container">
-        <div class="container">
-            <div id="imageButtonContainer">
-                <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
-            </div>
-            <div id="rightPanel">
-                <button id="backButton">Back</button>
-                <div id="usertopPanel"></div>
-                <button id="logout-button" onclick="window.location.href='{% url 'kiosk_logout' %}'">Logout</button>
-                <!-- Add other content for the right panel here -->
-            </div>
+        <div id="imageButtonContainer">
+            <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
+        </div>
+        <div id="rightPanel">
+            <button id="backButton">Back</button>
+            <div id="usertopPanel"></div>
+            <form method="post" action="{% url 'kiosk_logout' kiosk_id=kiosk_id %}">
+                {% csrf_token %}
+                <button id="logout-button" type="submit">Logout</button>
+            </form>
+        </div>
+        <div class="top-panel"></div>
         <span class="title">BATANGAS</span>
         <span class="barrier">|</span>
         <span class="district">District V</span>
@@ -241,7 +263,7 @@
         <div class="square">
             
         <div class="header">
-            <img src="{% static 'logo.png' %}" alt="header" style="width: 50%; max-width: 100px;">
+            <img src="{% static 'logo.png' %}" alt="header" style="width: 6.510416666666667vw;">
             <h2>Welcome to <br> BATANGAS CITY!</h2>
     </div>
     <script>

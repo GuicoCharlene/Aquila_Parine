@@ -1,34 +1,27 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from .models import QueueVisitor, QueueEntry, Kiosk, Admin, Queue_Capacity, DistrictModules
+from .models import QueueVisitor, QueueEntry, Kiosk, Admin, Queue_Capacity, DistrictModules, TriviaQuestion, RewardPoints
+import random
 from django.utils import timezone
 from datetime import timedelta
 from django.http import HttpResponseRedirect, JsonResponse
 from .models import QueueEntry, Kiosk
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from .utils import ensure_kiosk_count
 from django.core.exceptions import ObjectDoesNotExist
 import logging
 from django.db import transaction
 from django.urls import reverse
 from django.db.models import F
 
-
 logger = logging.getLogger(__name__)
 
-
-# Define a view that triggers the function
-def trigger_kiosk_count(request):
-    ensure_kiosk_count()  # Call the function here
-    return HttpResponse("Kiosk count ensured successfully!")
-
 # View for the landing page
-def landing(request):
-    return render(request, 'landing.html')
-
-# View for the homepage that handles login
 def homepage(request):
+    return render(request, 'homepage.html')
+
+# View for that handles login
+def login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -43,7 +36,7 @@ def homepage(request):
                 return redirect('adminpage')  # Redirect to the admin page URL
             except Admin.DoesNotExist:
                 messages.error(request, 'Invalid admin credentials')
-                return redirect('homepage')  # Redirect back to the homepage for another login attempt
+                return redirect('login')
         else:
             # Visitor login logic
             try:
@@ -71,26 +64,25 @@ def homepage(request):
                     return redirect('queue')
                 else:
                     messages.error(request, 'Queue is at full capacity. Please try again later.')
-                    return redirect('homepage')
+                    return redirect('login')
                 
             except QueueVisitor.DoesNotExist:
                 messages.error(request, 'Invalid username or password')
-                return redirect('homepage')
+                return redirect('login')
     else:
         # If it's not a POST request, just show the login form
-        return render(request, 'homepage.html')
+        return render(request, 'login.html')
 
 # View for displaying the queue page
 def queue(request):
     return render(request, 'queue.html')
 
-#Views for the queuelist and kiosk
 def queue_list(request):
     is_admin = request.session.get('is_admin', False)
     
     # Update kiosk status and delete associated queue entries for timed-out sessions
     for kiosk in Kiosk.objects.filter(KioskStatus=True):
-        if kiosk.TimeDuration and (timezone.now() - kiosk.TimeDuration > timedelta(minutes=1)):
+        if kiosk.TimeDuration and (timezone.now() - kiosk.TimeDuration > timedelta(minutes=5900)):
             if kiosk.QueueID:
                 # Remove the user from the queue entry
                 kiosk.QueueID.delete()
@@ -119,6 +111,14 @@ def queue_list(request):
             queue_entry.save(update_fields=['QueueStatus', 'EndTime'])
             # Decrement the queue count by 1
 
+    # Check if the current user is assigned to a kiosk
+    logged_in_username = request.session.get('logged_in_username')
+    if logged_in_username:
+        assigned_kiosk = Kiosk.objects.filter(QueueID__user__username=logged_in_username).first()
+        if assigned_kiosk:
+            # If user is assigned to a kiosk, redirect to kiosk login page
+            return redirect('kiosk_login', kiosk_id=assigned_kiosk.KioskID)
+
     # Prepare data for displaying in the template
     kiosks_data = []
     for kiosk in Kiosk.objects.all():
@@ -142,7 +142,7 @@ def queue_list(request):
         'queue_entries': QueueEntry.objects.exclude(QueueStatus='IN KIOSK').select_related('user').order_by('PriorityLevel'),
         'kiosks_data': kiosks_data,
         'is_admin': is_admin,
-        'logged_in_username': request.session.get('logged_in_username', None),
+        'logged_in_username': logged_in_username,
     }
 
     return render(request, 'queue_list.html', context)
@@ -189,6 +189,7 @@ def update_queue_capacity(request):
     return JsonResponse({'success': False, 'message': 'Invalid request method or missing queue_capacity value'})
 
 # Views for the select district
+
 def selectdistrict(request, kiosk_id):
     logged_in_username = None
     
@@ -209,13 +210,13 @@ def selectdistrict(request, kiosk_id):
         return redirect('kiosk_logout')  
 
     # Ensure that the kiosk data is refreshed
-    ensure_kiosk_count()
+ 
     
-        # # Remove QueueID for users who entered the queue more than 5 minutes ago
-    five_minutes_ago = timezone.now() - timezone.timedelta(minutes=5)
-    QueueEntry.objects.filter(kiosk=kiosk_id, StartTime__lt=five_minutes_ago).delete()
-    
-    return render(request, 'selectdistrict.html')
+   
+    context = {
+        'kiosk_id': kiosk_id,
+    }
+    return render(request, 'selectdistrict.html',context)
 
 #THIS IS THE VIEW TO GET THE NEEDED DATA
 def get_queue_data(request):
@@ -245,29 +246,14 @@ def get_queue_data(request):
         logger.error(f"Error fetching kiosk data: {e}", exc_info=True)
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
 
-# Views for user login at the kiosk
 def kiosk_login(request, kiosk_id):
     try:
         # Assuming kioskID is the relevant kiosk
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
         kiosk_username = kiosk.QueueID.user.username if kiosk.QueueID else None
         
-        if kiosk.QueueID:  # Ensure there is a user assigned to the kiosk
-            # Update the district module database with kiosk credentials
-            DistrictModules(kiosk_id, kiosk_username)
-            
-            # Save the kiosk ID to the district module database
-            kiosk_data = {'kiosk_id': kiosk_id}  # Data to be sent to the district module database
-            # Call a function or method to store kiosk data in the district module database
-            # For example, DistrictModules.store_kiosk_data(kiosk_data)
-            
-            # Update the TimeDuration to current time
-            kiosk.TimeDuration = timezone.now()
-            kiosk.save()
-            
-            # No need to check for time elapsed or delete the queue entry here
-        else:
-            # If no QueueID is associated, assign the user to this kiosk
+        if not kiosk.QueueID:  # Ensure there is no user assigned to the kiosk
+            # Check if a user is logged in
             logged_in_username = request.session.get('logged_in_username')
             if logged_in_username:
                 # Retrieve the user's queue entry
@@ -285,7 +271,7 @@ def kiosk_login(request, kiosk_id):
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk.")
 
-    # Proceed with login if within time limit and QueueID exists
+    # Proceed with login if no user is assigned to the kiosk
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
@@ -295,42 +281,25 @@ def kiosk_login(request, kiosk_id):
 
 #Views for logout in kiosk
 @transaction.atomic
-def kiosk_logout(request):
-    if request.method == 'POST':
-        # Get the username of the logged-in user
-        logged_in_username = request.session.get('logged_in_username')
-        if logged_in_username:
-            try:
-                # Retrieve the user's queue entry
-                queue_entry = QueueEntry.objects.get(user__username=logged_in_username)
-                
-                # Retrieve the associated kiosk using the foreign key relationship
-                kiosk = get_object_or_404(Kiosk, QueueID=queue_entry)
-                
-                # Update the end time of the queue entry and save it
-                queue_entry.EndTime = timezone.now()
-                queue_entry.save()
-                
-                # Remove the logged-in username from the session
-                del request.session['logged_in_username']
-                
-                # If user logs out, delete the associated queue entry from the Kiosk database
-                kiosk.QueueID = None
-                kiosk.KioskStatus = False
-                kiosk.TimeDuration = None
-                kiosk.save()
-                
-                # Delete the kiosk data from the district module database
-                
-            except QueueEntry.DoesNotExist:
-                # Handle the case where no queue entry is found for the logged-in user
-                pass
-            except Kiosk.DoesNotExist:
-                # Handle the case where no corresponding kiosk is found
-                pass
-    # Render the logout page template if the request is not a POST request
-    return render(request, 'kiosk_logout.html')
+def kiosk_logout(request, kiosk_id):
+    # Get the kiosk object from the database
+    kiosk = get_object_or_404(Kiosk, KioskID=kiosk_id)
 
+    # Check if the kiosk has an associated queue entry
+    if kiosk.QueueID:
+        # Get the associated queue entry
+        queue_entry = kiosk.QueueID
+        # Remove the associated queue entry
+        queue_entry.delete()
+
+    # Reset kiosk status and associated queue ID
+    kiosk.KioskStatus = False
+    kiosk.QueueID = None
+    kiosk.TimeDuration = None
+    kiosk.save()
+
+    # Redirect or render as needed
+    return render(request, 'kiosk_logout.html', {'kiosk_id': kiosk_id})
 
 def admin_district_1(request):
    
@@ -356,36 +325,190 @@ def admin_district_6(request):
    
     return render(request, 'admin_district_6.html')
 
-def selectmunicipality1(request):
-    return render(request, 'selectmunicipality1.html')
 
-def selectmunicipality2(request):
-    return render(request, 'selectmunicipality2.html')
+def no_user(request):
+     return render(request, 'no_user.html')
 
-def selectmunicipality3(request):
-    return render(request, 'selectmunicipality3.html')
+def selectmunicipality1(request, kiosk_id):
+   
+    return render(request, 'selectmunicipality1.html',{'kiosk_id': kiosk_id})
 
-def selectmunicipality4(request):
-    return render(request, 'selectmunicipality4.html')
+def selectmunicipality2(request, kiosk_id):
+    return render(request, 'selectmunicipality2.html',{'kiosk_id': kiosk_id})
 
-def selectmunicipality5(request):
-    return render(request, 'selectmunicipality5.html')
+def selectmunicipality3(request, kiosk_id):
+    return render(request, 'selectmunicipality3.html',{'kiosk_id': kiosk_id})
 
-def selectmunicipality6(request):
-    return render(request, 'selectmunicipality6.html')
+def selectmunicipality4(request, kiosk_id):
+    return render(request, 'selectmunicipality4.html',{'kiosk_id': kiosk_id})
 
-def module_tourist(request):
-    modules = DistrictModules.objects.filter(DistrictModuleID__startswith='t') # DistrictModules for the tourist attractions from the database
+def selectmunicipality5(request, kiosk_id):
+    return render(request, 'selectmunicipality5.html',{'kiosk_id': kiosk_id})
+
+def selectmunicipality6(request, kiosk_id):
+    return render(request, 'selectmunicipality6.html',{'kiosk_id': kiosk_id})
+
+def module_tourist(request, municipality):
+    # Mapping of suffixes to municipalities
+    suffix_to_municipalities = {
+        'D1': ['NASUGBO', 'LIAN', 'TUY', 'BALAYAN', 'CALACA', 'CALATAGAN', 'LEMERY', 'TAAL'],
+        'D2': ['SAN LUIS', 'BAUAN', 'SAN PASCUAL', 'MABINI', 'TINGLOY', 'LAUREL'],
+        'D3': ['STO.TOMAS', 'AGONCILLO', 'TALISAY', 'TANAUAN', 'MALVAR', 'SAN NICOLAS', 'BALETE', 'MATAAS NA KAHOY', 'STA. TERESITA', 'CUENCA', 'ALITAGTAG', 'LAUREL'],
+        'D4': ['SAN JOSE', 'IBAAN', 'ROSARIO', 'TAYSAN', 'PADRE GARCIA', 'SAN JUAN'],
+        'D5': ['BATANGAS'],
+        'D6' : ['LIPA'],
+    }
+
+    # Determine the correct suffix for the selected municipality
+    suffix = next((s for s, m in suffix_to_municipalities.items() if municipality.upper() in m), None)
+    if suffix is None:
+        # Handle the case where the municipality is not found
+        return render(request, 'error.html', {'message': 'Municipality not found.'})
+
+    # Filter DistrictModules based on the selected municipality and its suffix
+    modules = DistrictModules.objects.filter(
+        Municipality__iexact=municipality,
+        DistrictModuleID__startswith='t',
+        DistrictModuleID__endswith=suffix
+    )
+    
     return render(request, 'module_tourist.html', {'modules': modules})
 
-def module_food(request):
-    modules = DistrictModules.objects.filter(DistrictModuleID__startswith='f')  # DistrictModules for the food from the database
-    return render(request, 'module_food.html', {'modules': modules}) 
+def module_food(request, municipality):
+    # Mapping of suffixes to municipalities
+    suffix_to_municipalities = {
+        'D1': ['NASUGBO', 'LIAN', 'TUY', 'BALAYAN', 'CALACA', 'CALATAGAN', 'LEMERY', 'TAAL'],
+        'D2': ['SAN LUIS', 'BAUAN', 'SAN PASCUAL', 'MABINI', 'TINGLOY', 'LAUREL'],
+        'D3': ['STO.TOMAS', 'AGONCILLO', 'TALISAY', 'TANAUAN', 'MALVAR', 'SAN NICOLAS', 'BALETE', 'MATAAS NA KAHOY', 'STA. TERESITA', 'CUENCA', 'ALITAGTAG', 'LAUREL'],
+        'D4': ['SAN JOSE', 'IBAAN', 'ROSARIO', 'TAYSAN', 'PADRE GARCIA', 'SAN JUAN'],
+        'D5': ['BATANGAS'],
+        'D6' : ['LIPA'],
+    }
 
-def module_craft(request):
-    modules = DistrictModules.objects.filter(DistrictModuleID__startswith='c')  # DistrictModules for the craft from the database
-    return render(request, 'module_craft.html', {'modules': modules}) 
+    # Determine the correct suffix for the selected municipality
+    suffix = next((s for s, m in suffix_to_municipalities.items() if municipality.upper() in m), None)
+    if suffix is None:
+        # Handle the case where the municipality is not found
+        return render(request, 'error.html', {'message': 'Municipality not found.'})
+
+    # Filter DistrictModules based on the selected municipality and its suffix
+    modules = DistrictModules.objects.filter(
+        Municipality__iexact=municipality,
+        DistrictModuleID__startswith='f',
+        DistrictModuleID__endswith=suffix
+    )
+    
+    return render(request, 'module_tourist.html', {'modules': modules})
+
+def module_craft(request, municipality):
+    # Mapping of suffixes to municipalities
+    suffix_to_municipalities = {
+        'D1': ['NASUGBO', 'LIAN', 'TUY', 'BALAYAN', 'CALACA', 'CALATAGAN', 'LEMERY', 'TAAL'],
+        'D2': ['SAN LUIS', 'BAUAN', 'SAN PASCUAL', 'MABINI', 'TINGLOY', 'LAUREL'],
+        'D3': ['STO.TOMAS', 'AGONCILLO', 'TALISAY', 'TANAUAN', 'MALVAR', 'SAN NICOLAS', 'BALETE', 'MATAAS NA KAHOY', 'STA. TERESITA', 'CUENCA', 'ALITAGTAG', 'LAUREL'],
+        'D4': ['SAN JOSE', 'IBAAN', 'ROSARIO', 'TAYSAN', 'PADRE GARCIA', 'SAN JUAN'],
+        'D5': ['BATANGAS'],
+        'D6' : ['LIPA'],
+    }
+
+    # Determine the correct suffix for the selected municipality
+    suffix = next((s for s, m in suffix_to_municipalities.items() if municipality.upper() in m), None)
+    if suffix is None:
+        # Handle the case where the municipality is not found
+        return render(request, 'error.html', {'message': 'Municipality not found.'})
+
+    # Filter DistrictModules based on the selected municipality and its suffix
+    modules = DistrictModules.objects.filter(
+        Municipality__iexact=municipality,
+        DistrictModuleID__startswith='c',
+        DistrictModuleID__endswith=suffix
+    )
+    
+    return render(request, 'module_tourist.html', {'modules': modules})
 
 def selectmodule(request):
-    modules = DistrictModules.objects.all()  # Retrieve all DistrictModules objects from the database
-    return render(request, 'selectmodule.html', {'modules': modules}) 
+    municipality = request.GET.get('municipality', '')
+    
+    # Optionally, determine the module type if you plan to include that in the URL or as another query parameter
+    # Redirect to the appropriate view based on the module type and municipality
+    # Example: return redirect('module_tourist', municipality=municipality)
+    
+    return render(request, 'selectmodule.html',{'municipality': municipality})
+
+def calculate_points(remaining_seconds):
+    # This is just an example, you can define your own logic
+    return remaining_seconds // 10
+
+def quiz(request):
+    if 'game_session' not in request.session:
+        # Start a new game session if one doesn't already exist
+        questions = list(TriviaQuestion.objects.all())
+        if not questions:
+            return render(request, 'quiz.html', {'question': None})
+
+        selected_question = random.choice(questions)
+        request.session['game_session'] = {
+            'question_id': selected_question.TriviaQuestionID,
+            'reward_points': 0,
+            'guesses_left': 3,
+            'start_time': timezone.now().isoformat()
+        }
+
+    game_session = request.session['game_session']
+    question_id = game_session['question_id']
+    selected_question = TriviaQuestion.objects.get(TriviaQuestionID=question_id)
+
+    remaining_time = (180 - (timezone.now() - timezone.datetime.fromisoformat(game_session['start_time'])).total_seconds())
+
+    if remaining_time <= 0:
+        return redirect('results')
+
+    if request.method == 'POST':
+        guess = request.POST.get('guess', '').strip().lower()
+        correct = guess == selected_question.QuestionAnswer.lower()
+        if correct:
+            # Calculate points based on remaining time
+            points = calculate_points(remaining_time)
+            game_session['reward_points'] += points
+            # Prepare for the next question
+            game_session['guesses_left'] = 3
+            messages.success(request, f'Correct answer! {points} points added.')
+            # Select next question
+            questions = list(TriviaQuestion.objects.exclude(TriviaQuestionID=question_id))
+            if questions:
+                next_question = random.choice(questions)
+                game_session['question_id'] = next_question.TriviaQuestionID
+            else:
+                return redirect('results')
+        else:
+            game_session['guesses_left'] -= 1
+            if game_session['guesses_left'] <= 0:
+                user_reward_points, _ = RewardPoints.objects.get_or_create(user=request.user)
+                user_reward_points.points += game_session['reward_points']
+                user_reward_points.save()
+                del request.session['game_session']
+                return redirect('results')
+        request.session.modified = True
+
+    # Update the session
+    request.session['game_session'] = game_session
+    request.session.modified = True
+
+    return render(request, 'quiz.html', {
+        'question': selected_question.QuestionContent,
+        'guesses_left': game_session['guesses_left'],
+        'remaining_time': int(remaining_time),
+        'reward_points': game_session['reward_points'],
+        'correct': correct if 'correct' in locals() else None
+    })
+    
+def results_view(request):
+
+    reward_points = request.session.get('game_session', {}).get('reward_points', 0)
+
+    if 'game_session' in request.session:
+        del request.session['game_session']
+    
+    return render(request, 'results.html', {
+        'reward_points': reward_points
+    })

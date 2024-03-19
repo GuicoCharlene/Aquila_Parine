@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   {% load static %}
   <meta charset="UTF-8">
@@ -13,18 +14,21 @@
       height: 100vh;
       overflow: hidden;
     }
+
     #video-background {
       position: absolute;
       top: 0;
       right: 0;
-      bottom:  0;
-      min-width: 30%; /* Adjusted to cover the entire width of the screen */
-      min-height: 10%; /* Adjusted to cover the entire height of the screen */
+      bottom: 0;
+      min-width: 30%;
+      /* Adjusted to cover the entire width of the screen */
+      min-height: 10%;
+      /* Adjusted to cover the entire height of the screen */
       width: auto;
       height: auto;
       z-index: -1000;
     }
-    
+
     /* Media query for smaller screens */
     @media only screen and (max-width: 768px) {
       #video-background {
@@ -32,34 +36,39 @@
         min-height: 100%;
       }
     }
+
     @keyframes heartbeat {
       0% {
         transform: scale(1);
       }
+
       50% {
         transform: scale(1.1);
       }
+
       100% {
         transform: scale(1);
       }
     }
-    
+
     .login-container {
       position: absolute;
       top: 40%;
       left: 35%;
       transform: translate(-50%, -50%);
       text-align: center;
-      font-family: YAD1aYG82rc-0;;
+      font-family: YAD1aYG82rc-0;
+      ;
       color: #010355;
       border: 1px solid #1db4ff;
       border-radius: 10px;
       width: 500px;
       height: 100px;
       background: #ffffff;
-      animation: heartbeat 1.5s infinite; /* Adjust animation duration as needed */
+      animation: heartbeat 1.5s infinite;
+      /* Adjust animation duration as needed */
     }
-    
+
     .login-form {
       background: rgb(348, 347, 347);
       padding: 20px;
@@ -72,14 +81,14 @@
       font-size: 20px;
       text-align: left;
     }
-    
+
     .header-container img {
-      margin-left: 60px; 
+      margin-left: 60px;
 
     }
-
   </style>
 </head>
+
 <body>
   <video autoplay muted loop id="video-background">
     <source src="{% static 'aquila.mp4' %}" type="video/mp4">
@@ -87,27 +96,32 @@
   </video>
 
   <img src="{% static 'all batangas.png' %}" style="width: auto; max-width: 1500px; display: block; margin: 0 auto;">
-  
+
   <div class="login-container">
     <div class="login-form">
       <!-- Header and form elements -->
       <div class="header-container">
         <img src="{% static 'logo.png' %}" alt="Parine sa Batangas" style="width: 50%; max-width: 100px;">
-        <h2>Thank you for using Parine sa Batangas!</h2>
+        <h1>Kiosk Logout</h1>
+        <p>You are logged out from Kiosk ID: {{ kiosk_id }}</p>
       </div>
     </div>
     <script>
       // Extract the kiosk_id from the URL
       var kioskId = window.location.pathname.split('/')[2]; // URL format is '/kiosk_login/{kiosk_id}/'
 
-      // Construct the redirect URL
-      var redirectUrl = '/kiosk_login/' + kioskId '/';
+      // Check if a valid kiosk_id is found
+      if (kioskId) {
+        // Construct the redirect URL
+        var redirectUrl = '/kiosk_login/' + kioskId + '/';
 
-      // Wait for 5 seconds before redirecting
-      setTimeout(function() {
-        window.location.href = redirectUrl;
-      }, 3000);
+        // Wait for 5 seconds before redirecting
+        setTimeout(function () {
+          window.location.href = redirectUrl;
+        }, 5000); // corrected the timeout value
+      }
     </script>
   </div>
 </body>
+
 </html>

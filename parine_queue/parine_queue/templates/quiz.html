@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parine sa Batangas</title>
+
+<style>
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #BFEBF4;
+        margin: 0;
+        padding: 20px;
+    }
+    
+    
+    @keyframes tada {
+        0% {
+            transform: scale(1);
+        }
+        10%, 20% {
+            transform: scale(0.9) rotate(-3deg);
+        }
+        30%, 50%, 70%, 90% {
+            transform: scale(1.1) rotate(3deg);
+        }
+        40%, 60%, 80% {
+            transform: scale(1.1) rotate(-3deg);
+        }
+        100% {
+            transform: scale(1) rotate(0deg);
+        }
+    }
+    
+    h2 {
+        color: #0c005b;
+        font-size: 2em;
+        margin-bottom: 20px;
+        animation: tada 1s ease-in-out infinite;
+    }
+    
+    .question-box {
+        background-color: #BFEBF4;
+        border-radius: 30px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-size: 24px;
+        box-sizing: border-box;
+    }
+    
+    form {
+        margin-bottom: 20px;
+    }
+    
+    .game-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        font-family: YAD1aYG82rc-0;
+        color: #010355;
+        border: 1px solid #1db4ff;
+        border-radius: 30px;
+        width: 100%;
+        max-width: 1500px;
+        height: auto;
+        background: #ffffff;
+        z-index: 1;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    input[type="text"] {
+        padding: 10px;
+        width: 70%;
+        margin-right: 10px;
+        border: 2px solid #00a2ff;
+        border-radius: 5px;
+        font-size: 1em;
+    }
+    
+    button {
+        padding: 10px 20px;
+        background-color: #00a2ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+    }
+    
+    button:hover {
+        background-color: #008fe2;
+    }
+    
+    .incorrect-guesses {
+        color: #ff4500;
+        font-size: 1.2em;
+        margin-bottom: 20px;
+    }
+    
+    .timer {
+        font-size: 1.5em;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    
+    @media (max-width: 768px) {
+        input[type="text"] {
+            width: 60%;
+        }
+    
+        button {
+            width: 30%;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        input[type="text"] {
+            width: 50%;
+        }
+    
+        button {
+            width: 40%;
+        }
+    }
+    
+    .jip-img {
+        position: absolute;
+        top: 24%;
+        left: 5%;
+        transform: translateX(-50%);
+        width: 100%;
+        /* Adjust width as needed */
+        max-width: 150px;
+        z-index: 1;
+        /* Ensure the image stays above other content */
+        animation: moveForth 8s ease-in-out infinite, glow 1s ease-in-out infinite alternate;
+        /* Adjust animation duration and glow effect */
+    }
+    
+    @keyframes moveForth {
+        0% {
+            transform: translateX(-300%);
+        }
+    
+        100% {
+            transform: translateX(1070%);
+        }
+    }
+    
+    @keyframes glow {
+        0% {
+            filter: drop-shadow(0 0 20px #FFFFFF);
+            /* Initial glow color and radius */
+        }
+    
+        100% {
+            filter: drop-shadow(0 0 20px #FFFFF);
+            /* Final glow color and radius */
+        }
+    }
+
+</style>
+</head>
+<body>
+    <img src="{% static 'jip.png' %}" class="jip-img" alt="Parine sa Batangas">
+    <div class="game-container">
+        <h2>I SPY WITH MY LITTLE EYE...</h2>
+        {% if question %}
+            <div class="question-box">{{ question }}</div>
+            <form method="post" id="guess-form">
+                {% csrf_token %}
+                <input type="text" name="guess" placeholder="Your guess" {% if correct or guesses_left <= 0 %}disabled{% endif %}>
+                <button type="submit" {% if correct or guesses_left <= 0 %}disabled{% endif %}>ENTER</button>
+            </form>
+            {% if correct %}
+                <div class="correct">Correct! You've earned points!</div>
+            {% endif %}
+        {% else %}
+            <div class="question-box">No questions available at the moment.</div>
+        {% endif %}
+        <div class="incorrect-guesses">INCORRECT GUESS: {{ guesses_made }} / 3</div>
+        {% if not correct %}
+            <div class="timer" data-seconds="{{ remaining_time }}">TIME: <span id="timer"></span></div>
+        {% else %}
+            <div class="timer">Great job!</div>
+        {% endif %}
+    </div>    
+
+    <script>
+        // Simple countdown timer script
+        var remainingTime = parseInt(document.querySelector('.timer')?.dataset.seconds, 10);
+        if (remainingTime) {
+            var timerElement = document.getElementById('timer');
+            var countdown = setInterval(function() {
+                var minutes = parseInt(remainingTime / 60, 10);
+                var seconds = parseInt(remainingTime % 60, 10);
+
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+
+                timerElement.textContent = minutes + ":" + seconds;
+
+                if (--remainingTime < 0) {
+                    clearInterval(countdown);
+                    document.getElementById('guess-form').submit();
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
