@@ -13,6 +13,36 @@
         background-color: #15375D;
         overflow: hidden;
     }
+    .modulecontainer{
+        display: none;
+        position: absolute;
+        top: 6.8359375vw;
+        left: 0;
+        width: 100%;
+        height: calc(100% - 6.8359375vw);
+        background-color: #15375D; /* Same as the background color */
+        z-index: 100; /* Ensure it's behind other elements */
+    }
+    #backToMainButton {
+        position: absolute;
+        top: -78px; /* Align with the top panel */
+        left: 1.953125vw; /* Adjust left position as needed */
+        font-family: 'Gotham', sans-serif;
+        font-size: 1.3020833333333333vw;
+        font-weight: bold;
+        background-color: #06C9EF;
+        color: #FFFFFF;
+        padding: 0.6510416666666666vw 1.3020833333333333vw;
+        border: 0.1953125vw solid #FFFFFF;
+        border-radius: 1.953125vw;
+        cursor: pointer;
+        z-index: 2;
+        transition: transform 0.2s; /* Add a transition for the transform property */
+    }
+    
+    #backToMainButton:active {
+        transform: scale(0.5); /* Scale down the button when clicked */
+    }
     .top-panel {
         position: absolute;
         top: 0;
@@ -22,6 +52,7 @@
         background-color: #15375D; /* Same as the background color */
         z-index: 1; /* Ensure it's behind other elements */
     }
+    
     #imageButtonContainer {
         position: fixed;
         top: 1.3020833333333333vw; /* Adjust top distance as needed */
@@ -67,8 +98,8 @@
         position: absolute;
         top: 0.390625vw;
         left:  0.2604166666666667vw;
-        margin-bottom: 10px;
-        width: 1.953125vw;
+        margin-bottom: 0.6510416666666666vw;
+        width: 3.2552083333333335vw;
         cursor: pointer;
         border: none;
         border-radius: 0.3255208333333333vw;
@@ -158,7 +189,7 @@
     
     .district3 {
         position: absolute;
-        top: -2.8645833333333335vw;
+        top: -2.9296875vw;
         left: 14.973958333333334vw;
         width: 97.65625vw;
         z-index: 0;
@@ -188,6 +219,7 @@
         font-family: 'DM Serif Display', serif;
         display: flex;
         color: #15375D;
+        margin-top:  1.6276041666666667vw;
       }
       .header img {
         width: 13.020833333333334vw; /* Adjust the width as needed */
@@ -213,7 +245,7 @@
         background: none;
         border: none;
         top:  10.872395833333334vw; /* Adjust the top position as needed */
-        left:  73.89322916666667vw; /* Adjust the left position as needed */
+        left:  74.28385416666667vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
@@ -233,7 +265,7 @@
     .district3ST-button.clicked {
         transform: scale(1.4); /* Scale when clicked */
         filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 5;
+        z-index: 10;
     }
 
 
@@ -243,7 +275,7 @@
         background: none;
         border: none;
         top: 18.229166666666668vw; /* Adjust the top position as needed */
-        left: 71.94010416666667vw; /* Adjust the left position as needed */
+        left: 72.33072916666667vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
@@ -263,7 +295,7 @@
     .district3M-button.clicked {
         transform: scale(1.4); /* Scale when clicked */
         filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 100;
+        z-index: 10;
     }
     /* ----------------- */
     .district3TN-button {
@@ -271,7 +303,7 @@
         background: none;
         border: none;
         top: 10.026041666666666vw; /* Adjust the top position as needed */
-        left: 67.51302083333333vw; /* Adjust the left position as needed */
+        left: 67.90364583333333vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
@@ -290,7 +322,7 @@
     .district3TN-button.clicked {
         transform: scale(1.4); /* Scale when clicked */
         filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 5;
+        z-index: 10;
     }
 
     /* ----------------- */
@@ -299,7 +331,7 @@
         background: none;
         border: none;
         top: 12.044270833333334vw; /* Adjust the top position as needed */
-        left: 60.3515625vw; /* Adjust the left position as needed */
+        left: 60.7421875vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
@@ -319,7 +351,7 @@
     .district3T-button.clicked {
         transform: scale(1.4); /* Scale when clicked */
         filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 100;
+        z-index: 10;
     }
     /* ----------------- */
     .district3A-button {
@@ -327,7 +359,7 @@
         background: none;
         border: none;
         top: 21.875vw; /* Adjust the top position as needed */
-        left: 55.46875vw; /* Adjust the left position as needed */
+        left: 55.859375vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
@@ -344,7 +376,7 @@
     .district3A-button.clicked {
         transform: scale(1.4); /* Scale when clicked */
         filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 2;
+        z-index: 10;
     }
     /* ----------------- */
     .district3SN-button {
@@ -352,7 +384,7 @@
         background: none;
         border: none;
         top: 29.166666666666668vw; /* Adjust the top position as needed */
-        left: 58.203125vw; /* Adjust the left position as needed */
+        left: 58.59375vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
@@ -369,7 +401,7 @@
     .district3SN-button.clicked {
         transform: scale(1.4); /* Scale when clicked */
         filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 2;
+        z-index: 10;
     }
     /* ----------------- */
     .district3B-button {
@@ -377,7 +409,7 @@
         background: none;
         border: none;
         top: 20.3125vw; /* Adjust the top position as needed */
-        left: 69.98697916666667vw; /* Adjust the left position as needed */
+        left: 70.37760416666667vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
@@ -395,7 +427,7 @@
     .district3B-button.clicked {
         transform: scale(1.4); /* Scale when clicked */
         filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 2;
+        z-index: 10;
     }
     /* ----------------- */
     .district3MK-button {
@@ -403,7 +435,7 @@
         background: none;
         border: none;
         top: 22.4609375vw; /* Adjust the top position as needed */
-        left: 70.05208333333333vw; /* Adjust the left position as needed */
+        left: 70.44270833333333vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
@@ -421,7 +453,7 @@
     .district3MK-button.clicked {
         transform: scale(1.4); /* Scale when clicked */
         filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 2;
+        z-index: 10;
     }
     /* ----------------- */
     .district3STR-button {
@@ -429,7 +461,7 @@
         background: none;
         border: none;
         top: 31.25vw; /* Adjust the top position as needed */
-        left: 59.244791666666664vw; /* Adjust the left position as needed */
+        left: 59.635416666666664vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
@@ -447,7 +479,7 @@
     .district3STR-button.clicked {
         transform: scale(1.4); /* Scale when clicked */
         filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 2;
+        z-index: 10;
     }
     /* ----------------- */
     .district3C-button {
@@ -455,7 +487,7 @@
         background: none;
         border: none;
         top: 28.255208333333332vw; /* Adjust the top position as needed */
-        left: 65.75520833333333vw; /* Adjust the left position as needed */
+        left: 66.14583333333333vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
@@ -473,7 +505,7 @@
     .district3C-button.clicked {
         transform: scale(1.4); /* Scale when clicked */
         filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 100;
+        z-index: 10;
     }
     /* ----------------- */
     .district3AG-button {
@@ -481,7 +513,7 @@
         background: none;
         border: none;
         top: 32.421875vw; /* Adjust the top position as needed */
-        left: 61.848958333333336vw; /* Adjust the left position as needed */
+        left: 62.239583333333336vw; /* Adjust the left position as needed */
         padding: -200px;
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
@@ -500,7 +532,7 @@
     .district3AG-button.clicked {
         transform: scale(1.4); /* Scale when clicked */
         filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 100;
+        z-index: 10;
     }
     /* ----------------- */
     .district3L-button {
@@ -508,7 +540,7 @@
         background: none;
         border: none;
         top: 15.559895833333334vw; /* Adjust the top position as needed */
-        left: 50.9765625vw; /* Adjust the left position as needed */
+        left: 51.3671875vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
         display: flex;
@@ -526,7 +558,7 @@
     .district3L-button.clicked {
         transform: scale(1.4); /* Scale when clicked */
         filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 100;
+        z-index: 10;
     }
     /* -------------------------------------- EXPLORE-----------------------------------------*/
 
@@ -1049,12 +1081,195 @@
     color: #FFFFFF;
 }
 
+/*-----------------------------------------------MODULE*-------------------------------------------------*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+.mheader {
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    background: #fff;
+}
+
+.mheader button {
+    padding: 5px 10px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #18395E;
+    color: #fff;
+    font-size: 20px;
+}
+
+.mcontainer {
+    position: absolute;
+    top: 21.809895833333332vw;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 84.63541666666667vw;
+    height: 33.854166666666664vw;
+    background: #18395E;
+    box-shadow: 0 30px 50px #dbdbdb;
+}
+
+.mbackground-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.mbackground-slide .item {
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+    transition: background-image 0.5s ease-in-out;
+}
+
+.mslide {
+    position: relative;
+    z-index: 1;
+}
+
+.mslide .item {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    background-position: center;
+    background-size: cover;
+}
+
+.mslide .item.active {
+    display: block;
+}
+
+.mcontent {
+    position: absolute;
+    top: 50%;
+    left: 100px;
+    width: 300px;
+    text-align: left;
+    color: #15375D;
+    transform: translate(0, -50%);
+    font-family: system-ui;
+    display: none;
+    overflow: hidden; /* Hide overflowing blur effect */
+}
+
+.mcontent.active {
+    display: block;
+}
+
+
+.mcontent .name {
+    font-size: 40px;
+    text-transform: uppercase;
+    font-weight: bold;
+    opacity: 0;
+    background: rgba(255, 255, 255, 0.8);
+    animation: animateName 0.5s ease-in-out 0.5s forwards; /* Changed animation name and delay */
+}
+
+.mcontent .des {
+    opacity: 0;
+    background: rgba(255, 255, 255, 0.8);
+    animation: animateDes 0.5s ease-in-out 1s forwards; /* Changed animation name and delay */
+}
+
+/* Keyframes for animations */
+@keyframes animateName {
+    from {
+        opacity: 0;
+        transform: translate(0, 100px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0);
+    }
+}
+
+@keyframes animateDes {
+    from {
+        opacity: 0;
+        transform: translate(0, 100px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0);
+    }
+}
+
+.mheader button {
+    padding: 5px 10px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #18395E;
+    color: #fff;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.mheader button:hover {
+    background: #fff;
+    color: #18395E;
+}
+
+
+.mbutton {
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    bottom: 20px;
+}
+
+.mbutton button {
+    width: 40px;
+    height: 35px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin: 0 5px;
+    border: 1px solid #000;
+    transition: 0.3s;
+}
+
+.mactive-button {
+    background: #fff;
+    color: #ffff00;
+}
 
 </style>
 </head>
 <body>
     </div>
     {% load static %}
+    <div class="modulecontainer">
+        <button id="backToMainButton">Back</button>
+        <div class="mheader">
+            <button data-module="module_tourist" onclick="loadModule(this)">TOURIST ATTRACTIONS</button>
+            <button data-module="module_food" onclick="loadModule(this)">FOOD</button>
+            <button data-module="module_craft" onclick="loadModule(this)">CRAFT</button>
+        </div>
+        <div class="mcontainer">
+            <iframe id="moduleFrame" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+    </div>
     <div class="container">
         <div id="imageButtonContainer">
             <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
@@ -1072,6 +1287,7 @@
         <span class="barrier">|</span>
         <span class="district">District III</span>
         <img class="district3" src="{% static 'district 3-1.png' %}"  alt="district3">
+
         <!-- MUNICIPALITIES -->
         <button class="district3ST-button" onclick="toggleButton(this)">
             <img src="{% static 'D3-ST.png' %}" alt="District 3-ST">
@@ -1121,76 +1337,88 @@
         </div>
         <!-- EXPLORE -->
         <div class="exploreST" id="exploreST" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> STO.TOMAS!</p>
-            <button class="exploreST-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> STO.TOMAS</p>
+            <button id="exploreST-button" class="exploreST-button">EXPLORE</button>
         </div>
 
         <div class="exploreA" id="exploreA" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> AGONCILLO!</p>
-            <button class="exploreA-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> AGONCILLO</p>
+            <button id="exploreA-button" class="exploreA-button">EXPLORE</button>
         </div>
         <div class="exploreT" id="exploreT" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> TALISAY!</p>
-            <button class="exploreT-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> TALISAY</p>
+            <button id="exploreT-button" class="exploreT-button">EXPLORE</button>
         </div>
         <div class="exploreTN" id="exploreTN" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> TANAUAN!</p>
-            <button class="exploreTN-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> TANAUAN</p>
+            <button id="exploreTN-button" class="exploreTN-button">EXPLORE</button>
         </div>
         <div class="exploreM" id="exploreM" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> MALVAR!</p>
-            <button class="exploreM-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> MALVAR</p>
+            <button id="exploreM-button" class="exploreM-button">EXPLORE</button>
         </div>
         <div class="exploreSN" id="exploreSN" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> SAN NICOLAS!</p>
-            <button class="exploreSN-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> SAN NICOLAS</p>
+            <button id="exploreSN-button" class="exploreSN-button">EXPLORE</button>
         </div>
         <div class="exploreB" id="exploreB" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> BALETE!</p>
-            <button class="exploreB-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> BALETE</p>
+            <button id="exploreB-button" class="exploreB-button">EXPLORE</button>
         </div>
         <div class="exploreMK" id="exploreMK" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> MATAAS NA KAHOY!</p>
-            <button class="exploreMK-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> MATAAS NA KAHOY</p>
+            <button id="exploreMK-button" class="exploreMK-button">EXPLORE</button>
         </div>
         <div class="exploreSTR" id="exploreSTR" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> STA. TERESITA!</p>
-            <button class="exploreSTR-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> STA. TERESITA</p>
+            <button id="exploreSTR-button" class="exploreSTR-button">EXPLORE</button>
         </div>
         <div class="exploreC" id="exploreC" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> CUENCA!</p>
-            <button class="exploreC-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> CUENCA</p>
+            <button id="exploreC-button" class="exploreC-button">EXPLORE</button>
         </div>
         <div class="exploreAG" id="exploreAG" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> ALITAGTAG!</p>
-            <button class="exploreAG-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> ALITAGTAG</p>
+            <button id="exploreAG-button" class="exploreAG-button">EXPLORE</button>
         </div>
         <div class="exploreL" id="exploreL" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> LAUREL!</p>
-            <button class="exploreL-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> LAUREL</p>
+            <button id="exploreL-button" class="exploreL-button">EXPLORE</button>
         </div>
-
-
-
-
-
 
     <script>
         const imageButton = document.getElementById('imageButton');
         const rightPanel = document.getElementById('rightPanel');
         const backButton = document.getElementById('backButton');
+        const exploreButton = document.getElementById('exploreButton');
+        const moduleContainer = document.querySelector('.modulecontainer');
+        const backToMainButton = document.getElementById('backToMainButton');
+        
+        //--------EXPLOREBUTTONS
+        const exploreST = document.getElementById('exploreST');
+        const exploreA = document.getElementById('exploreA');
+        const exploreT = document.getElementById('exploreT');
+        const exploreTN = document.getElementById('exploreTN');
+        const exploreM = document.getElementById('exploreM');
+        const exploreSN = document.getElementById('exploreSN');
+        const exploreB = document.getElementById('exploreB');
+        const exploreMK = document.getElementById('exploreMK');
+        const exploreSTR = document.getElementById('exploreSTR');
+        const exploreC = document.getElementById('exploreC');
+        const exploreAG = document.getElementById('exploreAG');
+        const exploreL = document.getElementById('exploreL');
 
         imageButton.addEventListener('click', () => {
             rightPanel.style.display = 'block';
@@ -1198,6 +1426,59 @@
 
         backButton.addEventListener('click', () => {
             rightPanel.style.display = 'none';
+        });
+
+        backToMainButton.addEventListener('click', () => {
+            moduleContainer.style.display = 'none';
+        });
+
+        //-----EXPLOREBUTTONS
+        exploreST.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreA.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreT.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreTN.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreM.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreSN.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreB.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreMK.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreSTR.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreC.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreAG.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreL.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
         });
 
         let activeButton = null;
@@ -1352,10 +1633,79 @@
             var additionalContainer = document.getElementById("exploreL");
             additionalContainer.style.display = "block";
             this.classList.toggle('container');
-            
         });
+
+            // Function to load the module content based on the current municipality
+            function loadModule(moduleType) {
+            if (!currentMunicipality) {
+                console.error('Municipality not set');
+                return;
+            }
+        }
+        //----------------------MODULE SCRIPT
+        document.addEventListener('DOMContentLoaded', () => {
+            // Global variable to hold the selected municipality
+            let currentMunicipality = '';
+        
+            // Function to update the municipality based on user interaction
+            const updateMunicipalityAndLoadModule = (municipalityName, moduleType = 'module_tourist') => {
+                currentMunicipality = municipalityName;
+                console.log("Selected Municipality:", currentMunicipality);
+                loadModule(moduleType);
+            };
+        
+            // Attach click event listeners to each "Explore" button
+            document.querySelectorAll('.exploreST-button, .exploreA-button, .exploreT-button, .exploreTN-button, .exploreM-button, .exploreSN-button, .exploreB-button, .exploreMK-button, .exploreSTR-button, .exploreC-button, .exploreAG-button, .exploreL-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Extracting the municipality name from the preceding <p> element
+                    const municipalityName = this.previousElementSibling.textContent.split("Welcome to")[1]?.trim();
+                    updateMunicipalityAndLoadModule(municipalityName);
+                });
+            });
+        
+            // Function to load the module content based on the current municipality
+            function loadModule(moduleType) {
+                if (!currentMunicipality) {
+                    console.error('Municipality not set');
+                    return;
+                }
+        
+                // Update button styles as needed
+                document.querySelectorAll('.mheader button').forEach(btn => {
+                    if (btn.getAttribute('data-module') === moduleType) {
+                        btn.classList.add('mactive-button');
+                        btn.style.background = '#18395E';
+                        btn.style.color = '#fff';
+                    } else {
+                        btn.classList.remove('mactive-button');
+                        btn.style.background = '#fff';
+                        btn.style.color = '#18395E';
+                    }
+                });
+        
+                var kioskId = window.location.pathname.split('/')[2]; // URL format is '/kiosk_login/{kiosk_id}/'
+        
+                // Construct the URL for the module using the current municipality
+                const moduleUrl = `/kiosk_login/${ kioskId }/${moduleType}/${currentMunicipality}/`;
+                document.getElementById('moduleFrame').src = moduleUrl;
+            }
+        
+            // Attach click event listeners to module buttons in the header
+            document.querySelectorAll('.mheader button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const moduleType = this.getAttribute('data-module');
+                    if (currentMunicipality) {
+                        loadModule(moduleType);
+                    } else {
+                        console.error('No municipality selected');
+                    }
+                });
+            });
+        });
+        
+        
     </script>
-    </body>
-    </html>
+</body>
+</html>
 
 

@@ -34,12 +34,11 @@ urlpatterns = [
     path('kiosk_login/<int:kiosk_id>/selectmunicipality5/', selectmunicipality5, name='selectmunicipality5'),
     path('kiosk_login/<int:kiosk_id>/selectmunicipality6/', selectmunicipality6, name='selectmunicipality6'),
     
-    # path('selectmodule/module_tourist/', module_tourist, name='module_tourist'),
-    path('selectmodule/module_tourist/<str:municipality>/', module_tourist, name='module_tourist'),
-    path('selectmodule/module_food/<str:municipality>/', module_food, name='module_food'),
-    path('selectmodule/module_craft/<str:municipality>/', module_craft, name='module_craft'),
+    path('kiosk_login/<int:kiosk_id>/module_tourist/<str:municipality>/', module_tourist, name='module_tourist'),
+    path('kiosk_login/<int:kiosk_id>/module_food/<str:municipality>/', module_food, name='module_food'),
+    path('kiosk_login/<int:kiosk_id>/module_craft/<str:municipality>/', module_craft, name='module_craft'),
     
-    path('selectmodule/', selectmodule, name='selectmodule'),
+    # path('selectmodule/', selectmodule, name='selectmodule'),
     
     path('quiz/', quiz, name='quiz'),
     path('results/', views.results_view, name='results'),

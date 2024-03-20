@@ -14,6 +14,45 @@
         background-color: #15375D;
         overflow: hidden;
     }
+    .modulecontainer{
+        display: none;
+        position: absolute;
+        top: 6.8359375vw;
+        left: 0;
+        width: 100%;
+        height: calc(100% - 6.8359375vw);
+        background-color: #15375D; /* Same as the background color */
+        z-index: 100; /* Ensure it's behind other elements */
+    }
+    #backToMainButton {
+        position: absolute;
+        top: -78px; /* Align with the top panel */
+        left: 1.953125vw; /* Adjust left position as needed */
+        font-family: 'Gotham', sans-serif;
+        font-size: 1.3020833333333333vw;
+        font-weight: bold;
+        background-color: #06C9EF;
+        color: #FFFFFF;
+        padding: 0.6510416666666666vw 1.3020833333333333vw;
+        border: 0.1953125vw solid #FFFFFF;
+        border-radius: 1.953125vw;
+        cursor: pointer;
+        z-index: 2;
+        transition: transform 0.2s; /* Add a transition for the transform property */
+    }
+    
+    #backToMainButton:active {
+        transform: scale(0.5); /* Scale down the button when clicked */
+    }
+    .top-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6.8359375vw;
+        background-color: #15375D; /* Same as the background color */
+        z-index: 1; /* Ensure it's behind other elements */
+    }
     #imageButtonContainer {
         position: fixed;
         top: 1.3020833333333333vw; /* Adjust top distance as needed */
@@ -59,8 +98,8 @@
         position: absolute;
         top: 0.390625vw;
         left:  0.2604166666666667vw;
-        margin-bottom: 10px;
-        width: 1.953125vw;
+        margin-bottom: 0.6510416666666666vw;
+        width: 3.2552083333333335vw;
         cursor: pointer;
         border: none;
         border-radius: 0.3255208333333333vw;
@@ -178,6 +217,7 @@
         font-family: 'DM Serif Display', serif;
         display: flex;
         color: #15375D;
+        margin-top:  1.6276041666666667vw;
       }
       .header img {
         width: 13.020833333333334vw; /* Adjust the width as needed */
@@ -201,7 +241,7 @@
         position: absolute;
         background: none;
         border: none;
-        top: 5.989583333333333vw; /* Adjust the top position as needed */
+        top: 9.765625vw; /* Adjust the top position as needed */
         left: 16.6015625vw; /* Adjust the left position as needed */
         transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
         cursor: pointer;
@@ -266,7 +306,7 @@
     position: absolute;
     background: none;
     border: none;
-    top: 19.075520833333332vw; /* Adjust the top position as needed */
+    top: 22.8515625vw; /* Adjust the top position as needed */
     left: 19.010416666666668vw; /* Adjust the left position as needed */
     transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
     cursor: pointer;
@@ -331,7 +371,7 @@ color: #FFFFFF;
     position: absolute;
     background: none;
     border: none;
-    top: 17.447916666666668vw; /* Adjust the top position as needed */
+    top: 21.223958333333332vw; /* Adjust the top position as needed */
     left:  25.5859375vw; /* Adjust the left position as needed */
     transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
     cursor: pointer;
@@ -397,8 +437,8 @@ color: #FFFFFF;
     position: absolute;
     background: none;
     border: none;
-    top: 19.270833333333332vw; /* Adjust the top position as needed */
-    left: 24.0234375vw; /* Adjust the left position as needed */
+    top: 23.046875vw; /* Adjust the top position as needed */
+    left: 23.958333333333332vw; /* Adjust the left position as needed */
     transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
     cursor: pointer;
     display: flex;
@@ -462,7 +502,7 @@ color: #FFFFFF;
     position: absolute;
     background: none;
     border: none;
-    top: 19.205729166666668vw; /* Adjust the top position as needed */
+    top: 22.981770833333332vw; /* Adjust the top position as needed */
     left: 32.421875vw; /* Adjust the left position as needed */
     transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
     cursor: pointer;
@@ -528,7 +568,7 @@ color: #FFFFFF;
     position: absolute;
     background: none;
     border: none;
-    top: 29.8828125vw; /* Adjust the top position as needed */
+    top: 33.658854166666664vw; /* Adjust the top position as needed */
     left: 19.53125vw; /* Adjust the left position as needed */
     transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
     cursor: pointer;
@@ -594,7 +634,7 @@ color: #FFFFFF;
     position: absolute;
     background: none;
     border: none;
-    top: 20.963541666666668vw; /* Adjust the top position as needed */
+    top:  24.739583333333332vw; /* Adjust the top position as needed */
     left: 37.955729166666664vw; /* Adjust the left position as needed */
     transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
     cursor: pointer;
@@ -620,7 +660,7 @@ color: #FFFFFF;
 .exploreLM {
     display: none; /* Hide the container by default */
     position: absolute;
-    top: 21.809895833333332vw;
+    top: 25.5859375vw;
     left: 69.98697916666667vw;
     transform: translate(-50%, -50%);
     text-align: center;
@@ -659,7 +699,7 @@ color: #FFFFFF;
     position: absolute;
     background: none;
     border: none;
-    top: 31.0546875vw; /* Adjust the top position as needed */
+    top:  34.9609375vw; /* Adjust the top position as needed */
     left: 43.5546875vw; /* Adjust the left position as needed */
     transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
     cursor: pointer;
@@ -719,11 +759,197 @@ color: #FFFFFF;
 background-color: #06C9EF;
 color: #FFFFFF;
 }
+
+/*-----------------------------------------------MODULE*-------------------------------------------------*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+.mheader {
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    background: #fff;
+}
+
+.mheader button {
+    padding: 5px 10px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #18395E;
+    color: #fff;
+    font-size: 20px;
+}
+
+.mcontainer {
+    position: absolute;
+    top: 21.809895833333332vw;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 84.63541666666667vw;
+    height: 33.854166666666664vw;
+    background: #18395E;
+    box-shadow: 0 30px 50px #dbdbdb;
+}
+
+.mbackground-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.mbackground-slide .item {
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+    transition: background-image 0.5s ease-in-out;
+}
+
+.mslide {
+    position: relative;
+    z-index: 1;
+}
+
+.mslide .item {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    background-position: center;
+    background-size: cover;
+}
+
+.mslide .item.active {
+    display: block;
+}
+
+.mcontent {
+    position: absolute;
+    top: 50%;
+    left: 100px;
+    width: 300px;
+    text-align: left;
+    color: #15375D;
+    transform: translate(0, -50%);
+    font-family: system-ui;
+    display: none;
+    overflow: hidden; /* Hide overflowing blur effect */
+}
+
+.mcontent.active {
+    display: block;
+}
+
+
+.mcontent .name {
+    font-size: 40px;
+    text-transform: uppercase;
+    font-weight: bold;
+    opacity: 0;
+    background: rgba(255, 255, 255, 0.8);
+    animation: animateName 0.5s ease-in-out 0.5s forwards; /* Changed animation name and delay */
+}
+
+.mcontent .des {
+    opacity: 0;
+    background: rgba(255, 255, 255, 0.8);
+    animation: animateDes 0.5s ease-in-out 1s forwards; /* Changed animation name and delay */
+}
+
+/* Keyframes for animations */
+@keyframes animateName {
+    from {
+        opacity: 0;
+        transform: translate(0, 100px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0);
+    }
+}
+
+@keyframes animateDes {
+    from {
+        opacity: 0;
+        transform: translate(0, 100px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0);
+    }
+}
+
+.mheader button {
+    padding: 5px 10px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #18395E;
+    color: #fff;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.mheader button:hover {
+    background: #fff;
+    color: #18395E;
+}
+
+
+.mbutton {
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    bottom: 20px;
+}
+
+.mbutton button {
+    width: 40px;
+    height: 35px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin: 0 5px;
+    border: 1px solid #000;
+    transition: 0.3s;
+}
+
+.mactive-button {
+    background: #fff;
+    color: #ffff00;
+}
 </style>
 </head>
 <body>
     </div>
     {% load static %}
+    <div class="modulecontainer">
+        <button id="backToMainButton">Back</button>
+        <div class="mheader">
+            <button data-module="module_tourist" onclick="loadModule(this)">TOURIST ATTRACTIONS</button>
+            <button data-module="module_food" onclick="loadModule(this)">FOOD</button>
+            <button data-module="module_craft" onclick="loadModule(this)">CRAFT</button>
+            
+        </div>
+        <div class="mcontainer">
+            <iframe id="moduleFrame" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+    </div>
+    <div class="container">
         <div id="imageButtonContainer">
             <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
         </div>
@@ -736,11 +962,10 @@ color: #FFFFFF;
             </form>
         </div>
         <div class="title">BATANGAS</div>
-        <div class="test">BATANGAS | District I</div>
         <div class="barrier">|</div>
         <div class="district">District I</div>
-        <!-- MUNICIPALITIES -->
         
+        <!-- MUNICIPALITIES -->
         <button class="district1N-button" onclick="toggleButton(this)">
             <img src="{% static 'D1-N.png' %}" alt="District 1-N">
         </button>
@@ -773,65 +998,64 @@ color: #FFFFFF;
             <h2>Welcome to <br> Parine sa Batangas!</h2> 
             </div>
         </div>
-        
         <!-- EXPLORE -->
         <div class="exploreN" id="exploreN" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;"> Welcome to <br> NASUGBO!</p>
-            <select id="moduleSelectionNasugbo">
-                <option value="module_tourist">Tourist Module</option>
-                <option value="module_food">Food Module</option>
-                <option value="module_craft">Craft Module</option>
-            </select>
-            <button class="exploreN-button" onclick="redirectToModule('Nasugbo')">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> NASUGBO</p>
+            <button id="exploreN-button" class="exploreN-button">EXPLORE</button>
         </div>
-        
         <div class="exploreL" id="exploreL" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> LIAN !</p>
-            <select id="moduleSelectionLian">
-                <option value="module_tourist">Tourist Module</option>
-                <option value="module_food">Food Module</option>
-                <option value="module_craft">Craft Module</option>
-            </select>
-            <button class="exploreN-button" onclick="redirectToModule('Lian')">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> LIAN</p>
+            <button id="exploreL-button" class="exploreL-button">EXPLORE</button>
         </div>
         <div class="exploreT" id="exploreT" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> TUY !</p>
-            <button class="exploreT-button" onclick="window.location.href='{% url 'module_tourist' 'TUY' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> TUY</p>
+            <button id="exploreT-button" class="exploreT-button">EXPLORE</button>
         </div>
         <div class="exploreB" id="exploreB" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> BALAYAN !</p>
-            <button class="exploreB-button" onclick="window.location.href='{% url 'selectmodule' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> BALAYAN</p>
+            <button id="exploreB-button" class="exploreB-button">EXPLORE</button>
         </div>
         <div class="exploreCL" id="exploreCL" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> CALACA !</p>
-            <button class="exploreCL-button" onclick="window.location.href='{% url 'module_tourist' 'CALACA' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> CALACA</p>
+            <button id="exploreCL-button" class="exploreCL-button">EXPLORE</button>
         </div>
         <div class="exploreC" id="exploreC" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> CALATAGAN !</p>
-            <button class="exploreC-button" onclick="window.location.href='{% url 'module_tourist' 'CALATAGAN' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> CALATAGAN</p>
+            <button id="exploreC-button" class="exploreC-button">EXPLORE</button>
         </div>
         <div class="exploreLM" id="exploreLM" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> LEMERY !</p>
-            <button class="exploreLM-button" onclick="window.location.href='{% url 'module_tourist' 'LEMERY' %}'">EXPLORE</button>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> LEMERY</p>
+            <button id="exploreLM-button" class="exploreLM-button">EXPLORE</button>
         </div>
         <div class="exploreTL" id="exploreTL" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style=" max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> TAAL !</p>
-            <button class="exploreTL-button" onclick="window.location.href='{% url 'module_tourist' 'TAAL' %}'">EXPLORE</button>
-        </div>
+            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> TAAL</p>
+            <button id="exploreTL-button" class="exploreTL-button">EXPLORE</button>
     </div>
 
     <script>
         const imageButton = document.getElementById('imageButton');
         const rightPanel = document.getElementById('rightPanel');
         const backButton = document.getElementById('backButton');
+        const exploreButton = document.getElementById('exploreButton');
+        const moduleContainer = document.querySelector('.modulecontainer');
+        const backToMainButton = document.getElementById('backToMainButton');
+        //--------EXPLOREBUTTONS
+        const exploreN = document.getElementById('exploreN');
+        const exploreL = document.getElementById('exploreL');
+        const exploreT = document.getElementById('exploreT');
+        const exploreB = document.getElementById('exploreB');
+        const exploreCL = document.getElementById('exploreCL');
+        const exploreC = document.getElementById('exploreC');  
+        const exploreLM = document.getElementById('exploreLM');  
+        const exploreTL = document.getElementById('exploreTL');  
 
         imageButton.addEventListener('click', () => {
             rightPanel.style.display = 'block';
@@ -839,6 +1063,42 @@ color: #FFFFFF;
 
         backButton.addEventListener('click', () => {
             rightPanel.style.display = 'none';
+        });
+        
+        backToMainButton.addEventListener('click', () => {
+            moduleContainer.style.display = 'none';
+        });
+                //-----EXPLOREBUTTONS
+        exploreN.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreL.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreT.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreB.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreCL.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreC.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreLM.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
+        });
+
+        exploreTL.addEventListener('click', () => {
+            moduleContainer.style.display = 'block';
         });
 
         let activeButton = null;
@@ -953,21 +1213,68 @@ color: #FFFFFF;
             
         });
 
-        function redirectToModule(municipality) {
-            // Construct the ID for the module selection dropdown based on the municipality
-            let selectorId = `moduleSelection${municipality}`;
-            // Retrieve the selected module type from the dropdown
-            let moduleType = document.getElementById(selectorId).value;
+        document.addEventListener('DOMContentLoaded', () => {
+            // Global variable to hold the selected municipality
+            let currentMunicipality = '';
         
-            // Construct the URL for redirection using the selected module type and municipality
-            let url = `/selectmodule/${moduleType}/${municipality}/`;
+            // Function to update the municipality based on user interaction
+            const updateMunicipalityAndLoadModule = (municipalityName, moduleType = 'module_tourist') => {
+                currentMunicipality = municipalityName;
+                console.log("Selected Municipality:", currentMunicipality);
+                loadModule(moduleType);
+            };
         
-            // Redirect to the constructed URL
-            window.location.href = url;
-        }
-            
-    </script>
+            // Attach click event listeners to each "Explore" button
+            document.querySelectorAll('.exploreN-button, .exploreL-button, .exploreT-button, .exploreB-button, .exploreCL-button, .exploreC-button, .exploreLM-button, .exploreTL-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Extracting the municipality name from the preceding <p> element
+                    const municipalityName = this.previousElementSibling.textContent.split("Welcome to")[1]?.trim();
+                    updateMunicipalityAndLoadModule(municipalityName);
+                });
+            });
+        
+            // Function to load the module content based on the current municipality
+            function loadModule(moduleType) {
+                if (!currentMunicipality) {
+                    console.error('Municipality not set');
+                    return;
+                }
+        
+                // Update button styles as needed
+                document.querySelectorAll('.mheader button').forEach(btn => {
+                    if (btn.getAttribute('data-module') === moduleType) {
+                        btn.classList.add('mactive-button');
+                        btn.style.background = '#18395E';
+                        btn.style.color = '#fff';
+                    } else {
+                        btn.classList.remove('mactive-button');
+                        btn.style.background = '#fff';
+                        btn.style.color = '#18395E';
+                    }
+                });
 
+                var kioskId = window.location.pathname.split('/')[2]; // URL format is '/kiosk_login/{kiosk_id}/'
+        
+                // Construct the URL for the module using the current municipality
+                const moduleUrl = `/kiosk_login/${ kioskId }/${moduleType}/${currentMunicipality}/`;
+                document.getElementById('moduleFrame').src = moduleUrl;
+            }
+        
+            // Attach click event listeners to module buttons in the header
+            document.querySelectorAll('.mheader button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const moduleType = this.getAttribute('data-module');
+                    if (currentMunicipality) {
+                        loadModule(moduleType);
+                    } else {
+                        console.error('No municipality selected');
+                    }
+                });
+            });
+        });
+        
+        
+    </script>
 </body>
 </html>
 

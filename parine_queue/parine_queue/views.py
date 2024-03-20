@@ -330,7 +330,6 @@ def no_user(request):
      return render(request, 'no_user.html')
 
 def selectmunicipality1(request, kiosk_id):
-   
     return render(request, 'selectmunicipality1.html',{'kiosk_id': kiosk_id})
 
 def selectmunicipality2(request, kiosk_id):
@@ -348,90 +347,62 @@ def selectmunicipality5(request, kiosk_id):
 def selectmunicipality6(request, kiosk_id):
     return render(request, 'selectmunicipality6.html',{'kiosk_id': kiosk_id})
 
-def module_tourist(request, municipality):
-    # Mapping of suffixes to municipalities
+def get_district_suffix(municipality):
+    """
+    This function takes a municipality name and returns the corresponding
+    district suffix if found, else returns None.
+    """
     suffix_to_municipalities = {
         'D1': ['NASUGBO', 'LIAN', 'TUY', 'BALAYAN', 'CALACA', 'CALATAGAN', 'LEMERY', 'TAAL'],
-        'D2': ['SAN LUIS', 'BAUAN', 'SAN PASCUAL', 'MABINI', 'TINGLOY', 'LAUREL'],
+        'D2': ['SAN LUIS', 'BAUAN', 'SAN PASCUAL', 'MABINI', 'TINGLOY', 'LOBO'],
         'D3': ['STO.TOMAS', 'AGONCILLO', 'TALISAY', 'TANAUAN', 'MALVAR', 'SAN NICOLAS', 'BALETE', 'MATAAS NA KAHOY', 'STA. TERESITA', 'CUENCA', 'ALITAGTAG', 'LAUREL'],
         'D4': ['SAN JOSE', 'IBAAN', 'ROSARIO', 'TAYSAN', 'PADRE GARCIA', 'SAN JUAN'],
-        'D5': ['BATANGAS'],
-        'D6' : ['LIPA'],
+        'D5': ['BATANGAS'],  # Assuming "BATANGAS" refers to the city for clarity
+        'D6': ['LIPA'],  # Assuming "LIPA" refers to the city for clarity
     }
+    for suffix, municipalities in suffix_to_municipalities.items():
+        if municipality.upper() in municipalities:
+            return suffix
+    return None
 
-    # Determine the correct suffix for the selected municipality
-    suffix = next((s for s, m in suffix_to_municipalities.items() if municipality.upper() in m), None)
-    if suffix is None:
-        # Handle the case where the municipality is not found
-        return render(request, 'error.html', {'message': 'Municipality not found.'})
+def get_modules_by_type_and_municipality(module_type, municipality):
+    """
+    This function filters DistrictModules based on module type, municipality,
+    and the correct district suffix determined from the municipality name.
+    """
+    suffix = get_district_suffix(municipality)
+    if not suffix:
+        return None  # Municipality not found in the mapping
 
-    # Filter DistrictModules based on the selected municipality and its suffix
+    # Filter modules based on type (t, f, c), municipality, and district suffix
     modules = DistrictModules.objects.filter(
         Municipality__iexact=municipality,
-        DistrictModuleID__startswith='t',
+        DistrictModuleID__startswith=module_type,
         DistrictModuleID__endswith=suffix
     )
-    
-    return render(request, 'module_tourist.html', {'modules': modules})
+    return modules
 
-def module_food(request, municipality):
-    # Mapping of suffixes to municipalities
-    suffix_to_municipalities = {
-        'D1': ['NASUGBO', 'LIAN', 'TUY', 'BALAYAN', 'CALACA', 'CALATAGAN', 'LEMERY', 'TAAL'],
-        'D2': ['SAN LUIS', 'BAUAN', 'SAN PASCUAL', 'MABINI', 'TINGLOY', 'LAUREL'],
-        'D3': ['STO.TOMAS', 'AGONCILLO', 'TALISAY', 'TANAUAN', 'MALVAR', 'SAN NICOLAS', 'BALETE', 'MATAAS NA KAHOY', 'STA. TERESITA', 'CUENCA', 'ALITAGTAG', 'LAUREL'],
-        'D4': ['SAN JOSE', 'IBAAN', 'ROSARIO', 'TAYSAN', 'PADRE GARCIA', 'SAN JUAN'],
-        'D5': ['BATANGAS'],
-        'D6' : ['LIPA'],
-    }
-
-    # Determine the correct suffix for the selected municipality
-    suffix = next((s for s, m in suffix_to_municipalities.items() if municipality.upper() in m), None)
-    if suffix is None:
-        # Handle the case where the municipality is not found
+def module_tourist(request, kiosk_id, municipality):
+    modules = get_modules_by_type_and_municipality('t', municipality)
+    if modules is None:
         return render(request, 'error.html', {'message': 'Municipality not found.'})
+    return render(request, 'module_tourist.html', {'modules': modules, 'municipality': municipality})
 
-    # Filter DistrictModules based on the selected municipality and its suffix
-    modules = DistrictModules.objects.filter(
-        Municipality__iexact=municipality,
-        DistrictModuleID__startswith='f',
-        DistrictModuleID__endswith=suffix
-    )
-    
-    return render(request, 'module_tourist.html', {'modules': modules})
-
-def module_craft(request, municipality):
-    # Mapping of suffixes to municipalities
-    suffix_to_municipalities = {
-        'D1': ['NASUGBO', 'LIAN', 'TUY', 'BALAYAN', 'CALACA', 'CALATAGAN', 'LEMERY', 'TAAL'],
-        'D2': ['SAN LUIS', 'BAUAN', 'SAN PASCUAL', 'MABINI', 'TINGLOY', 'LAUREL'],
-        'D3': ['STO.TOMAS', 'AGONCILLO', 'TALISAY', 'TANAUAN', 'MALVAR', 'SAN NICOLAS', 'BALETE', 'MATAAS NA KAHOY', 'STA. TERESITA', 'CUENCA', 'ALITAGTAG', 'LAUREL'],
-        'D4': ['SAN JOSE', 'IBAAN', 'ROSARIO', 'TAYSAN', 'PADRE GARCIA', 'SAN JUAN'],
-        'D5': ['BATANGAS'],
-        'D6' : ['LIPA'],
-    }
-
-    # Determine the correct suffix for the selected municipality
-    suffix = next((s for s, m in suffix_to_municipalities.items() if municipality.upper() in m), None)
-    if suffix is None:
-        # Handle the case where the municipality is not found
+def module_food(request, kiosk_id, municipality):
+    modules = get_modules_by_type_and_municipality('f', municipality)
+    if modules is None:
         return render(request, 'error.html', {'message': 'Municipality not found.'})
+    return render(request, 'module_food.html', {'modules': modules, 'municipality': municipality})
 
-    # Filter DistrictModules based on the selected municipality and its suffix
-    modules = DistrictModules.objects.filter(
-        Municipality__iexact=municipality,
-        DistrictModuleID__startswith='c',
-        DistrictModuleID__endswith=suffix
-    )
-    
-    return render(request, 'module_tourist.html', {'modules': modules})
+def module_craft(request, kiosk_id, municipality):
+    modules = get_modules_by_type_and_municipality('c', municipality)
+    if modules is None:
+        return render(request, 'error.html', {'message': 'Municipality not found.'})
+    return render(request, 'module_craft.html', {'modules': modules, 'municipality': municipality})
+
 
 def selectmodule(request):
     municipality = request.GET.get('municipality', '')
-    
-    # Optionally, determine the module type if you plan to include that in the URL or as another query parameter
-    # Redirect to the appropriate view based on the module type and municipality
-    # Example: return redirect('module_tourist', municipality=municipality)
     
     return render(request, 'selectmodule.html',{'municipality': municipality})
 
