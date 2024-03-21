@@ -13,7 +13,7 @@
             margin: 0;
             padding: 0;
             background-color: #FDF6EA;
-            overflow-y: hidden;
+            overflow: hidden;
         }
 
         #home-container {
@@ -53,6 +53,9 @@
         }
 
         .logo-container {
+            display: inline-block;
+            text-decoration: none;
+            color: inherit;
             position: relative;
             width: 200px;
             background-color: rgba(21, 55, 93, 0.7);
@@ -437,6 +440,7 @@
 
     <div class="logo-container">
         <img src="{% static 'logo.png' %}" class="logo-image">
+        <a href="#" id="home-link"></a>
         <div class="dashboard-word">Dashboard</div>
     </div>
 
@@ -534,7 +538,7 @@
 
         </div>
 
-        <form action="/login/" method="get">
+        <form action="/homepage/" method="get">
             {% if not submit %}
             <button class="logout-button">LOGOUT</button>
             {% endif %}
@@ -601,6 +605,7 @@
     </main>
 
     <script>
+        // SCRIPT FOR THE GRAPH
         // Function to create and update the donut chart
         function updateDonutChart() {
 
@@ -652,6 +657,7 @@
         updateDonutChart();
     </script>
     <script>
+        // SCRIPT FOR NAV BUTTONS
         document.addEventListener('DOMContentLoaded', function () {
             // Get all district buttons
             const districtButtons = document.querySelectorAll('.district-button');
@@ -768,8 +774,43 @@
                 return false;
             }
         };
+        // SCRIPT TO SAVED MUNICIPALITY
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get all district buttons
+            const districtButtons = document.querySelectorAll('.district1-button, .district2-button, .district3-button, .district4-button, .district5-button, .district6-button');
+
+            // Function to save district name to sessionStorage
+            function saveDistrictName(districtName) {
+                sessionStorage.setItem('selectedDistrict', districtName);
+            }
+
+            // Add click event listener to each district button
+            districtButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const districtName = button.textContent.trim();
+                    // Save the clicked district name to sessionStorage
+                    saveDistrictName(districtName);
+
+                });
+            });
+        });
     </script>
 
+    <script>
+        setTimeout(function () {
+            // Fade out the body elements except for the .queue-container
+            const elementsToFade = document.querySelectorAll('card queue_list');
+            elementsToFade.forEach(element => {
+                element.style.transition = "opacity 1s ease";
+                element.style.opacity = "0";
+            });
+
+            // Reload the page after the fade-out effect
+            setTimeout(function () {
+                window.location.reload(true);
+            }, 1000); // Delay matches the transition duration
+        }, 10000); // Delay before reload   
+    </script>
 </body>
 
 </html>

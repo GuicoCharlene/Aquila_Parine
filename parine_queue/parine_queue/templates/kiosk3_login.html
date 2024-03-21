@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   {% load static %}
   <meta charset="UTF-8">
@@ -13,18 +14,26 @@
       height: 100vh;
       overflow: hidden;
     }
+
     #video-background {
       position: absolute;
       top: 0;
       right: 0;
-      bottom:  0;
-      min-width: 30%; /* Adjusted to cover the entire width of the screen */
-      min-height: 10%; /* Adjusted to cover the entire height of the screen */
+      bottom: 0;
+      min-width: 30%;
+      /* Adjusted to cover the entire width of the screen */
+      min-height: 10%;
+      /* Adjusted to cover the entire height of the screen */
       width: auto;
       height: auto;
       z-index: -1000;
     }
-    
+
+    .Logo {
+      width: 300px;
+
+    }
+
     /* Media query for smaller screens */
     @media only screen and (max-width: 768px) {
       #video-background {
@@ -32,44 +41,55 @@
         min-height: 100%;
       }
     }
+
     .login-container {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
-      font-family: YAD1aYG82rc-0;;
-
+      font-family: YAD1aYG82rc-0;
       color: #010355;
-      border: 1px solid #1db4ff;
-      border-radius: 10px;
-
-      width: 500px; 
-      height: 300px;
+      border: 1px solid #0f172a;
+      border-radius: 30px;
+      width: 90%;
+      /* Adjust width as needed */
+      max-width: 500px;
+      /* Set maximum width */
+      height: auto;
       background: #ffffff;
+      z-index: 1;
+      /* Ensure the login container is above the video background */
     }
+
     .login-form {
       background: rgb(348, 347, 347);
       padding: 20px;
-      border-radius: 10px;
+      border-radius: 30px;
     }
 
     .header-container {
       display: flex;
       align-items: center;
+      justify-content: center;
       font-size: 20px;
       text-align: left;
+      margin-top: 20px;
+      gap: 10px;
+      margin-bottom: 10px;
+      /* Add margin to separate from the video background */
     }
-    
-    .header-container img {
-      margin-left: 60px; 
 
+    .header-container img {
+      max-width: 27%;
+      height: auto;
     }
 
     .login-form input[type="password"] {
-      width: 100%;
+      width: calc(100% - 30%);
       padding: 10px;
-      margin: 10px 0;
+      margin-top: 5px;
+      margin-bottom: 20px;
       border: 1px solid #1db4ff;
       border-radius: 5px;
       box-sizing: border-box;
@@ -77,18 +97,18 @@
 
     .login-form input[type="submit"] {
       width: 50%;
+      margin-bottom: 10px;
       padding: 10px;
-      border: 1px solid #ffffff;
-      border-radius: 5px;
+      border: 1px solid #0f172a;
+      border-radius: 15px;
       background-color: #1db4ff;
-      color: rgb(253, 249, 249);
+      color: #fdf9f9;
       cursor: pointer;
       font-size: 24px;
       transition: transform 0.3s;
       animation: heartbeat 1s infinite;
-      position: absolute;
-      bottom: -50px; 
-      margin-left: -20%;
+      position: relative;
+      bottom: 0;
       transform: translateX(-50%);
     }
 
@@ -97,9 +117,11 @@
       0% {
         transform: scale(1);
       }
+
       50% {
         transform: scale(1.05);
       }
+
       100% {
         transform: scale(1);
       }
@@ -114,50 +136,131 @@
     .login-form input[type="submit"]:not(:hover) {
       animation: heartbeat 1s infinite;
     }
+
+    .all-batangas-image {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60%;
+      height: 80%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .hidden {
+      display: none;
+    }
+
   </style>
 </head>
+
 <body>
   <video autoplay muted loop id="video-background">
     <source src="{% static 'aquila.mp4' %}" type="video/mp4">
     Your browser does not support HTML5 video.
   </video>
 
-  <img src="{% static 'all batangas.png' %}" style="width: auto; max-width: 1500px; display: block; margin: 0 auto;">
-  
+  <img src="{% static 'all batangas.png' %}" class="all-batangas-image" alt="Background Image">
+
   <div class="login-container">
     <div class="login-form">
       <!-- Header and form elements -->
       <div class="header-container">
-        <img src="{% static 'logo.png' %}" alt="Parine sa Batangas" style="width: 50%; max-width: 100px;">
-        <h2>Welcome to Parine sa Batangas!</h2>
+        <img src="{% static 'logo.png' %}" class="Logo">
+        <h2>Welcome to <br>Parine sa Batangas!</h2>
       </div>
-      <hr style="border-top: 5px solid #06C9EF; width: 100%; margin: 0 auto;">
+      <hr style="border-top: 5px solid #06C9EF; width: 400px; margin: 0 auto;">
       <!-- Display the username of the user inside kioskID 1 -->
       {% if kiosk_username %}
       <h2>Hello, {{ kiosk_username }}!</h2>
+      <!-- Start button form -->
+      <form id="startForm" method="post">
+        {% csrf_token %}
+        <input type="submit" name="START" value="START" style="margin-top: 10px;" onclick="showLoginForm(); return false;">
+
+      </form>
+      <!-- Hidden login form -->
+      <div id="loginSection" class="hidden">
+        <form id="loginForm" method="post" onsubmit="return submitForm();">
+          {% csrf_token %}
+          <input type="password" id="password" name="password" placeholder="Password" required><br>
+          <input type="submit" value="Login">
+        </form>
+      </div>
       {% else %}
       <h2>No user in kiosk </h2>
       {% endif %}
-      <!-- Login form -->
-      <form id="loginForm" method="post" onsubmit="return submitForm();">
-        {% csrf_token %}
-        <input type="password" id="password" name="password" placeholder="Password" required><br>
-        <input type="submit" value="Login">
-      </form>
     </div>
   </div>
 
   <script>
+    function showLoginForm() {
+      // Remove the 'hidden' class to show the login form
+      document.getElementById('loginSection').classList.remove('hidden');
+      // Optionally, hide the start button to prevent repeated clicks
+      document.getElementById('startForm').style.display = 'none';
+      // Automatically focus on the password input field for user convenience
+      document.getElementById('password').focus();
+    }
+  </script>
+  
+
+  <script>
     function submitForm() {
       var password = document.getElementById('password').value;
-      
+
       // Perform validation here if needed
-      
+
       // Redirect to selectdistrict.html after successful login
       window.location.href = 'selectdistrict';
-      
+
       return false; // Prevent default form submission
     }
   </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Add event listener to the start form
+        document.getElementById('startForm').addEventListener('submit', function(event) {
+            // Prevent default form submission
+            event.preventDefault();
+
+            // Make an AJAX request to update the queue status
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', this.action, true);
+            xhr.setRequestHeader('X-CSRFToken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Handle successful response
+                        console.log('Queue status updated successfully');
+                    } else {
+                        // Handle error
+                        console.error('Error updating queue status');
+                    }
+                }
+            };
+            xhr.send();
+        });
+    });
+</script>
+
+  <script>
+    setTimeout(function () {
+      // Fade out the body elements except for the .queue-container
+      const elementsToFade = document.querySelectorAll('login-container');
+      elementsToFade.forEach(element => {
+        element.style.transition = "opacity 1s ease";
+        element.style.opacity = "0";
+      });
+
+      // Reload the page after the fade-out effect
+      setTimeout(function () {
+        window.location.reload(true);
+      }, 1000); // Delay matches the transition duration
+    }, 10000); // Delay before reload   
+  </script>
+
 </body>
+
 </html>

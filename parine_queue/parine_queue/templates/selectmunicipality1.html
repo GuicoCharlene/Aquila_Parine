@@ -138,7 +138,7 @@
 
     .title {
         position: absolute;
-        top: 5%;
+        top: 2.4088541666666665vw;
         left: 42%;
         transform: translateX(-50%);
         font-family: 'Fira Sans', sans-serif;
@@ -162,7 +162,7 @@
     .barrier
     {
         position: absolute;
-        top: 5%;
+        top: 2.4088541666666665vw;
         left: 52.48%;
         transform: translateX(-50%);
         font-family: 'Fira Sans', sans-serif;
@@ -175,7 +175,7 @@
     .district
     {
         position: absolute;
-        top: 5%;
+        top: 2.4088541666666665vw;
         left: 53.82%;
         font-family: 'Fira Sans', sans-serif;
         font-size:  3.2552083333333335vw;
@@ -187,8 +187,8 @@
     .district1 {
         position: absolute;
         display: flex;
-        left: 5.2%;
-        bottom: -44.59%;
+        left: 4.622395833333333vw;
+        top: 3.2552083333333335vw;
         width: 92vw;
         height: auto;
     }
@@ -222,8 +222,8 @@
       .header img {
         width: 13.020833333333334vw; /* Adjust the width as needed */
         height: auto;
-        margin-right: 10px; /* Add some spacing between the text and the image */
-        margin-top: 10px;
+        margin-right: 0.6510416666666666vw; /* Add some spacing between the text and the image */
+        margin-top: 0.6510416666666666vw;
         margin-left: 0px;
     }
     .select{
@@ -660,7 +660,7 @@ color: #FFFFFF;
 .exploreLM {
     display: none; /* Hide the container by default */
     position: absolute;
-    top: 25.5859375vw;
+    top: 21.809895833333332vw;
     left: 69.98697916666667vw;
     transform: translate(-50%, -50%);
     text-align: center;
@@ -954,7 +954,7 @@ color: #FFFFFF;
             <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
         </div>
         <div id="rightPanel">
-            <button id="backButton">Back</button>
+            <img id="backButton" src="{% static 'backbutton.png' %}" alt="Back Button" />
             <div id="usertopPanel"></div>
             <form method="post" action="{% url 'kiosk_logout' kiosk_id=kiosk_id %}">
                 {% csrf_token %}
@@ -964,7 +964,7 @@ color: #FFFFFF;
         <div class="title">BATANGAS</div>
         <div class="barrier">|</div>
         <div class="district">District I</div>
-        
+        <img class="district1" src="{% static 'district 1-1.png' %}"  alt="district1">
         <!-- MUNICIPALITIES -->
         <button class="district1N-button" onclick="toggleButton(this)">
             <img src="{% static 'D1-N.png' %}" alt="District 1-N">
@@ -1001,7 +1001,7 @@ color: #FFFFFF;
         <!-- EXPLORE -->
         <div class="exploreN" id="exploreN" style="display: none;">
             <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> NASUGBO</p>
+            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw;; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> NASUGBU</p>
             <button id="exploreN-button" class="exploreN-button">EXPLORE</button>
         </div>
         <div class="exploreL" id="exploreL" style="display: none;">

@@ -6,9 +6,10 @@ from django.utils import timezone
 from datetime import timedelta
 from django.http import HttpResponseRedirect, JsonResponse
 from .models import QueueEntry, Kiosk
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseBadRequest
 import logging
 from django.db import transaction
 from django.urls import reverse
@@ -79,21 +80,9 @@ def queue(request):
 
 def queue_list(request):
     is_admin = request.session.get('is_admin', False)
-    
-    # Update kiosk status and delete associated queue entries for timed-out sessions
-    for kiosk in Kiosk.objects.filter(KioskStatus=True):
-        if kiosk.TimeDuration and (timezone.now() - kiosk.TimeDuration > timedelta(minutes=5900)):
-            if kiosk.QueueID:
-                # Remove the user from the queue entry
-                kiosk.QueueID.delete()
-                # Decrement the queue count by 1
-                kiosk.KioskStatus = False
-                kiosk.QueueID = None
-                kiosk.TimeDuration = None
-                kiosk.save()
 
     # Assign users from the queue to available kiosks
-    for queue_entry in QueueEntry.objects.exclude(QueueStatus='IN KIOSK').select_related('user').order_by('PriorityLevel'):
+    for queue_entry in QueueEntry.objects.exclude(QueueStatus='IN KIOSK').exclude(QueueStatus='IN MODULE').exclude(QueueStatus='LOGGED IN').select_related('user').order_by('PriorityLevel'):
         available_kiosk = Kiosk.objects.filter(KioskStatus=False).first()
         if available_kiosk:
             available_kiosk.KioskStatus = True
@@ -107,17 +96,24 @@ def queue_list(request):
                 hours = int(time_spent.total_seconds() // 3600)
                 minutes = int((time_spent.total_seconds() % 3600) // 60)
                 queue_entry.EndTime = queue_entry.StartTime + timedelta(hours=hours, minutes=minutes)
+            # Update QueueStatus to 'IN KIOSK' and 'LOGGED IN' only if it's not already 'IN MODULE' or 'LOGGED IN'
+            if queue_entry.QueueStatus != 'IN MODULE':
+                queue_entry.QueueStatus = 'IN KIOSK'
+                queue_entry.save()
+                
+            else: queue_entry.QueueStatus != 'LOGGED IN'
             queue_entry.QueueStatus = 'IN KIOSK'
-            queue_entry.save(update_fields=['QueueStatus', 'EndTime'])
-            # Decrement the queue count by 1
+            queue_entry.save()
+                
+                
+            # Decrement the queue count by 1 (Make sure to implement this part as per your application's logic)
+
 
     # Check if the current user is assigned to a kiosk
     logged_in_username = request.session.get('logged_in_username')
     if logged_in_username:
         assigned_kiosk = Kiosk.objects.filter(QueueID__user__username=logged_in_username).first()
-        if assigned_kiosk:
-            # If user is assigned to a kiosk, redirect to kiosk login page
-            return redirect('kiosk_login', kiosk_id=assigned_kiosk.KioskID)
+        
 
     # Prepare data for displaying in the template
     kiosks_data = []
@@ -139,7 +135,7 @@ def queue_list(request):
         })
 
     context = {
-        'queue_entries': QueueEntry.objects.exclude(QueueStatus='IN KIOSK').select_related('user').order_by('PriorityLevel'),
+        'queue_entries': QueueEntry.objects.exclude(QueueStatus='IN KIOSK').exclude(QueueStatus='IN MODULE').exclude(QueueStatus='LOGGED IN').select_related('user').order_by('PriorityLevel'),
         'kiosks_data': kiosks_data,
         'is_admin': is_admin,
         'logged_in_username': logged_in_username,
@@ -154,10 +150,6 @@ def adminpage(request):
     queue_capacity_value = Queue_Capacity.objects.values_list('limit', flat=True).first()
     if view_list:
         queue_entries = QueueEntry.objects.all().select_related('user').order_by('PriorityLevel')
-        
-        # for entry in queue_entries:
-        #     if entry.StartTime and timezone.now() - entry.EndTime > timedelta(minutes=5):
-        #         entry.delete()
     
     context = {
         'queue_entries': queue_entries,
@@ -210,8 +202,7 @@ def selectdistrict(request, kiosk_id):
         return redirect('kiosk_logout')  
 
     # Ensure that the kiosk data is refreshed
- 
-    
+
    
     context = {
         'kiosk_id': kiosk_id,
@@ -245,60 +236,80 @@ def get_queue_data(request):
     except Exception as e:
         logger.error(f"Error fetching kiosk data: {e}", exc_info=True)
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
+    
 
 def kiosk_login(request, kiosk_id):
+    logged_in_username = request.session.get('logged_in_username')
+    current_time = timezone.now()
+    kiosk_username = None
+
+    # Check and handle kiosks that have exceeded time limits
+    for kiosk in Kiosk.objects.filter(KioskStatus=True).select_related('QueueID'):
+        if kiosk.QueueID and kiosk.QueueID.EndTime:
+            time_elapsed = current_time - kiosk.QueueID.EndTime
+            if time_elapsed >= timedelta(minutes=2):
+                queue_entry = kiosk.QueueID
+                if queue_entry.QueueStatus == 'IN KIOSK' or queue_entry.QueueStatus == 'IN MODULE':
+                    kiosk.QueueID.delete()
+                    kiosk.KioskStatus = False
+                    kiosk.QueueID = None
+                    kiosk.TimeDuration = None
+                    kiosk.save()
+        else:
+            kiosk.KioskStatus = False
+            kiosk.TimeDuration = None
+            kiosk.save()
+
     try:
-        # Assuming kioskID is the relevant kiosk
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
-        kiosk_username = kiosk.QueueID.user.username if kiosk.QueueID else None
-        
-        if not kiosk.QueueID:  # Ensure there is no user assigned to the kiosk
-            # Check if a user is logged in
-            logged_in_username = request.session.get('logged_in_username')
-            if logged_in_username:
-                # Retrieve the user's queue entry
-                queue_entry = QueueEntry.objects.get(user__username=logged_in_username)
-                # Associate the user's queue entry with this kiosk
+        if kiosk.QueueID:
+            kiosk_username = kiosk.QueueID.user.username
+            if not kiosk.QueueID.QueueStatus == 'IN MODULE':
+                kiosk.QueueID.QueueStatus = 'IN MODULE'
+                kiosk.QueueID.save()
+                if request.method == 'POST' and request.is_ajax():
+                    queue_entry.QueueStatus = 'LOGGED IN'
+                    queue_entry.save()
+                
+        if logged_in_username:
+            queue_entry = QueueEntry.objects.get(user__username=logged_in_username)
+            if not kiosk.QueueID:
                 kiosk.QueueID = queue_entry
                 kiosk.KioskStatus = True
-                kiosk.TimeDuration = timezone.now()  # Start the timer
+                kiosk.TimeDuration = current_time
                 kiosk.save()
-            else:
-                # If no user is logged in, return an error
-                messages.error(request, "No user is currently logged in.")
-                return HttpResponse(status=403)  # Return forbidden status
-
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk.")
+    except QueueEntry.DoesNotExist:
+        messages.error(request, "No user assigned to this kiosk.")
 
-    # Proceed with login if no user is assigned to the kiosk
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
-        'logged_in_username': request.session.get('logged_in_username', None),
+        'logged_in_username': logged_in_username,
     }
+
     return render(request, f'kiosk{kiosk_id}_login.html', context)
 
 #Views for logout in kiosk
 @transaction.atomic
 def kiosk_logout(request, kiosk_id):
-    # Get the kiosk object from the database
-    kiosk = get_object_or_404(Kiosk, KioskID=kiosk_id)
+    try:
+        kiosk = Kiosk.objects.get(KioskID=kiosk_id)
 
-    # Check if the kiosk has an associated queue entry
-    if kiosk.QueueID:
-        # Get the associated queue entry
-        queue_entry = kiosk.QueueID
-        # Remove the associated queue entry
-        queue_entry.delete()
+        if kiosk.QueueID:
+            # Handle logout logic
+            kiosk.QueueID.delete()
+            kiosk.QueueID = None
+        
+        # Reset kiosk status regardless of whether there was a QueueID
+        kiosk.KioskStatus = False
+        kiosk.TimeDuration = None
+        kiosk.save()
 
-    # Reset kiosk status and associated queue ID
-    kiosk.KioskStatus = False
-    kiosk.QueueID = None
-    kiosk.TimeDuration = None
-    kiosk.save()
+    except Kiosk.DoesNotExist:
+        messages.error(request, "Invalid Kiosk.")
 
-    # Redirect or render as needed
     return render(request, 'kiosk_logout.html', {'kiosk_id': kiosk_id})
 
 def admin_district_1(request):
@@ -325,10 +336,6 @@ def admin_district_6(request):
    
     return render(request, 'admin_district_6.html')
 
-
-def no_user(request):
-     return render(request, 'no_user.html')
-
 def selectmunicipality1(request, kiosk_id):
     return render(request, 'selectmunicipality1.html',{'kiosk_id': kiosk_id})
 
@@ -348,17 +355,16 @@ def selectmunicipality6(request, kiosk_id):
     return render(request, 'selectmunicipality6.html',{'kiosk_id': kiosk_id})
 
 def get_district_suffix(municipality):
-    """
-    This function takes a municipality name and returns the corresponding
-    district suffix if found, else returns None.
-    """
+
+    # This function takes a municipality name and returns the corresponding
+
     suffix_to_municipalities = {
-        'D1': ['NASUGBO', 'LIAN', 'TUY', 'BALAYAN', 'CALACA', 'CALATAGAN', 'LEMERY', 'TAAL'],
+        'D1': ['NASUGBU', 'LIAN', 'TUY', 'BALAYAN', 'CALACA', 'CALATAGAN', 'LEMERY', 'TAAL'],
         'D2': ['SAN LUIS', 'BAUAN', 'SAN PASCUAL', 'MABINI', 'TINGLOY', 'LOBO'],
         'D3': ['STO.TOMAS', 'AGONCILLO', 'TALISAY', 'TANAUAN', 'MALVAR', 'SAN NICOLAS', 'BALETE', 'MATAAS NA KAHOY', 'STA. TERESITA', 'CUENCA', 'ALITAGTAG', 'LAUREL'],
         'D4': ['SAN JOSE', 'IBAAN', 'ROSARIO', 'TAYSAN', 'PADRE GARCIA', 'SAN JUAN'],
-        'D5': ['BATANGAS'],  # Assuming "BATANGAS" refers to the city for clarity
-        'D6': ['LIPA'],  # Assuming "LIPA" refers to the city for clarity
+        'D5': ['BATANGAS'], 
+        'D6': ['LIPA'],  
     }
     for suffix, municipalities in suffix_to_municipalities.items():
         if municipality.upper() in municipalities:

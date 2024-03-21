@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from . import views
-from .views import login, homepage, queue, queue_list, adminpage, selectdistrict, update_queue_capacity, kiosk_logout, kiosk_login, get_queue_data, admin_district_1, no_user
+from .views import login, homepage, queue, queue_list, adminpage, selectdistrict, update_queue_capacity, kiosk_logout, kiosk_login, get_queue_data, admin_district_1
 from .views import admin_district_2, admin_district_3, admin_district_4, admin_district_5, admin_district_6, selectmunicipality1, selectmunicipality2, selectmunicipality3, selectmunicipality4, selectmunicipality5, selectmunicipality6, selectmodule, module_tourist, module_food, module_craft, quiz
 
 urlpatterns = [
@@ -20,7 +20,6 @@ urlpatterns = [
     path('adminpage/admin_district_6/', admin_district_6, name='admin_district_6'),
 
     path('update_queue_capacity/', update_queue_capacity, name='update_queue_capacity'),  
-    path('kiosk_login/<int:kiosk_id>/no_user/', no_user, name='no_user'),
     path('kiosk_logout/<int:kiosk_id>/', kiosk_logout, name='kiosk_logout'),
     path('kiosk_login/<int:kiosk_id>/', kiosk_login, name='kiosk_login'),
     path('kiosk_login/<int:kiosk_id>/selectdistrict/', views.selectdistrict, name='selectdistrict'),

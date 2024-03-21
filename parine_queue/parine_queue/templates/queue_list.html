@@ -28,10 +28,29 @@
             color: #010355;
         }
 
+        .back-icon {
+            position: absolute;
+            left: 20px;
+            /* Adjust as needed */
+            top: 20px;
+            /* Adjust as needed */
+            color: #010355;
+            font-family: 'Georgia', serif;
+            transform: translateY(100%);
+            text-decoration: none;
+            font-size: 30px;
+            transition: color 0.3s ease;
+        }
+
+        .back-icon:hover {
+            color: whitesmoke;
+            /* Change color on hover */
+        }
+
         /* Adjust the sidebar to match the list-container style */
         .list-container {
             position: absolute;
-            top: 23%;
+            top: 178px;
             /* Adjust the position as needed */
             left: 0;
             width: 20%;
@@ -165,11 +184,11 @@
         .time-background {
             position: absolute;
             width: 50%;
-            height: 0%;
-            top: 0;
+            height: 13%;
+            top: 50%;
+            padding: 5px;
             right: 0;
             background-color: yellow;
-            /* Same as the time background color */
             border-top-right-radius: 5px;
             border-bottom-right-radius: 5px;
         }
@@ -187,12 +206,12 @@
 
         .jip-img {
             position: absolute;
-            top: 17%;
+            top: 16%;
             left: 5%;
             transform: translateX(-50%);
             width: 50%;
             /* Adjust width as needed */
-            max-width: 100px;
+            max-width: 120px;
             z-index: 1;
             /* Ensure the image stays above other content */
             animation: moveForth 8s ease-in-out infinite, glow 1s ease-in-out infinite alternate;
@@ -252,9 +271,44 @@
 <body>
     <img src="{% static 'jip.png' %}" class="jip-img" alt="Parine sa Batangas">
     <div class="queue-container">
+        <a href="/homepage/" class="back-icon"> &#9664; RETURN</a>
         <h2>PARINE SA BATANGAS</h2>
     </div>
 
+
+    <div class="list-container">
+        <p>QUEUE</p>
+        {% for entry in queue_entries %}
+        {% if entry.user.username == logged_in_username %}
+        <div class="sub logged-in-user">{{ entry.user.username }}</div>
+        {% else %}
+        <div class="sub">{{ entry.user.username }}</div>
+        {% endif %}
+        {% empty %}
+        <div class="sub">No visitors in the queue.</div>
+        {% endfor %}
+    </div>
+
+
+    <div class="content-container">
+        <div class="kiosk-wrapper" style="--total-kiosks:{{ total_kiosks }}">
+            {% for kiosk_data in kiosks_data %}
+            <div class="kiosk-container" data-kiosk-id="{{ kiosk_data.KioskID }}"
+                data-start-time="{{ kiosk_data.start_time }}">
+                <p>Kiosk {{ kiosk_data.KioskID }}</p>
+                {% if kiosk_data.user %}
+                <div class="queue">{{ kiosk_data.user }}</div>
+                <div class="time-background"></div>
+                <div class="time"></div>
+                {% else %}
+                <div class="queue">AVAILABLE</div>
+                <div class="time-background"></div>
+                <div class="time">TIME</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
     <script>
 
         function startTimer(startTime, timerElement) {
@@ -262,16 +316,45 @@
                 console.error('Invalid start time:', startTime);
                 return;
             }
-
+        
             const startTimestamp = new Date(startTime).getTime();
+            console.log('Start Timestamp:', startTimestamp); // Logging start timestamp for debugging
+        
             const intervalId = setInterval(function () {
-                const elapsedTime = new Date().getTime() - startTimestamp;
-                const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
-                timerElement.textContent = `${minutes.toString().padStart(2, '0')} Mins ${seconds.toString().padStart(2, '0')} Secs`;
+                const currentTime = new Date().getTime();
+                const elapsedTime = currentTime - startTimestamp - (8 * 3600 * 1000); // Subtract 8 hours in milliseconds
+                console.log('Elapsed Time:', elapsedTime); // Logging elapsed time for debugging
+                
+                let totalSeconds = Math.floor(elapsedTime / 1000);
+                let hours = Math.floor(totalSeconds / 3600);
+                totalSeconds %= 3600;
+                let minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+            
+                let displayTime = '';
+            
+                // Increment hours if minutes reach 60
+                if (minutes >= 60) {
+                    hours += Math.floor(minutes / 60);
+                    minutes %= 60;
+                }
+            
+                // Add 1 hour if minutes reach 60
+                if (minutes >= 60) {
+                    hours++;
+                    minutes %= 60;
+                }
+            
+                // Display time
+                displayTime += `${(hours < 10 ? '0' : '') + hours} Hrs ${(minutes < 10 ? '0' : '') + minutes} Mins ${seconds < 10 ? '0' : ''}${seconds} Secs`;
+            
+                timerElement.textContent = displayTime;
             }, 1000);
             timerElement.setAttribute('data-interval-id', intervalId);
+            
+            
         }
+            
 
         function updateKioskDisplay() {
             $.ajax({
@@ -300,15 +383,18 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             updateKioskDisplay();
-            setInterval(updateKioskDisplay, 10000); // Update every seconds
+            setInterval(updateKioskDisplay, 1000); // Update
         });
     </script>
 
     <script>
         setTimeout(function () {
-            // Fade out the body
-            document.body.style.transition = "opacity 0.1s ease-out";
-            document.body.style.opacity = "0";
+            // Fade out the body elements except for the .queue-container
+            const elementsToFade = document.querySelectorAll('body > *:not(.queue-container)');
+            elementsToFade.forEach(element => {
+                element.style.transition = "opacity 0.1s ease";
+                element.style.opacity = "0";
+            });
 
             // Reload the page after the fade-out effect
             setTimeout(function () {
@@ -317,38 +403,12 @@
         }, 10000); // Delay before reload
     </script>
 
-    <div class="list-container">
-        <p>QUEUE</p>
-        {% for entry in queue_entries %}
-        {% if entry.user.username == logged_in_username %}
-        <div class="sub logged-in-user">{{ entry.user.username }}</div>
-        {% else %}
-        <div class="sub">{{ entry.user.username }}</div>
-        {% endif %}
-        {% empty %}
-        <div class="sub">No visitors in the queue.</div>
-        {% endfor %}
-    </div>
-
-    <div class="content-container">
-        <div class="kiosk-wrapper" style="--total-kiosks:{{ total_kiosks }}">
-            {% for kiosk_data in kiosks_data %}
-            <div class="kiosk-container" data-kiosk-id="{{ kiosk_data.KioskID }}"
-                data-start-time="{{ kiosk_data.start_time }}">
-                <p>Kiosk {{ kiosk_data.KioskID }}</p>
-                {% if kiosk_data.user %}
-                <div class="queue">{{ kiosk_data.user }}</div>
-                <div class="time"></div>
-                <div class="time-background"></div>
-                {% else %}
-                <div class="queue">AVAILABLE</div>
-                <div class="time">TIME</div>
-                <div class="time-background"></div>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+    <script>
+        setTimeout(function () {
+            // Redirect to homepage after 10 minutes
+            window.location.href = "/homepage/";
+        }, 600000); //10 minutes
+    </script>
 </body>
 
 </html>

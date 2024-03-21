@@ -1,4 +1,5 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,20 +18,22 @@
             position: absolute;
             right: 0;
             bottom: 0;
-            min-width: 100%; /* Adjusted to cover the entire width of the screen */
-            min-height: 100%; /* Adjusted to cover the entire height of the screen */
+            min-width: 100%;
+            /* Adjusted to cover the entire width of the screen */
+            min-height: 100%;
+            /* Adjusted to cover the entire height of the screen */
             width: auto;
             height: auto;
             z-index: -1000;
-          }
-          
-          /* Media query for smaller screens */
-          @media only screen and (max-width: 768px) {
+        }
+
+        /* Media query for smaller screens */
+        @media only screen and (max-width: 768px) {
             #video-background {
-              min-width: 100%;
-              min-height: 100%;
+                min-width: 100%;
+                min-height: 100%;
             }
-          }
+        }
 
         .queue-container {
             position: absolute;
@@ -39,8 +42,8 @@
             transform: translate(-50%, -50%);
             text-align: center;
             color: #010355;
-            border: 1px solid #1db4ff;
-            border-radius: 10px;
+            border: 1px solid #0f172a;
+            border-radius: 30px;
             background: rgba(255, 255, 255, 0.8);
             padding: 20px;
             max-width: 80%;
@@ -56,15 +59,31 @@
             margin-bottom: 20px;
         }
 
+        .batslogo {
+            width: auto;
+            max-width: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .parinelogo {
+            width: 130px;
+            display: block;
+            margin: 0 auto;
+        }
+
         .btn-primary {
             width: 200px;
-            padding: 10px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding: 12px;
             border: none;
-            border-radius: 5px;
+            border-radius: 15px;
             background-color: #1db4ff;
+            border: 1px solid #0f172a;
             color: #fdf9f9;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 23px;
             text-decoration: none;
             display: inline-block;
             animation: heartbeat 1s infinite;
@@ -74,9 +93,11 @@
             0% {
                 transform: scale(1);
             }
+
             50% {
                 transform: scale(1.1);
             }
+
             100% {
                 transform: scale(1);
             }
@@ -94,15 +115,15 @@
         <source src="{% static 'aquila.mp4' %}" type="video/mp4">
         Your browser does not support HTML5 video.
     </video>
-    <img src="{% static 'all batangas.png' %}" style="width: auto; max-width: auto; display: block; margin: 0 auto;">
-    <div class="queue-container">
-        <div class="message-container">
-            <img src="{% static 'logo.png' %}" alt="Parine sa Batangas" style="width: 50%; max-width: 100px; display: block; margin: 0 auto;">
-            <h2>Welcome to Parine sa Batangas!</h2>
-            <p>Before you get to explore the beauty of Batangas Province, you will be added to the queue.</p>
-        </div>
+    <img src="{% static 'all batangas.png' %}" class=batslogo ">
+    <div class=" queue-container">
+    <div class="message-container">
+        <img src="{% static 'logo.png' %}" class="parinelogo">
+        <h2>Welcome to Parine sa Batangas!</h2>
+        <p>Before you get to explore the beauty of Batangas Province, you will be added to the queue.</p>
+    </div>
 
-        <button onclick="redirectToQueueList()" class="btn-primary">View Queue List</button>
+    <button onclick="redirectToQueueList()" class="btn-primary">View Queue List</button>
 
     </div>
 
@@ -112,5 +133,5 @@
         }
     </script>
 </body>
-</html>
 
+</html>

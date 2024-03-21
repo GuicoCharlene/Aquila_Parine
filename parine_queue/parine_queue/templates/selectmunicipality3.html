@@ -1275,7 +1275,7 @@
             <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
         </div>
         <div id="rightPanel">
-            <button id="backButton">Back</button>
+            <img id="backButton" src="{% static 'backbutton.png' %}" alt="Back Button" />
             <div id="usertopPanel"></div>
             <form method="post" action="{% url 'kiosk_logout' kiosk_id=kiosk_id %}">
                 {% csrf_token %}

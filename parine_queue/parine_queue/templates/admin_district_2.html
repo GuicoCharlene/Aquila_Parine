@@ -53,6 +53,15 @@
             align-items: center;
         }
 
+        .municipality-container {
+            white-space: nowrap;
+            position: absolute;
+            font-family: 'Georgia', serif;
+            font-size: 55px;
+            color: #15375D;
+            margin-left: 220px;
+        }
+
         .logo-container {
             position: relative;
             width: 200px;
@@ -219,7 +228,7 @@
     </header>
     <div class="logo-container">
         <img src="{% static 'logo.png' %}" class="logo-image">
-
+        <div class="municipality-container" id="selected-municipality-display"></div>
 
     </div>
     <nav>
@@ -314,7 +323,7 @@
 
         </div>
 
-        <form action="/login/" method="get">
+        <form action="/homepage/" method="get">
             {% if not submit %}
             <button class="logout-button">LOGOUT</button>
             {% endif %}
@@ -322,7 +331,7 @@
     </nav>
 
     <main>
-        <!-- Your main content here -->
+
     </main>
 
     <script>
@@ -441,6 +450,33 @@
             }
         };
 
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get all district buttons
+            const districtButtons = document.querySelectorAll('.district1-button, .district2-button, .district3-button, .district4-button, .district5-button, .district6-button');
+
+            // Function to save district name to sessionStorage
+            function saveDistrictName(districtName) {
+                sessionStorage.setItem('selectedDistrict', districtName);
+            }
+
+            // Add click event listener to each district button
+            districtButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const districtName = button.textContent.trim();
+                    // Save the clicked district name to sessionStorage
+                    saveDistrictName(districtName);
+
+                });
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Retrieve the selected district name from sessionStorage
+            const selectedDistrict = sessionStorage.getItem('selectedDistrict');
+            if (selectedDistrict) {
+                // Display the selected district name
+                document.getElementById('selected-municipality-display').textContent = `${selectedDistrict}`;
+            }
+        });
     </script>
 
 </body>

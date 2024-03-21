@@ -98,8 +98,8 @@
     }
     .bubble {
         position: absolute;
-        top: 14.6484375vw;
-        left: 7.161458333333333vw;
+        top: 395px;
+        left: 180px;
         text-align: center;
         font-family: 'Libre Baskerville', serif;
         font-size: 1.8229166666666667vw;
@@ -118,11 +118,11 @@
         display: flex;
         align-items: center;
         text-align: left;
-        flex-direction: row-reverse;
         color: #15375D;
     }
 
     .welcome img {
+        order: -1;
         width: 13.020833333333334vw; /* Adjust the width as needed */
         height: auto;
         margin-right:  0.6510416666666666vw; /* Add some spacing between the text and the image */
@@ -269,23 +269,18 @@
         <img class="batangas" src="{% static 'all batangas.png' %}" alt="batangas">
         <img class="bubblechat" src="{% static 'bubblechat.png' %}" alt="bubblechat">
         <button class="district1-button"
-            onclick="window.location.href='{% url 'selectmunicipality1' kiosk_id=kiosk_id %}'">DISTRICT I</button>
-        <button class="district2-button"
-            onclick="window.location.href='{% url 'selectmunicipality2' kiosk_id=kiosk_id %}'">DISTRICT
-            II</button>
-        <button class="district3-button"
-            onclick="window.location.href='{% url 'selectmunicipality3' kiosk_id=kiosk_id %}'">DISTRICT
-            III</button>
-        <button class="district4-button"
-            onclick="window.location.href='{% url 'selectmunicipality4' kiosk_id=kiosk_id %}'">DISTRICT
-            IV</button>
-        <button class="district5-button"
-            onclick="window.location.href='{% url 'selectmunicipality5' kiosk_id=kiosk_id %}'">DISTRICT
-            V</button>
-        <button class="district6-button"
-            onclick="window.location.href='{% url 'selectmunicipality6' kiosk_id=kiosk_id %}'">DISTRICT
-            VI</button>
-    </div>
+        onclick="window.location.href='{% url 'selectmunicipality1' kiosk_id=kiosk_id %}'">DISTRICT I</button>
+    <button class="district2-button"
+        onclick="window.location.href='{% url 'selectmunicipality2' kiosk_id=kiosk_id %}'">DISTRICT II</button>
+    <button class="district3-button"
+        onclick="window.location.href='{% url 'selectmunicipality3' kiosk_id=kiosk_id %}'">DISTRICT III</button>
+    <button class="district4-button"
+        onclick="window.location.href='{% url 'selectmunicipality4' kiosk_id=kiosk_id %}'">DISTRICT IV</button>
+    <button class="district5-button"
+        onclick="window.location.href='{% url 'selectmunicipality5' kiosk_id=kiosk_id %}'">DISTRICT V</button>
+    <button class="district6-button"
+        onclick="window.location.href='{% url 'selectmunicipality6' kiosk_id=kiosk_id %}'">DISTRICT VI</button>
+</div>
 
     <script>
         const imageButton = document.getElementById('imageButton');
