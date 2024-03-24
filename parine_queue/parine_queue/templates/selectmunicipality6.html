@@ -606,7 +606,6 @@
 
         //----------------------MODULE SCRIPT
         document.addEventListener('DOMContentLoaded', () => {
-            // Global variable to hold the selected municipality
             let currentMunicipality = 'LIPA';
         
             // Function to update the municipality based on user interaction
@@ -619,7 +618,7 @@
             // Attach click event listeners to each "Explore" button
             document.querySelectorAll('.exploreButton').forEach(button => {
                 button.addEventListener('click', function() {
-                    // Extracting the municipality name from the preceding <p> element
+                    // Extracting the municipality name from the after the <p> element
                     const municipalityName = this.previousElementSibling.textContent.split("Welcome to")[1]?.trim();
                     updateMunicipalityAndLoadModule(municipalityName);
                 });
@@ -647,12 +646,11 @@
         
                 var kioskId = window.location.pathname.split('/')[2]; // URL format is '/kiosk_login/{kiosk_id}/'
         
-                // Construct the URL for the module using the current municipality
+                //URL for the module using the current municipality
                 const moduleUrl = `/kiosk_login/${ kioskId }/${moduleType}/${currentMunicipality}/`;
                 document.getElementById('moduleFrame').src = moduleUrl;
             }
         
-            // Attach click event listeners to module buttons in the header
             document.querySelectorAll('.mheader button').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const moduleType = this.getAttribute('data-module');

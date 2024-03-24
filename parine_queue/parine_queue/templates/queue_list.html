@@ -318,12 +318,13 @@
             }
         
             const startTimestamp = new Date(startTime).getTime();
-            console.log('Start Timestamp:', startTimestamp); // Logging start timestamp for debugging
-        
+            console.log('Start Timestamp:', startTimestamp);
+
+            //Formula for time
             const intervalId = setInterval(function () {
                 const currentTime = new Date().getTime();
-                const elapsedTime = currentTime - startTimestamp - (8 * 3600 * 1000); // Subtract 8 hours in milliseconds
-                console.log('Elapsed Time:', elapsedTime); // Logging elapsed time for debugging
+                const elapsedTime = currentTime - startTimestamp - (8 * 3600 * 1000); 
+                console.log('Elapsed Time:', elapsedTime); 
                 
                 let totalSeconds = Math.floor(elapsedTime / 1000);
                 let hours = Math.floor(totalSeconds / 3600);
@@ -358,7 +359,7 @@
 
         function updateKioskDisplay() {
             $.ajax({
-                url: "/get_queue_data/", // Corrected URL
+                url: "/get_queue_data/", 
                 type: "GET",
                 success: function (response) {
                     const kiosksData = response.kiosk_data;
@@ -383,7 +384,7 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             updateKioskDisplay();
-            setInterval(updateKioskDisplay, 1000); // Update
+            setInterval(updateKioskDisplay, 1000);
         });
     </script>
 
@@ -396,11 +397,10 @@
                 element.style.opacity = "0";
             });
 
-            // Reload the page after the fade-out effect
             setTimeout(function () {
                 window.location.reload(true);
-            }, 100); // Delay matches the transition duration
-        }, 10000); // Delay before reload
+            }, 100); 
+        }, 10000); 
     </script>
 
     <script>

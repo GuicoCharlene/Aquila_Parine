@@ -201,23 +201,21 @@
     
     <script>
         function loadModule(button) {
-            // Remove active class from all buttons
             document.querySelectorAll('.header button').forEach(btn => {
                 btn.classList.remove('active-button');
-                btn.style.background = '#fff'; // Reset background color for all buttons
-                btn.style.color = '#18395E'; // Reset text color for all buttons
+                btn.style.background = '#fff';
+                btn.style.color = '#18395E';
             });
     
-            // Add active class to the clicked button
+
             button.classList.add('active-button');
-            button.style.background = '#18395E'; // Change background color of clicked button
-            button.style.color = '#fff'; // Change text color of clicked button
+            button.style.background = '#18395E'; 
+            button.style.color = '#fff'; 
     
             // Set the source of the iframe to the module HTML file URL
             document.getElementById('moduleFrame').src = "module";
 
             //THIS IS FOR THE DIFFERENT MODULES 
-            //Set the source of the iframe to the appropriate module HTML file URL
             var buttonText = button.textContent.trim(); // Get the text content of the button and remove leading/trailing spaces
             var firstWord = buttonText.split(" ")[0].toLowerCase(); // Extract the first word and convert to lowercase
             document.getElementById('moduleFrame').src = "module_" + firstWord;
@@ -226,11 +224,10 @@
     
         // Automatically start with the first module after page load
         window.onload = function() {
-            loadModule(document.querySelector('.header button')); // Load tourist module initially
+            loadModule(document.querySelector('.header button'));
         };
 
     </script>
-
 
 </body>
 </html>

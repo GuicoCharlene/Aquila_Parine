@@ -552,7 +552,7 @@
                 <div class="queue-capacity-container">
                     <form action="{% url 'update_queue_capacity' %}" method="post">
                         {% csrf_token %}
-                        <!-- Place the text directly before the input field -->
+                        <!-- Show the Queue Lst in the admin dashboard -->
                         <span class="queue-label">Queue Capacity:</span>
                         <input type="number" id="queueCapacity" class="queue-input" name="queue_capacity"
                             value="{{ queue_capacity.queue_capacity }}" min="0" max="100" />
@@ -691,7 +691,7 @@
                 });
             });
 
-            // Add mouseenter event listener to each district button
+            // Add event listener to each district button
             districtButtons.forEach(button => {
                 button.addEventListener('mouseenter', () => {
                     // If there's a district info currently displayed and it's not associated with the hovered button, hide it

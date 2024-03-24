@@ -1122,7 +1122,6 @@ h3 {
 
         //----------------------MODULE SCRIPT
         document.addEventListener('DOMContentLoaded', () => {
-            // Global variable to hold the selected municipality
             let currentMunicipality = '';
         
             // Function to update the municipality based on user interaction
@@ -1135,7 +1134,7 @@ h3 {
             // Attach click event listeners to each "Explore" button
             document.querySelectorAll('.exploreSJ-button, .exploreI-button, .exploreR-button, .exploreT-button, .explorePG-button, .exploreSN-button').forEach(button => {
                 button.addEventListener('click', function() {
-                    // Extracting the municipality name from the preceding <p> element
+                    // Extracting the municipality name from the after the <p> element
                     const municipalityName = this.previousElementSibling.textContent.split("Welcome to")[1]?.trim();
                     updateMunicipalityAndLoadModule(municipalityName);
                 });
@@ -1147,8 +1146,7 @@ h3 {
                     console.error('Municipality not set');
                     return;
                 }
-        
-                // Update button styles as needed
+
                 document.querySelectorAll('.mheader button').forEach(btn => {
                     if (btn.getAttribute('data-module') === moduleType) {
                         btn.classList.add('mactive-button');
@@ -1168,7 +1166,6 @@ h3 {
                 document.getElementById('moduleFrame').src = moduleUrl;
             }
         
-            // Attach click event listeners to module buttons in the header
             document.querySelectorAll('.mheader button').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const moduleType = this.getAttribute('data-module');

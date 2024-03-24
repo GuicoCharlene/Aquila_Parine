@@ -27,7 +27,7 @@ def login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        is_admin_login = request.POST.get('validate_only_admin') == 'on'  # Check if admin login
+        is_admin_login = request.POST.get('validate_only_admin') == 'on'  # Checkbox if the user is admin
 
         if is_admin_login:
             request.session['logged_in_username'] = username
@@ -52,8 +52,11 @@ def login(request):
                     visitor = QueueVisitor.objects.get(username=username, password=password)
                     request.session['logged_in_username'] = username
                     
-                    # Determining the priority level based on pwd and reserve values
-                    priority = "high" if visitor.pwd else "mid" if visitor.reserve else "low"
+                    # Determining the priority level based on pwd, reserve, and age values
+                    if visitor.age >= 60:
+                        priority = "high"
+                    else:
+                        priority = "high" if visitor.pwd else "mid" if visitor.reserve else "low"
                     
                     queue_entry, created = QueueEntry.objects.get_or_create(user=visitor, defaults={'PriorityLevel': priority, 'QueueStatus': 'WAITING', 'StartTime': timezone.now()})
                     
@@ -66,6 +69,7 @@ def login(request):
                 else:
                     messages.error(request, 'Queue is at full capacity. Please try again later.')
                     return redirect('login')
+
                 
             except QueueVisitor.DoesNotExist:
                 messages.error(request, 'Invalid username or password')
@@ -89,14 +93,14 @@ def queue_list(request):
             available_kiosk.QueueID = queue_entry
             available_kiosk.TimeDuration = timezone.now()
             available_kiosk.save()
-            # Update queue entry status and end time
-            queue_entry.EndTime = timezone.now()  # Update EndTime to match current time
+            queue_entry.EndTime = timezone.now()  # Update EndTime to match current time of when the user left the queue
             if queue_entry.StartTime:
                 time_spent = timezone.now() - queue_entry.StartTime
                 hours = int(time_spent.total_seconds() // 3600)
                 minutes = int((time_spent.total_seconds() % 3600) // 60)
                 queue_entry.EndTime = queue_entry.StartTime + timedelta(hours=hours, minutes=minutes)
             # Update QueueStatus to 'IN KIOSK' only if it's not already 'IN MODULE' or 'INACTIVE'
+            #This is to send the user to the available kiosk, sending the data is based on the QueueStatus
             if queue_entry.QueueStatus != 'IN MODULE':
                 queue_entry.QueueStatus = 'IN KIOSK'
                 queue_entry.save()
@@ -162,7 +166,7 @@ def update_queue_capacity(request):
             # Redirect back to the admin page
             return HttpResponseRedirect('/adminpage')
         elif queue_capacity_value.strip() == "":
-            # If the input is empty, redirect back to the admin page
+            # To prevent empty input
             return HttpResponseRedirect('/adminpage')
         else:
             try:
@@ -183,7 +187,7 @@ def selectdistrict(request, kiosk_id):
     current_time = timezone.now()
     kiosk_username = None
 
-    # Check and handle kiosks that have exceeded time limits
+    # Check and handle user in kiosks that have exceeded time wait limit
     for kiosk in Kiosk.objects.filter(KioskStatus=True).select_related('QueueID'):
         if kiosk.QueueID and kiosk.QueueID.EndTime:
             time_elapsed = current_time - kiosk.QueueID.EndTime
@@ -245,7 +249,6 @@ def get_queue_data(request):
                 if kiosk.TimeDuration:
                     kiosk_info['start_time'] = kiosk.TimeDuration.strftime('%Y-%m-%dT%H:%M:%S')
 
-            # Append the info for this kiosk to the list
             kiosk_data.append(kiosk_info)
 
         return JsonResponse({'kiosk_data': kiosk_data})
@@ -276,7 +279,7 @@ def kiosk_login(request, kiosk_id):
             kiosk.KioskStatus = False
             kiosk.TimeDuration = None
             kiosk.save()
-
+    #Update the Queuestatus of the user in Kiosk
     try:
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
         if kiosk.QueueID:
@@ -690,7 +693,7 @@ def get_modules_by_type_and_municipality(module_type, municipality):
 
     suffix = get_district_suffix(municipality)
     if not suffix:
-        return None  # Municipality not found in the mapping
+        return None  # Municipality not found in the sorting and searching
 
     # Filter the modules based on type (t, f, c), municipality, and district suffix
     modules = DistrictModules.objects.filter(

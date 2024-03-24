@@ -19,8 +19,8 @@ class QueueEntry(models.Model):
     PriorityLevel = models.CharField(max_length=10)
     QueueStatus = models.CharField(max_length=45)
     QueueLimit = models.CharField(max_length=45)
-    StartTime = models.DateTimeField(null=True, blank=True)  # Track the start time when user enters the kiosk
-    EndTime = models.DateTimeField(null=True, blank=True)  # Track the end time when user exits the kiosk
+    StartTime = models.DateTimeField(null=True, blank=True)
+    EndTime = models.DateTimeField(null=True, blank=True)
     
     class Meta:
         db_table = 'queue'
@@ -36,7 +36,7 @@ class Kiosk(models.Model):
 class Admin(models.Model):
     AdminID = models.AutoField(primary_key=True)
     username = models.CharField(max_length=255, unique=True)
-    password = models.CharField(max_length=255, unique=True)  # Add password field for admin
+    password = models.CharField(max_length=255, unique=True)  
     class Meta:
         db_table = 'admin'
         
@@ -51,7 +51,7 @@ class DistrictModules(models.Model):
     Municipality = models.CharField(max_length=100)
     ModuleName = models.CharField(max_length=100)
     ModuleContent = models.FileField(upload_to='module_content/')
-    ModuleFile = models.TextField()  # Use TextField for longtext
+    ModuleFile = models.TextField() 
     KioskID = models.ForeignKey('Kiosk', on_delete=models.CASCADE, db_column='KioskID')
     AdminID = models.ForeignKey('Admin', on_delete=models.CASCADE, db_column='AdminID(DM)')
 
