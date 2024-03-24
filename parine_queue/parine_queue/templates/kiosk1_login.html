@@ -154,7 +154,9 @@
   </style>
 </head>
 
-<body>
+</head>
+
+<body data-kiosk-id="{{ kiosk_id }}">
   <video autoplay muted loop id="video-background">
     <source src="{% static 'aquila.mp4' %}" type="video/mp4">
     Your browser does not support HTML5 video.
@@ -174,7 +176,7 @@
       {% if kiosk_username %}
       <h2>Hello, {{ kiosk_username }}!</h2>
       <!-- Start button form -->
-      <form id="startForm" method="post">
+      <form = id="startForm" method="post">
         {% csrf_token %}
         <input type="submit" name="START" value="START" style="margin-top: 10px;" onclick="showLoginForm(); return false;">
 
@@ -194,71 +196,116 @@
   </div>
 
   <script>
-    function showLoginForm() {
-      // Remove the 'hidden' class to show the login form
-      document.getElementById('loginSection').classList.remove('hidden');
-      // Optionally, hide the start button to prevent repeated clicks
-      document.getElementById('startForm').style.display = 'none';
-      // Automatically focus on the password input field for user convenience
-      document.getElementById('password').focus();
+    // Initialize a variable for the inactivity timeout
+    let inactivityTimeout;
+
+    function resetInactivityTimer() {
+        // Clear any existing timeout to reset the timer
+        clearTimeout(inactivityTimeout);
+
+        inactivityTimeout = setTimeout(function () {
+            // Function to call when the timeout expires
+            deleteQueueAndKioskData();
+        }, 60000); // set time
     }
-  </script>
-  
 
-  <script>
-    function submitForm() {
-      var password = document.getElementById('password').value;
-
-      // Perform validation here if needed
-
-      // Redirect to selectdistrict.html after successful login
-      window.location.href = 'selectdistrict';
-
-      return false; // Prevent default form submission
-    }
-  </script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Add event listener to the start form
-        document.getElementById('startForm').addEventListener('submit', function(event) {
-            // Prevent default form submission
-            event.preventDefault();
-
-            // Make an AJAX request to update the queue status
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', this.action, true);
-            xhr.setRequestHeader('X-CSRFToken', document.querySelector('[name=csrfmiddlewaretoken]').value);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        // Handle successful response
-                        console.log('Queue status updated successfully');
-                    } else {
-                        // Handle error
-                        console.error('Error updating queue status');
-                    }
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
                 }
-            };
-            xhr.send();
-        });
+            }
+        }
+        return cookieValue;
+    }
+
+    function deleteQueueAndKioskData() {
+      // Get the kiosk ID from the body's dataset
+      const kioskId = document.body.getAttribute('data-kiosk-id');
+      
+      // Fetch data with the use of POST method to remove the user from kiosk and queue
+      fetch(`/delete_queue_kiosk_data/${kioskId}/`, {
+          method: 'POST',
+          headers: {
+              'X-CSRFToken': getCookie('csrftoken'), 
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+      })
+      .then(response => {
+          if (response.ok) {
+              console.log('User removed from kiosk and queue successfully');
+          } else {
+              console.error('Failed to remove user from kiosk and queue');
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
+  }
+
+    // Add event listener to reset the inactivity timer when the page loads
+    document.addEventListener("DOMContentLoaded", function () {
+        // Reset the inactivity timer when the page loads
+        resetInactivityTimer();
     });
-</script>
+
+    // Add event listener to reset the inactivity timer on various interactions
+    document.addEventListener('click', resetInactivityTimer);
+    document.addEventListener('keypress', resetInactivityTimer);
+
+    // Function to handle the "START" button click
+    function showLoginForm() {
+        // Remove the 'hidden' class to show the login form
+        document.getElementById('loginSection').classList.remove('hidden');
+        // Optionally, hide the start button to prevent repeated clicks
+        document.getElementById('startForm').style.display = 'none';
+        // Automatically focus on the password input field for user convenience
+        document.getElementById('password').focus();
+        // Reset the inactivity timer when the "START" button is clicked
+        resetInactivityTimer();
+    }
+
+    function submitForm() {
+        var password = document.getElementById('password').value;
+
+        // Redirect to selectdistrict.html after successful login
+        window.location.href = 'selectdistrict';
+
+        return false; // Prevent default form submission
+    }
+
+    function updateQueueStatus(kioskId) {
+        fetch(`/update_queue_status/${kioskId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({}),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+  </script>
 
   <script>
     setTimeout(function () {
-      // Fade out the body elements except for the .queue-container
-      const elementsToFade = document.querySelectorAll('login-container');
-      elementsToFade.forEach(element => {
-        element.style.transition = "opacity 1s ease";
-        element.style.opacity = "0";
-      });
-
-      // Reload the page after the fade-out effect
-      setTimeout(function () {
-        window.location.reload(true);
-      }, 1000); // Delay matches the transition duration
-    }, 10000); // Delay before reload   
-  </script>
+      // Reload the page
+      window.location.reload(true);
+    }, 60000); // 1 MIN Delay before reload   
+  </script>  
 
 </body>
 

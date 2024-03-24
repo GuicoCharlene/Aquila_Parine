@@ -24,6 +24,11 @@
       z-index: -1;
     }
 
+    .Logo {
+      width: 19.53125vw;
+
+    }
+
     .login-container {
       position: absolute;
       top: 50%;
@@ -32,10 +37,10 @@
       text-align: center;
       font-family: YAD1aYG82rc-0;
       color: #010355;
-      border: 0.06510416666666667vw solid #1db4ff;
+      border: 0.06510416666666667vw solid #0f172a;
       border-radius: 1.953125vw;
       width: 32.552083333333336vw;
-      height: auto;
+      height: 26.041666666666668vw;
       background: #ffffff;
       z-index: 1;
       /* Ensure the login container is above the video background */
@@ -48,9 +53,9 @@
       font-size: 1.3020833333333333vw;
       text-align: left;
       margin-top: 1.3020833333333333vw;
-      margin-bottom: 1.171875vw;
+      gap: 0.6510416666666666vw;
+      margin-bottom: 0.6510416666666666vw;
       /* Add margin to separate from the video background */
-      width: 32.552083333333336vw;
     }
 
     .header-container img {
@@ -60,6 +65,7 @@
 
     .login-form {
       width: 32.552083333333336vw;
+      height: 26.041666666666668vw;
       display: flex;
       flex-direction: column;
     }
@@ -73,10 +79,14 @@
       margin-top: 0.78125vw;
     }
 
+    .admin-label:hover {
+      color: #0c7abc;
+    }
+
     /* Move the label to the right side */
     .admin-label {
-
       margin-right: 3.2552083333333335vw;
+      font-size: 1.0416666666666667vw;
     }
 
     .login-form input[type="text"] {
@@ -85,7 +95,9 @@
 
     .login-form input[type="text"],
     .login-form input[type="password"] {
-      width:  22.786458333333332vw;
+      width: 22.786458333333332vw;
+      height: 2.4739583333333335vw;
+      font-size: 0.87890625vw;
       padding: 0.6510416666666666vw;
       margin-top: 1.6276041666666667vw;
       border: 0.06510416666666667vw solid #1db4ff;
@@ -97,7 +109,7 @@
       width: 16.276041666666668vw;
       margin-bottom: 1.6276041666666667vw;
       padding: 0.6510416666666666vw;
-      border: 0.06510416666666667vw solid #ffffff;
+      border: 0.06510416666666667vw solid #0f172a;
       border-radius: 0.3255208333333333vw;
       background-color: #1db4ff;
       color: #fdf9f9;
@@ -105,9 +117,9 @@
       font-size: 1.5625vw;
       transition: transform 0.3s;
       animation: heartbeat 1s infinite;
-      position: relative;
+      position: absolute;
       bottom: 0;
-      transform: translateX(-50%);
+      left: 8.0078125vw;
     }
 
     /* Heartbeat animation */
@@ -128,19 +140,11 @@
     /* Hover effect */
     .login-form input[type="submit"]:hover {
       background-color: #0c7abc;
-      transform: scale(1.1);
+
     }
 
     .login-form input[type="submit"]:not(:hover) {
       animation: heartbeat 1s infinite;
-    }
-
-    /* Media query for smaller screens */
-    @media only screen and (max-width: 768px) {
-      .login-container {
-        width: 90%;
-        max-width: 90%;
-      }
     }
 
     /* Style for the "all batangas" image */
@@ -168,10 +172,10 @@
   <div class="login-container">
     <div class="login-form">
       <div class="header-container">
-        <img src="{% static 'logo.png' %}" alt="Logo" style="width: 100%; height: 100%;">
+        <img src="{% static 'logo.png' %}" class="Logo">
         <h2>Welcome to <br> Parine sa Batangas!</h2>
       </div>
-      <hr style="border-top: 5px solid #06C9EF; width: 100%; margin: 0 auto;">
+      <hr style="border-top: 0.3255208333333333vw solid #06C9EF; width: 26.041666666666668vw; margin: 0 auto;">
       <form method="post">
         {% csrf_token %}
         <input type="text" name="username" placeholder="Username" required><br>

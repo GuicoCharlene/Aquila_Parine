@@ -67,7 +67,7 @@
     }
     
     #imageButton:active {
-        transform: scale(0.5); /* Scale down the button when clicked */
+        transform: scale(0.9);
     }
       #rightPanel {
         display: none;
@@ -78,10 +78,10 @@
         height: 100vh;
         background-color: #f4f4f4;
         z-index: 999;
-        padding: 20px;
+        padding: 1.3020833333333333vw;
         box-sizing: border-box;
-        border-top-left-radius: 15px; /* Radius for top-left corner */
-        border-bottom-left-radius: 15px;
+        border-top-left-radius: 0.9765625vw; /* Radius for top-left corner */
+        border-bottom-left-radius: 0.9765625vw;
     }
     #usertopPanel {
         position: absolute;
@@ -91,6 +91,25 @@
         height: 6.8359375vw;
         background-color: #06C9EF;
         z-index: 1;
+        display: flex;
+        align-items: center;
+        overflow: hidden; /* Ensure the text is clipped if it's too long */
+    }
+    
+    .username {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        max-width: 10.416666666666666vw; /* Adjust this value as needed */
+        font-size: 1.8229166666666667vw; /* Adjust the font size as needed */
+        margin: 0; /* Remove default margin */
+        padding: 0; /* Remove default padding */
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        color: #333; /* Dark gray color */
+        top: 2.6041666666666665vw;
+        right: 7.161458333333333vw;
+        position: absolute;
     }
 
     #backButton {
@@ -110,7 +129,29 @@
     }
     
     #backButton:active {
-        transform: scale(0.5); /* Scale down the button when clicked */
+        transform: scale(0.9);
+    }
+
+    #selectdistrict-button {
+        position: absolute;
+        bottom: 13.020833333333334vw; /* Adjust the top position as needed */
+        left: 4.427083333333333vw;
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 1.3020833333333333vw;
+        font-weight: bold;
+        background-color: #06C9EF;
+        color: #FFFFFF;
+        padding: 0.6510416666666666vw 1.3020833333333333vw;
+        border: 0.1953125vw solid #FFFFFF;
+        border-radius: 1.953125vw;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+        z-index: 100;
+        transition: transform 0.2s; /* Add a transition for the transform property */
+    }
+    
+    #selectdistrict-button:active {
+        transform: scale(0.9); /* Scale down the button when clicked */
     }
 
     #logout-button {
@@ -132,7 +173,29 @@
     }
     
     #logout-button:active {
-        transform: scale(0.5); /* Scale down the button when clicked */
+        transform: scale(0.9); /* Scale down the button when clicked */
+    }
+
+    #logout-button {
+        position: absolute;
+        bottom: 6.510416666666667vw; /* Adjust the top position as needed */
+        left: 6.510416666666667vw;
+        font-family: 'Gotham', sans-serif; /* Assuming Gotham is a web font available in your project */
+        font-size: 1.3020833333333333vw;
+        font-weight: bold;
+        background-color: #06C9EF;
+        color: #FFFFFF;
+        padding: 0.6510416666666666vw 1.3020833333333333vw;
+        border: 0.1953125vw solid #FFFFFF;
+        border-radius: 1.953125vw;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+        z-index: 100;
+        transition: transform 0.2s; /* Add a transition for the transform property */
+    }
+    
+    #logout-button:active {
+        transform: scale(0.9); /* Scale down the button when clicked */
     }
 
     .title {
@@ -455,6 +518,12 @@
         background: #fff;
         color: #ffff00;
     }
+    h3 {
+        font-size: 18px; 
+        margin-top: 60px; 
+        margin-left: 20px;
+        text-align: left; 
+    }
 </style>
 </head>
 <body>
@@ -477,11 +546,18 @@
         </div>
         <div id="rightPanel">
             <img id="backButton" src="{% static 'backbutton.png' %}" alt="Back Button" />
-            <div id="usertopPanel"></div>
+            <div id="usertopPanel">
+                {% if kiosk_username %}
+                <h3 class="username">{{ kiosk_username }}</h3>
+                {% else %}
+                <h3 class="username">Empty</h3>
+                {% endif %}
+            </div>
             <form method="post" action="{% url 'kiosk_logout' kiosk_id=kiosk_id %}">
                 {% csrf_token %}
                 <button id="logout-button" type="submit">Logout</button>
             </form>
+            <button id="selectdistrict-button"  onclick="window.location.href='{% url 'selectdistrict' kiosk_id=kiosk_id %}'">Select District</button>
         </div>
         <div class="top-panel"></div>
         <span class="title">BATANGAS</span>

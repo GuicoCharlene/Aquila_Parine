@@ -1,0 +1,22 @@
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+from datetime import timedelta
+from parine_queue.models import QueueEntry
+
+class Command(BaseCommand):
+    help = 'Remove users from kiosk and queue if inactive for more than 2 minutes'
+
+    def handle(self, *args, **kwargs):
+        # Calculate the cutoff time for inactivity
+        cutoff_time = timezone.now() - timedelta(minutes=1)
+
+        # Query for inactive entries
+        inactive_entries = QueueEntry.objects.filter(
+            StartTime__lte=cutoff_time,
+            EndTime__isnull=True
+        )
+
+        # Delete inactive entries
+        count = inactive_entries.delete()[0]  # Returns a tuple with count of deleted objects
+
+        self.stdout.write(self.style.SUCCESS(f'Removed {count} users from the kiosk and queue.'))
