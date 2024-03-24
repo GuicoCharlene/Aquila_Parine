@@ -19,12 +19,11 @@
     
     .container {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 1500px;
-        height: 600px;
-        background: #18395E;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background: #15375D;
         box-shadow: 0 30px 50px #dbdbdb;
     }
     
@@ -32,14 +31,14 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
+        width: 1625px;
+        height: 820px;
         z-index: -1;
     }
     
     .background-slide .item {
-        width: 100%;
-        height: 100%;
+        width: 1625px;
+        height: 820px;
         background-position: center;
         background-size: cover;
         transition: background-image 0.5s ease-in-out;
@@ -51,8 +50,8 @@
     }
     
     .slide .item {
-        width: 100%;
-        height: 100%;
+        width: 1625px;
+        height: 820px;
         position: absolute;
         top: 0;
         left: 0;
@@ -67,9 +66,9 @@
     
     .content {
         position: absolute;
-        top: 50%;
-        left: 100px;
-        width: 300px;
+        top: -0.3255208333333333vw;
+        left: 13.020833333333334vw;
+        width: 19.5453125vw;
         text-align: left;
         color: #15375D;
         transform: translate(0, -50%);
@@ -85,8 +84,8 @@
 
     
     .content .name {
-        margin-top: 500px;
-        font-size: 40px;
+        margin-top: 32.552083333333336vw;
+        font-size: 2.6041666666666665vw;
         text-transform: uppercase;
         font-weight: bold;
         opacity: 0;
@@ -95,8 +94,8 @@
     }
     
     .content .des {
-        margin-top: 10px;
-        margin-bottom: 20px;
+        margin-top: 0.6510416666666666vw;
+        margin-bottom: 1.3020833333333333vw;
         opacity: 0;
         background: rgba(255, 255, 255, 0.8);
         animation: animateDes 0.5s ease-in-out 1s forwards; /* Changed animation name and delay */
@@ -129,20 +128,22 @@
     
     
     .button{
-        width: 100%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         text-align: center;
         position: absolute;
-        bottom: 20px;
+        bottom: 2%;
+        z-index: 1;
     }
     
     .button button{
-        width: 40px;
-        height: 35px;
-        border-radius: 8px;
+        width: 2.6041666666666665vw;
+        height: 2.2786458333333335vw;
+        border-radius: 0.5208333333333334vw;
         border: none;
         cursor: pointer;
-        margin: 0 5px;
-        border: 1px solid #000;
+        margin: 0 0.3255208333333333vw;
+        border: 0.06510416666666667vw solid #000;
         transition: 0.3s;
     }
     
