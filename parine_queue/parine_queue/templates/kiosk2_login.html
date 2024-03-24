@@ -155,7 +155,6 @@
   </style>
 </head>
 
-</head>
 
 <body data-kiosk-id="{{ kiosk_id }}">
   <video autoplay muted loop id="video-background">
@@ -167,22 +166,17 @@
 
   <div class="login-container">
     <div class="login-form">
-      <!-- Header and form elements -->
       <div class="header-container">
-        <img src="{% static 'logo.png' %}" class="Logo">
+        <img src="{% static 'logo.png' %}" class="Logo" alt="Logo">
         <h2>Welcome to <br>Parine sa Batangas!</h2>
       </div>
       <hr style="border-top: 5px solid #06C9EF; width: 400px; margin: 0 auto;">
-      <!-- Display the username of the user inside kioskID 1 -->
       {% if kiosk_username %}
       <h2>Hello, {{ kiosk_username }}!</h2>
-      <!-- Start button form -->
-      <form = id="startForm" method="post">
+      <form id="startForm" method="post">
         {% csrf_token %}
         <input type="submit" name="START" value="START" style="margin-top: 10px;" onclick="showLoginForm(); return false;">
-
       </form>
-      <!-- Hidden login form -->
       <div id="loginSection" class="hidden">
         <form id="loginForm" method="post" onsubmit="return submitForm();">
           {% csrf_token %}
@@ -191,24 +185,25 @@
         </form>
       </div>
       {% else %}
-      <h2>No user in kiosk </h2>
+      <h2>No user in kiosk</h2>
       {% endif %}
     </div>
   </div>
 
   <script>
-    // Initialize a variable for the inactivity timeout
     let inactivityTimeout;
+    const inactivityTimeLimit = 60000; // 1 minute
 
     function resetInactivityTimer() {
-        // Clear any existing timeout to reset the timer
         clearTimeout(inactivityTimeout);
+        localStorage.setItem('lastInteraction', Date.now().toString());
+        checkInactivity();
+    }
 
-
-        inactivityTimeout = setTimeout(function () {
-            // Function to call when the timeout expires
-            deleteQueueAndKioskData();
-        }, 60000); // set time
+    function setupPageRefresh() {
+        setInterval(function() {
+            window.location.reload(true);
+        }, 10000); // Refresh the page every 10 seconds
     }
 
     function getCookie(name) {
@@ -217,7 +212,6 @@
             const cookies = document.cookie.split(';');
             for (let i = 0; i < cookies.length; i++) {
                 const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
                 if (cookie.substring(0, name.length + 1) === (name + '=')) {
                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                     break;
@@ -228,63 +222,8 @@
     }
 
     function deleteQueueAndKioskData() {
-      // Get the kiosk ID from the body's dataset
-      const kioskId = document.body.getAttribute('data-kiosk-id');
-      
-      // Fetch data with the use of POST method to remove the user from kiosk and queue
-      fetch(`/delete_queue_kiosk_data/${kioskId}/`, {
-          method: 'POST',
-          headers: {
-              'X-CSRFToken': getCookie('csrftoken'), 
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({}),
-      })
-      .then(response => {
-          if (response.ok) {
-              console.log('User removed from kiosk and queue successfully');
-          } else {
-              console.error('Failed to remove user from kiosk and queue');
-          }
-      })
-      .catch(error => {
-          console.error('Error:', error);
-      });
-  }
-
-    // Add event listener to reset the inactivity timer when the page loads
-    document.addEventListener("DOMContentLoaded", function () {
-        // Reset the inactivity timer when the page loads
-        resetInactivityTimer();
-    });
-
-    // Add event listener to reset the inactivity timer on various interactions
-    document.addEventListener('click', resetInactivityTimer);
-    document.addEventListener('keypress', resetInactivityTimer);
-
-    // Function to handle the "START" button click
-    function showLoginForm() {
-        // Remove the 'hidden' class to show the login form
-        document.getElementById('loginSection').classList.remove('hidden');
-        // Optionally, hide the start button to prevent repeated clicks
-        document.getElementById('startForm').style.display = 'none';
-        // Automatically focus on the password input field for user convenience
-        document.getElementById('password').focus();
-        // Reset the inactivity timer when the "START" button is clicked
-        resetInactivityTimer();
-    }
-
-    function submitForm() {
-        var password = document.getElementById('password').value;
-
-        // Redirect to selectdistrict.html after successful login
-        window.location.href = 'selectdistrict';
-
-        return false; // Prevent default form submission
-    }
-
-    function updateQueueStatus(kioskId) {
-        fetch(`/update_queue_status/${kioskId}/`, {
+        const kioskId = document.body.getAttribute('data-kiosk-id');
+        fetch(`/delete_queue_kiosk_data/${kioskId}/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': getCookie('csrftoken'),
@@ -292,22 +231,64 @@
             },
             body: JSON.stringify({}),
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+        .then(response => {
+            if (response.ok) {
+                console.log('User removed from kiosk and queue successfully');
+                deleteLastInteraction();
+            } else {
+                console.error('Failed to remove user from kiosk and queue');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function deleteLastInteraction() {
+        localStorage.removeItem('lastInteraction');
+        console.log('Last interaction timestamp removed from storage.');
+    }
+
+    function checkInactivity() {
+        const lastInteraction = parseInt(localStorage.getItem('lastInteraction'), 10);
+        const timePassed = Date.now() - lastInteraction;
+        const timeLeftForInactivity = inactivityTimeLimit - timePassed;
+
+        if (timeLeftForInactivity > 0) {
+            inactivityTimeout = setTimeout(function() {
+                deleteQueueAndKioskData();
+            }, timeLeftForInactivity);
+        } else {
+            deleteQueueAndKioskData();
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        if (!localStorage.getItem('lastInteraction')) {
+            localStorage.setItem('lastInteraction', Date.now().toString());
+        }
+        checkInactivity();
+        setupPageRefresh();
+    });
+
+    document.addEventListener('click', resetInactivityTimer);
+    document.addEventListener('keypress', resetInactivityTimer);
+
+    function showLoginForm() {
+        document.getElementById('loginSection').classList.remove('hidden');
+        document.getElementById('startForm').style.display = 'none';
+        document.getElementById('password').focus();
+        resetInactivityTimer();
+    }
+
+    function submitForm() {
+        var password = document.getElementById('password').value;
+        window.location.href = 'selectdistrict';
+        return false; // Prevent default form submission
+   
+
     }
   </script>
-  <script>
-    setTimeout(function () {
-      // Reload the page
-      window.location.reload(true);
-    }, 60000); // 1 MIN Delay before reload   
-  </script>  
-
 </body>
 
 </html>

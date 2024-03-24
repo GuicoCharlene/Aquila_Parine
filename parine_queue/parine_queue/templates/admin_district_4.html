@@ -13,9 +13,68 @@
             margin: 0;
             padding: 0;
             background-color: #FDF6EA;
-            overflow-y: hidden;
+            overflow: hidden;
         }
 
+        #action-buttons {
+            position: absolute;
+            right: 28px;
+        }
+
+        #action-buttons button {
+            padding: 10px 20px;
+            color: #15375D;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            background: none;
+            width: 60px;
+            /* Fixed width for the buttons */
+            height: 60px;
+            /* Fixed height for the buttons */
+        }
+
+        #action-buttons #add-button:hover i {
+
+            color: blue;
+        }
+
+        #action-buttons #delete-button:hover i {
+
+            color: red;
+        }
+
+        /* Styling for icons */
+        #action-buttons button i {
+            margin-right: 10px;
+            margin-left: 5px;
+            font-size: 35px;
+        }
+
+        /*NAV FOR CONTENT*/
+        .nav-bar {
+            color: #1E4C79;
+            display: flex;
+            font-size: 25px;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            justify-content: space-evenly;
+            align-items: center;
+            height: 5px;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: border-bottom 0.1s ease;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            border-bottom: 5px solid #15375D;
+            /* Color when hovering or active */
+        }
 
         #home-container {
             display: inline-block;
@@ -226,6 +285,10 @@
             </a>
         </div>
     </header>
+    <div id="action-buttons" style="display: none;">
+        <button id="add-button"><i class="fas fa-plus" title="Add"></i></button>
+        <button id="delete-button"><i class="fas fa-trash-alt" title="Delete"></i></button>
+    </div>
     <div class="logo-container">
         <img src="{% static 'logo.png' %}" class="logo-image">
         <div class="municipality-container" id="selected-municipality-display"></div>
@@ -331,7 +394,12 @@
     </nav>
 
     <main>
-
+        <div class="nav-bar">
+            <div class="nav-item" data-nav="tourist">Tourist Spot</div>
+            <div class="nav-item" data-nav="food">Food</div>
+            <div class="nav-item" data-nav="craft">Craft</div>
+        </div>
+        <hr style="border-top: 3px solid #15375D; width: 100vw; margin: 23px auto;">
     </main>
 
     <script>
@@ -478,7 +546,61 @@
             }
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get reference to the nav-bar
+            const navBar = document.querySelector('.nav-bar');
 
+            // Get reference to the action buttons
+            const actionButtons = document.getElementById('action-buttons');
+
+            // Add click event listener to the nav-bar
+            navBar.addEventListener('click', function (event) {
+                // Toggle the display of action buttons when clicking on a nav item
+                if (event.target.classList.contains('nav-item')) {
+                    const clickedNavItem = event.target;
+                    const currentActiveNav = actionButtons.dataset.activeNav;
+
+                    // Check if the action buttons are currently hidden or if the clicked nav item is different
+                    if (actionButtons.style.display === 'none' || currentActiveNav !== clickedNavItem.dataset.nav) {
+                        // Show the action buttons
+                        actionButtons.style.display = 'block';
+                        // Set the activeNav attribute to the clicked nav item's dataset value
+                        actionButtons.dataset.activeNav = clickedNavItem.dataset.nav;
+                    } else {
+                        // If the same nav item is clicked again, keep the action buttons visible
+                        actionButtons.style.display = 'block';
+                    }
+
+                    // Stop event propagation to prevent hiding the action buttons when clicking nav items
+                    event.stopPropagation();
+                }
+                navBar.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Toggle active class for the clicked nav item
+                if (event.target.classList.contains('nav-item')) {
+                    const clickedNavItem = event.target;
+                    clickedNavItem.classList.add('active');
+                }
+            });
+
+            // Add click event listener to the document body to hide action buttons when clicking outside the buttons
+            document.body.addEventListener('click', function (event) {
+                if (!actionButtons.contains(event.target) && !navBar.contains(event.target)) {
+                    actionButtons.style.display = 'none';
+                }
+                if (!navBar.contains(event.target)) {
+                    // Remove active class from all nav items
+                    navBar.querySelectorAll('.nav-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                }
+            });
+
+        });
+    </script>
 </body>
 
 </html>

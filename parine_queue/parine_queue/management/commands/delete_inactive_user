@@ -4,7 +4,7 @@ from datetime import timedelta
 from parine_queue.models import QueueEntry
 
 class Command(BaseCommand):
-    help = 'Remove users from kiosk and queue if inactive for more than 2 minutes'
+    help = 'Remove users from kiosk and queue if inactive for more than a minute'
 
     def handle(self, *args, **kwargs):
         # Calculate the cutoff time for inactivity
@@ -17,6 +17,6 @@ class Command(BaseCommand):
         )
 
         # Delete inactive entries
-        count = inactive_entries.delete()[0]  # Returns a tuple with count of deleted objects
+        count = inactive_entries.delete()[0]
 
         self.stdout.write(self.style.SUCCESS(f'Removed {count} users from the kiosk and queue.'))

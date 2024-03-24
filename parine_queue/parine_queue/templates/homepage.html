@@ -143,13 +143,13 @@
       transform: translateX(-50%);
       /* Adjust width as needed */
       max-width: 5.859375vw;
-      animation: moveBackAndForth 3s ease-in-out infinite alternate;
+      animation: moveBackAndForth 3s ease-in-out infinite alternate; glow 1s ease-in-out infinite alternate;
       /* Adjust animation duration as needed */
     }
 
     @keyframes moveBackAndForth {
       0% {
-        transform: translateX(-46%);
+        transform: translateX(-96%);
       }
 
       100% {
@@ -157,6 +157,18 @@
         /* Adjust the distance the image travels */
       }
     }
+
+    @keyframes glow {
+      0% {
+          filter: drop-shadow(0 0 100px #000);
+          /* Initial glow color and radius */
+      }
+
+      100% {
+          filter: drop-shadow(0 0 100px #000);
+          /* Final glow color and radius */
+      }
+  }
 
     /* Heartbeat animation */
     @keyframes heartbeat {
