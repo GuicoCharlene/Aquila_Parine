@@ -47,11 +47,11 @@ class Queue_Capacity(models.Model):
         db_table = 'queue_capacity'
         
 class DistrictModules(models.Model):
-    DistrictModuleID = models.AutoField(primary_key=True)
+    DistrictModuleID = models.CharField(primary_key=True, max_length=10)
     Municipality = models.CharField(max_length=100)
     ModuleName = models.CharField(max_length=100)
     ModuleContent = models.FileField(upload_to='module_content/')
-    ModuleFile = models.TextField() 
+    ModuleFile = models.TextField()  # Use TextField for longtext
     KioskID = models.ForeignKey('Kiosk', on_delete=models.CASCADE, db_column='KioskID')
     AdminID = models.ForeignKey('Admin', on_delete=models.CASCADE, db_column='AdminID(DM)')
 
@@ -60,6 +60,9 @@ class DistrictModules(models.Model):
         
 class TriviaQuestion(models.Model):
     TriviaQuestionID = models.AutoField(primary_key=True)
+    Municipality = models.CharField(max_length=100)
+    ModuleType = models.CharField(max_length=100)
+    Images = models.TextField() #HOLDS THE IMAGE
     QuestionContent = models.TextField() #HOLDS THE QUESTION
     QuestionAnswer = models.TextField() #HOLDS THE ANSWER
     DistrictModuleID = models.ForeignKey('Kiosk', on_delete=models.CASCADE, db_column='DistrictModuleID(TQ)')
@@ -70,12 +73,29 @@ class TriviaQuestion(models.Model):
         
 class RewardPoints(models.Model):
     RewardPointsID = models.AutoField(primary_key=True)
-    TotalPoints =  models.CharField(max_length=45)
+    TotalPoints =  models.IntegerField(default=0)
     create_time = models.DateTimeField(null=True, blank=True)
     update_time = models.DateTimeField(null=True, blank=True)
     user = models.ForeignKey(QueueVisitor, on_delete=models.CASCADE, db_column='VisitorID(RP)')
-    DistrictModuleID = models.ForeignKey(DistrictModules, on_delete=models.CASCADE, db_column='DistrictModuleID(RP)')
-    TriviaQuestionID = models.ForeignKey(TriviaQuestion, on_delete=models.CASCADE, db_column='TriviaQuestionID(RP)')
+    DistrictModuleID = models.ForeignKey(DistrictModules, on_delete=models.CASCADE, db_column='DistrictModuleID')
+    TriviaQuestionID = models.ForeignKey(TriviaQuestion, on_delete=models.CASCADE, db_column='TriviaQuestionID')
 
     class Meta:
         db_table = 'rewardpoints'
+        
+class Visitor_History(models.Model):
+    historyid = models.AutoField(primary_key=True)
+    date = models.DateField(null=True, blank=True)  # Changed to DateField
+    user = models.CharField(max_length=255, unique=True)
+    userid = models.ForeignKey(QueueVisitor, on_delete=models.CASCADE, db_column='VisitorID(Q)')
+    class Meta:
+        db_table = 'visitorhistory'
+        
+class VisitorProgress(models.Model):
+    VisitorProgressID = models.AutoField(primary_key=True)
+    VisitorID = models.ForeignKey(QueueVisitor, on_delete=models.CASCADE, db_column='VisitorID')
+    DistrictModuleID = models.ForeignKey(DistrictModules, on_delete=models.CASCADE, db_column='DistrictModuleID')
+    TriviaQuestionID = models.ForeignKey(TriviaQuestion, on_delete=models.CASCADE, db_column='TriviaQuestionID')
+    class Meta:
+        db_table = 'visitorprogress'
+        

@@ -49,7 +49,9 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         font-size: 24px;
         box-sizing: border-box;
+        width: 80%; 
     }
+    
     
     form {
         margin-bottom: 20px;
@@ -64,10 +66,11 @@
         font-family: YAD1aYG82rc-0;
         color: #010355;
         border: 1px solid #1db4ff;
-        border-radius: 30px;
+        border-radius: 10px;
         width: 100%;
-        max-width: 1500px;
+        max-width: 1625px;
         height: auto;
+        max-height: 820px;
         background: #ffffff;
         z-index: 1;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -128,88 +131,87 @@
         }
     }
     
-    .jip-img {
-        position: absolute;
-        top: 24%;
-        left: 5%;
-        transform: translateX(-50%);
-        width: 100%;
-        /* Adjust width as needed */
-        max-width: 150px;
-        z-index: 1;
-        /* Ensure the image stays above other content */
-        animation: moveForth 8s ease-in-out infinite, glow 1s ease-in-out infinite alternate;
-        /* Adjust animation duration and glow effect */
+
+    .content-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start; /* Adjust alignment as needed */
+        height: auto; /* Adjust based on your content */
+        padding: 20px; /* Added padding for spacing */
     }
     
-    @keyframes moveForth {
-        0% {
-            transform: translateX(-300%);
-        }
-    
-        100% {
-            transform: translateX(1070%);
-        }
+    .image-container {
+        height: 100%;
+        width: 100%; /* Adjust if you want a different size */
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Creates two columns */
+        grid-gap: 10px; /* Space between grid items */
+        justify-content: center;
+        align-items: center;
     }
     
-    @keyframes glow {
-        0% {
-            filter: drop-shadow(0 0 20px #FFFFFF);
-            /* Initial glow color and radius */
-        }
+    .image-container img {
+        width: 100%; /* Make images fill the container */
+        height: 100%; /* Make images fill the container */
+        max-width: 345px;
+        max-height: 229px;
+        object-fit: cover; /* Ensure images maintain aspect ratio */
+        border-radius: 15px;
+    }
     
-        100% {
-            filter: drop-shadow(0 0 20px #FFFFF);
-            /* Final glow color and radius */
+    
+    .question-container {
+        width: 90%; /* Adjust if you want a different size */
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center the content */
+    }
+
+    @media (max-width: 768px) {
+        .content-container {
+            flex-direction: column;
+        }
+
+        .image-container, .question-container {
+            width: 100%;
         }
     }
 
 </style>
 </head>
 <body>
-    <img src="{% static 'jip.png' %}" class="jip-img" alt="Parine sa Batangas">
     <div class="game-container">
         <h2>I SPY WITH MY LITTLE EYE...</h2>
-        {% if question %}
-            <div class="question-box">{{ question }}</div>
-            <form method="post" id="guess-form">
-                {% csrf_token %}
-                <input type="text" name="guess" placeholder="Your guess" {% if correct or guesses_left <= 0 %}disabled{% endif %}>
-                <button type="submit" {% if correct or guesses_left <= 0 %}disabled{% endif %}>ENTER</button>
-            </form>
-            {% if correct %}
-                <div class="correct">Correct! You've earned points!</div>
-            {% endif %}
-        {% else %}
-            <div class="question-box">No questions available at the moment.</div>
-        {% endif %}
-        <div class="incorrect-guesses">INCORRECT GUESS: {{ guesses_made }} / 3</div>
-        {% if not correct %}
-            <div class="timer" data-seconds="{{ remaining_time }}">TIME: <span id="timer"></span></div>
-        {% else %}
-            <div class="timer">Great job!</div>
-        {% endif %}
-    </div>    
+        <div class="content-container">
+            <div class="image-container">
+                <img src="/media/{{ question_image }}" alt="Trivia Image">
+                {% for image_url in random_images %}
+                <img src="/media/{{ image_url }}" alt="Trivia Image">  
+                {% endfor %}
+            </div>
+        
+            <div class="question-container">
+                {% if question_content %}
+                <div class="question-box">{{ question_content }}</div>
+                <form method="post" action="{% url 'quiz' %}?module_type={{ module_type }}&municipality={{ municipality }}" id="guess-form">
+                    {% csrf_token %}
+                    <input type="text" name="guess" placeholder="Your guess" {% if correct or guesses_left <= 0 %}disabled{% endif %}>
+                    <button type="submit" {% if correct or guesses_left <= 0 %}disabled{% endif %}>ENTER</button>
+                </form>
+                
+                {% if correct %}
+                    <div class="correct">Correct! You've earned points!</div>
+                    <a href="{% url 'results' kiosk_id=kiosk_id %}">View Results</a>
 
-    <script>
-        // COUNTDOWN TIMER FOR THE QUIZ
-        var remainingTime = parseInt(document.querySelector('.timer')?.dataset.seconds, 10);
-        if (remainingTime) {
-            var timerElement = document.getElementById('timer');
-            var countdown = setInterval(function() {
-                var minutes = parseInt(remainingTime / 60, 10);
-                var seconds = parseInt(remainingTime % 60, 10);
-
-                seconds = seconds < 10 ? '0' + seconds : seconds;
-
-                timerElement.textContent = minutes + ":" + seconds;
-
-                if (--remainingTime < 0) {
-                    clearInterval(countdown);
-                    document.getElementById('guess-form').submit();
-                }
-            }, 1000);
-        }
-    </script>
+                {% endif %}
+                
+                <div class="incorrect-guesses">INCORRECT GUESS: {{ guess }} / 3</div>
+                
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </body>
 </html>
+

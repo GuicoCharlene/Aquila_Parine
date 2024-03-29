@@ -47,33 +47,27 @@
             /* Change color on hover */
         }
 
-        /* Adjust the sidebar to match the list-container style */
         .list-container {
             position: absolute;
-            top: 210px;
+            top: 208px;
             /* Adjust the position as needed */
-            left: 0;
+            left: 10px;
             width: 20%;
-            /* Width of sidebar */
-            height: calc(100% - 40%);
-            /* Height is the full height minus the header/footer */
-            overflow-y: auto;
-            /* Enable vertical scrolling */
+            height: calc(100% - 50%);
             background-color: #ffffff;
             box-shadow: 3px 0 6px rgba(0, 0, 0, 0.1);
-            /* Optional: Adds shadow to the sidebar */
             padding: 20px;
             box-sizing: border-box;
-            /* Ensures padding does not add to width */
             text-align: center;
             font-weight: bold;
             font-family: 'Georgia', serif;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border: 1px solid #0f172a;
+            border-radius: 10px;
         }
 
         /* Flex container for content */
         .content-container {
+
             position: absolute;
             top: 20%;
             left: 20%;
@@ -88,6 +82,7 @@
             display: flex;
             flex-direction: column;
             /* Stack children vertically */
+
         }
 
         .kiosk-wrapper {
@@ -114,8 +109,8 @@
             overflow: hidden;
             /* Hide overflow */
             background-color: #fff3db;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border: 1px solid #0f172a;
+            border-radius: 10px;
             padding: 10px;
             box-sizing: border-box;
             /* Ensures padding does not add to width */
@@ -127,10 +122,11 @@
         }
 
         .kiosk-container .queue,
-        .kiosk-container .time {
+        .kiosk-container .time,
+        .time-background {
             position: absolute;
             width: 50%;
-            top: 60%;
+            top: 105px;
             transform: translateY(-50%);
             padding: 5px;
         }
@@ -150,6 +146,18 @@
             border-bottom-right-radius: 5px;
         }
 
+
+        .time-background {
+            position: absolute;
+            padding: 15px;
+            width: 46%;
+            right: 0;
+            z-index: -1000px;
+            background-color: yellow;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+
         h2 {
             font-size: 50px;
             margin-bottom: 10px;
@@ -158,8 +166,9 @@
         p {
             font-size: 18px;
             color: #15375D;
-            border: 10px solid #1db4ff;
-            border-radius: 5px;
+            padding: 8px;
+            border: 1px solid #0f172a;
+            border-radius: 8px;
             background-color: #1db4ff;
         }
 
@@ -169,29 +178,7 @@
             /* Adjust padding as needed */
         }
 
-        .kiosk-container .time {
-            position: absolute;
-            width: 50%;
-            top: 60%;
-            transform: translateY(-50%);
-            padding: 5px;
-            right: 0;
-            background-color: yellow;
-            border-top-right-radius: 5px;
-            border-bottom-right-radius: 5px;
-        }
 
-        .time-background {
-            position: absolute;
-            width: 50%;
-            height: 13%;
-            top: 50%;
-            padding: 5px;
-            right: 0;
-            background-color: yellow;
-            border-top-right-radius: 5px;
-            border-bottom-right-radius: 5px;
-        }
 
         .user-kiosk-button {
             /* Button styling */
@@ -206,7 +193,7 @@
 
         .jip-img {
             position: absolute;
-            top: 17%;
+            top: 16%;
             left: 5%;
             transform: translateX(-50%);
             width: 50%;
@@ -262,8 +249,68 @@
 
         /* Styling for the logged-in user's username */
         .logged-in-user {
-            color: #06C9EF;
+            color: green;
             animation: bounce 1s infinite;
+        }
+
+        .priority-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-bottom: 5px;
+            margin-right: 10px;
+        }
+
+        .priority_levels_card {
+            font-size: 16px;
+            position: absolute;
+            top: 690px;
+            width: 15%;
+            left: 3%;
+            height: calc(30% - 5%);
+            overflow: hidden;
+            background-color: #ffffff;
+            box-shadow: 3px 0 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            border: 1px solid #0f172a;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column; 
+            align-items: flex-start; 
+            padding-left: 40px;
+
+        }
+
+        .priority_levels_card div {
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 5px;
+        }
+
+        .high-priority {
+            background-color: #18395E;
+        }
+        
+        .mid-priority {
+            background-color: #1ACAEE;
+        }
+        
+        .low-priority {
+            background-color: #F5E3B6;
+        }
+        
+        .user-location {
+            background-color: green;
+        }
+
+        .scroll-container {
+            height: calc(80% - 10px);
+            overflow-y: auto;
         }
     </style>
 </head>
@@ -276,19 +323,43 @@
     </div>
 
 
+
     <div class="list-container">
         <p>QUEUE</p>
-        {% for entry in queue_entries %}
-        {% if entry.user.username == logged_in_username %}
-        <div class="sub logged-in-user">{{ entry.user.username }}</div>
-        {% else %}
-        <div class="sub">{{ entry.user.username }}</div>
-        {% endif %}
-        {% empty %}
-        <div class="sub">No visitors in the queue.</div>
-        {% endfor %}
+        <div class="scroll-container">
+            {% for entry in queue_entries %}
+            {% if entry.user.username == logged_in_username %}
+            <div class="sub logged-in-user">{{ entry.user.username }}</div>
+            {% else %}
+            <div class="sub"
+                style="color: {% if entry.PriorityLevel == 'high' %}#18395E{% elif entry.PriorityLevel == 'mid' %}#1ACAEE{% elif entry.PriorityLevel == 'low' %}#F5E3B6{% endif %};">
+                {{ entry.user.username }}</div>
+            {% endif %}
+            {% empty %}
+            <div class="sub">No visitors in the queue.</div>
+            {% endfor %}
+        </div>
     </div>
-
+    <div class="priority_levels_card">
+        <p>PRIORITY LEVELS</p>
+        <div>
+            <div class="priority-icon high-priority"></div>
+            <span>High Priority</span>
+        </div>
+        <div>
+            <div class="priority-icon mid-priority"></div>
+            <span>Mid Priority</span>
+        </div>
+        <div>
+            <div class="priority-icon low-priority"></div>
+            <span>Low Priority</span>
+        </div>
+        <div>
+            <div class="priority-icon user-location"></div>
+            <span>User Location</span>
+        </div>
+    </div>
+    
 
     <div class="content-container">
         <div class="kiosk-wrapper" style="--total-kiosks:{{ total_kiosks }}">

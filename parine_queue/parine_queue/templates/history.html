@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Visitor History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #15375D;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            color: #fff;
+            padding: 15px;
+            display: flex;
+            /* Add display flex */
+            justify-content: space-between;
+            /* Add justify-content */
+            align-items: center;
+            /* Add align-items */
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #0f172a;
+            padding: 8px;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            position: relative;
+            /* Add this for relative positioning */
+        }
+
+        .sort-icon {
+            cursor: pointer;
+            position: absolute;
+            /* Position the sort icon absolutely */
+            top: 50%;
+            right: 10px;
+            /* Adjust the right spacing */
+            transform: translateY(-50%);
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        footer {
+            background-color: #15375D;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+        }
+
+        ul {
+            list-style-type: none;
+            text-align: center;
+            padding: 0;
+        }
+
+        .scrollbar {
+            max-height: 650px;
+            overflow-y: auto;
+            display: block;
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 4px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background-color: #f2f2f2;
+        }
+
+        ul li {
+            margin: 0;
+        }
+
+        .filter-section {
+
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-section select {
+            margin-right: 10px;
+            padding: 8px 10px;
+        }
+
+        .filter-section input {
+            padding: 8px 20px;
+            cursor: pointer;
+        }
+
+        .filter-section button {
+            padding: 8px 20px;
+            cursor: pointer;
+        }
+
+        #home-container {
+            display: flex;
+            /* Add flex display */
+            align-items: center;
+            /* Add align-items */
+
+            margin: 10px;
+        }
+
+        #home-link {
+            display: inline-block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .home-icon {
+            font-size: 40px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .home-icon:hover {
+            color: #1aa4c2;
+            transform: scale(1.1);
+
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Visitor History</h1>
+        <div id="home-container">
+            <a href="#" id="home-link">
+                <span class="fas fa-home home-icon " title="Home"></span>
+            </a>
+        </div>
+    </header>
+    <main>
+        <div class="filter-section">
+            <select id="filter-dropdown">
+                <option value="All">All</option>
+                <option value="Month">Month</option>
+                <option value="Year">Year</option>
+            </select>
+            <input type="text" id="filter-input" placeholder="Enter Month or Year">
+            <button onclick="filterRows()">Filter</button>
+        </div>
+        <div class="scrollbar">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date<span class="sort-icon" onclick="sortRows()" title="Latest to Oldest">▼</span></th>
+                        <th>Visitors</th>
+                        <th>Total Visitors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for date, data in grouped_data.items %}
+                    <tr id="row-{{ forloop.counter }}">
+                        <td>{{ date }}</td>
+                        <td>
+                            <ul>
+                                {% for user in data.usernames %}
+                                <li>{{ user }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>{{ data.total_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <footer>
+        <p>PARINE SA BATANGAS</p>
+    </footer>
+    <script>
+        var sortDescending = true;
+
+        function sortRows() {
+            var rows = Array.from(document.querySelectorAll('tbody tr'));
+            rows.sort(function (a, b) {
+                var dateA = new Date(a.querySelector('td:first-child').textContent);
+                var dateB = new Date(b.querySelector('td:first-child').textContent);
+                if (sortDescending) {
+                    return dateB - dateA;
+                } else {
+                    return dateA - dateB;
+                }
+            });
+
+            var tbody = document.querySelector('tbody');
+            rows.forEach(function (row) {
+                tbody.appendChild(row);
+            });
+
+            sortDescending = !sortDescending;
+
+            var sortIcon = document.querySelector('.sort-icon');
+            sortIcon.textContent = sortDescending ? "▼" : "▲";
+            sortIcon.title = sortDescending ? "Latest to Oldest" : "Oldest to Latest";
+        }
+    </script>
+
+    <script>
+        // Function to filter table rows based on selected month or year
+        function filterRows() {
+            var filterType = document.getElementById('filter-dropdown').value;
+            var filterValue = document.getElementById('filter-input').value.trim().toLowerCase();
+
+            var rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(function (row) {
+                var rowData = row.querySelector('td:first-child').textContent.toLowerCase();
+                if (filterType === 'Month') {
+                    var months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+                    var monthIndex = months.indexOf(filterValue);
+                    if (monthIndex !== -1 && rowData.includes(months[monthIndex])) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                } else if (filterType === 'Year') {
+                    var year = parseInt(filterValue);
+                    var rowDate = new Date(rowData);
+                    var rowYear = rowDate.getFullYear();
+                    if (!isNaN(year) && rowYear === year) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                } else if (filterType === 'All') {
+                    // Display all rows if no filter type is selected or if "All" is selected
+                    row.style.display = '';
+                }
+            });
+        }
+
+    </script>
+    <script>
+        document.getElementById("home-link").onclick = function (event) {
+            var clickedHref = event.target.getAttribute("href");
+            if (clickedHref === "adminpage") {
+                // For adminpage link, allow default behavior
+                return true;
+            } else {
+                // For other links, redirect to the adminpage path only
+                window.location.href = "/adminpage";
+                return false;
+            }
+        };
+    </script>
+
+</body>
+
+</html>

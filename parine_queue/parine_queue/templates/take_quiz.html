@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trivia Question</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #a8e2ff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    
+    .trivia-container {
+        text-align: center;
+        color: #2E1B5B;
+    }
+    
+    .trivia-header {
+        font-family: Fira-sans;
+        font-size: 88px;
+        margin-bottom: 20px;
+    }
+    
+    .quiz-button {
+        background-color: #ffd700;
+        color: #000000;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 24px;
+        text-decoration: none;
+        display: inline-block;
+        cursor: pointer;
+        vertical-align: middle; /* Align with image */
+    }
+    
+    .quiz-button:hover {
+        background-color: #ffcc00;
+    }
+    
+    .branding {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        gap: 10px;
+        margin-top: 50px;
+    }
+    
+    .jip-img {
+        position: absolute;
+        top: 15.645833333333332vw;
+        left: 66.875vw;
+        transform: translateX(-50%);
+  
+        max-width: 10.859375vw;
+        animation: moveBackAndForth 1s ease-in-out infinite alternate;
+  
+      }
+  
+      @keyframes moveBackAndForth {
+        0% {
+          transform: translateX(-150%);
+        }
+  
+        100% {
+          transform: translateX(-110%);
+  
+        }
+      }
+  
+    
+    .question-mark {
+        font-size: 200px;
+        font-family: Fira-sans;
+        color: #2E1B5B;
+        vertical-align: right;        
+        display: inline-block; /* Add display property for animation */
+        animation: sway 1s infinite alternate; /* Adjusted animation */
+    }
+    
+    @keyframes sway {
+        0% {
+            transform: translate(-5px, 0) rotate(0deg); /* Adjusted initial position */
+        }
+        50% {
+            transform: translate(5px, 0) rotate(10deg); /* Adjusted mid position */
+        }
+        100% {
+            transform: translate(-5px, 0) rotate(0deg); /* Adjusted final position */
+        }
+    }
+    
+</style>
+</head>
+<body>
+
+<div class="trivia-container">
+        <div class="trivia-header">TRIVIA QUESTION <div class="question-mark">?</div></div>
+        <img src="{% static 'jip.png' %}" class="jip-img" alt="Parine sa Batangas">
+</div>
+
+    
+
+</body>
+</html>

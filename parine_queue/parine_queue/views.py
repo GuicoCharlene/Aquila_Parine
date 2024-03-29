@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from .models import QueueVisitor, QueueEntry, Kiosk, Admin, Queue_Capacity, DistrictModules, TriviaQuestion, RewardPoints
-import random
+from .models import QueueVisitor, QueueEntry, Kiosk, Admin, Queue_Capacity, Visitor_History, DistrictModules, TriviaQuestion, RewardPoints, VisitorProgress
+import random, os
 from django.utils import timezone
 from datetime import timedelta
 from django.http import HttpResponseRedirect, JsonResponse
@@ -14,7 +14,11 @@ from django.http import HttpResponseBadRequest
 import logging
 from django.db import transaction
 from django.urls import reverse
-from django.db.models import F
+from django.db.models import F, Count, Q
+from django.contrib.auth.decorators import login_required
+from django.conf import settings 
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 logger = logging.getLogger(__name__)
 
@@ -258,6 +262,7 @@ def get_queue_data(request):
 
 
 #user login in kiosk
+@transaction.atomic
 def kiosk_login(request, kiosk_id):
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
@@ -279,7 +284,7 @@ def kiosk_login(request, kiosk_id):
             kiosk.KioskStatus = False
             kiosk.TimeDuration = None
             kiosk.save()
-    #Update the Queuestatus of the user in Kiosk
+
     try:
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
         if kiosk.QueueID:
@@ -295,6 +300,21 @@ def kiosk_login(request, kiosk_id):
                 kiosk.KioskStatus = True
                 kiosk.TimeDuration = current_time
                 kiosk.save()
+
+                # Save progress if the user was taking a quiz
+                if 'game_session' in request.session:
+                    game_session = request.session['game_session']
+                    visitor_id = queue_entry.user_id
+                    district_module_id = game_session.get('district_module_id')
+                    trivia_question_id = game_session.get('trivia_question_id')
+
+                    # Create or update VisitorProgress record
+                    VisitorProgress.objects.update_or_create(
+                        VisitorID_id=visitor_id,
+                        DistrictModuleID_id=district_module_id,
+                        defaults={'TriviaQuestionID_id': trivia_question_id}
+                    )
+                    
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk.")
     except QueueEntry.DoesNotExist:
@@ -349,29 +369,145 @@ def delete_queue_kiosk_data(request, kioskId):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
+def history(request):
+    all_queued_users = QueueEntry.objects.all().select_related('user')
+    unique_user_ids = set(entry.user_id for entry in all_queued_users)
+
+    for user_id in unique_user_ids:
+        user = QueueVisitor.objects.get(VisitorID=user_id)
+        # Check if the user ID exists in Visitor_History
+        if not Visitor_History.objects.filter(userid=user).exists():
+            # If the user ID doesn't exist, get the first queue entry for this user
+            start_time_entry = all_queued_users.filter(user_id=user_id).order_by('StartTime').first()
+            # Check if there is a queue entry for this user
+            if start_time_entry:
+                start_time = start_time_entry.StartTime
+                start_date = start_time.date()
+                # Create a new record in Visitor_History
+                Visitor_History.objects.create(user=user.username, userid=user, date=start_date)
+        else:
+            # If the user ID exists, check if the date is not the same
+            last_queue_entry = all_queued_users.filter(user_id=user_id).order_by('-StartTime').first()
+            if last_queue_entry:
+                last_queue_date = last_queue_entry.StartTime.date()
+                # Check if an entry with the same user ID and date already exists
+                if not Visitor_History.objects.filter(Q(userid=user) & Q(date=last_queue_date)).exists():
+                    # If not, create a new record in Visitor_History
+                    Visitor_History.objects.create(user=user.username, userid=user, date=last_queue_date)
+
+    visitor_history = Visitor_History.objects.all()
+
+    grouped_data = {}
+    for entry in visitor_history:
+        date = entry.date
+        username = entry.user
+        if date not in grouped_data:
+            grouped_data[date] = {'usernames': [username], 'total_count': 1}
+        else:
+            grouped_data[date]['usernames'].append(username)
+            grouped_data[date]['total_count'] += 1
+
+    grouped_data = {date.date(): data for date, data in grouped_data.items()}
+
+    context = {'grouped_data': grouped_data}
+
+    return render(request, 'history.html', context)
+
+
 def admin_district_1(request):
-   
-    return render(request, 'admin_district_1.html')
+  # Fetch modules for District 1
+    municipality = request.GET.get('municipality', '')
+    
+    return render(request, 'admin_district_1.html',{'municipality': municipality})
 
 def admin_district_2(request):
-   
-    return render(request, 'admin_district_2.html')
+ # Fetch modules for District 2
+    municipality = request.GET.get('municipality', '')
+    
+    return render(request, 'admin_district_2.html',{'municipality': municipality})
 
 def admin_district_3(request):
-   
-    return render(request, 'admin_district_3.html')
+  # Fetch modules for District 3
+    municipality = request.GET.get('municipality', '')
+    
+    return render(request, 'admin_district_3.html',{'municipality': municipality})
 
 def admin_district_4(request):
-   
-    return render(request, 'admin_district_4.html')
+    # Fetch modules for District 4
+    municipality = request.GET.get('municipality', '')
+    
+    return render(request, 'admin_district_4.html',{'municipality': municipality})
 
 def admin_district_5(request):
-   
-    return render(request, 'admin_district_5.html')
+     # Fetch modules for District 5
+    municipality = request.GET.get('municipality', '')
+    
+    return render(request, 'admin_district_5.html',{'municipality': municipality})
 
 def admin_district_6(request):
-   
-    return render(request, 'admin_district_6.html')
+ # Fetch modules for District 6
+    municipality = request.GET.get('municipality', '')
+    
+    return render(request, 'admin_district_6.html',{'municipality': municipality})
+
+def get_district_modules(suffix):
+    # Fetch modules based on the district suffix
+    modules = DistrictModules.objects.filter(DistrictModuleID__endswith=suffix)
+    return modules
+
+
+def save_module_changes(request):
+    if request.method == 'POST':
+        module_id = request.POST.get('module_id')
+        new_module_name = request.POST.get('new_module_name')
+        new_module_image = request.FILES.get('image_file')  # Get the uploaded image file
+        new_module_file = request.POST.get('new_module_file')
+
+        try:
+            module = DistrictModules.objects.get(DistrictModuleID=module_id)
+            if module.ModuleName == new_module_name and module.ModuleFile == new_module_file:
+                if new_module_image:
+                    module.ModuleContent = os.path.basename(new_module_image.name)  # Save only the filename
+                    module.save()
+                    messages.info(request, "No changes made to the module.")
+            else:
+                module.ModuleName = new_module_name
+                if new_module_file is not None and new_module_file != "":
+                    module.ModuleFile = new_module_file
+                else:
+                    module.ModuleFile = "None"  # Set to "None" if the field is empty
+                if new_module_image:
+                    # Save the uploaded image to the media directory
+                    image_path = os.path.join(settings.MEDIA_ROOT, new_module_image.name)
+                    default_storage.save(image_path, ContentFile(new_module_image.read()))
+                    module.ModuleContent = os.path.basename(new_module_image.name)  # Save only the filename
+                module.save()
+                messages.success(request, "Module updated successfully.")
+        except DistrictModules.DoesNotExist:
+            messages.error(request, "Module does not exist.")
+
+        return redirect(request.META.get('HTTP_REFERER', 'admin_dashboard'))
+
+def admin_module_tourist(request, municipality):
+    modules = get_modules_by_type_and_municipality('t', municipality)
+    if modules is None:
+        return render(request, 'error.html', {'message': 'Municipality not found.'})
+    return render(request, 'admin_module_tourist.html', {'modules': modules, 'municipality': municipality})
+
+#MODULES FOR FOOD
+def admin_module_food(request, municipality):
+    modules = get_modules_by_type_and_municipality('f', municipality)
+    if modules is None:
+        return render(request, 'error.html', {'message': 'Municipality not found.'})
+    return render(request, 'admin_module_food.html', {'modules': modules, 'municipality': municipality})
+
+#MODULES FOR CRAFTS
+def admin_module_craft(request, municipality):
+    modules = get_modules_by_type_and_municipality('c', municipality)
+    if modules is None:
+        return render(request, 'error.html', {'message': 'Municipality not found.'})
+    return render(request, 'admin_module_craft.html', {'modules': modules, 'municipality': municipality})
+
 
 def selectmunicipality1(request, kiosk_id):
     logged_in_username = request.session.get('logged_in_username')
@@ -703,11 +839,13 @@ def get_modules_by_type_and_municipality(module_type, municipality):
     )
     return modules
 
-#MODULES FOR TOURIST ATTRACTIONS
+
 def module_tourist(request, kiosk_id, municipality):
     modules = get_modules_by_type_and_municipality('t', municipality)
     if modules is None:
         return render(request, 'error.html', {'message': 'Municipality not found.'})
+    
+    # Display the module view
     return render(request, 'module_tourist.html', {'modules': modules, 'municipality': municipality})
 
 #MODULES FOR FOOD
@@ -730,28 +868,58 @@ def selectmodule(request):
     
     return render(request, 'selectmodule.html',{'municipality': municipality})
 
-#FOR THE QUIZ POINTS UNDERDEVELOPMENT
-def calculate_points(remaining_seconds):
+def take_quiz(request):
+   
+    return render(request, 'take_quiz.html')
 
-    return remaining_seconds // 10
+# Function to fetch quiz questions based on ModuleType and Municipality
+def fetch_quiz_questions(module_type, municipality, ):
+    # Filter questions based on module type, municipality, and kiosk_id
+    questions = TriviaQuestion.objects.filter(ModuleType=module_type, Municipality__iexact=municipality)
+    return questions
 
-#THE QUIZ FUNCTION UNDERDEVELOPMENT
+
 def quiz(request):
     if 'game_session' not in request.session:
-        # Start a new game session if one doesn't already exist
-        questions = list(TriviaQuestion.objects.all())
+        module_type = request.GET.get('module_type')
+        municipality = request.GET.get('municipality')
+        kiosk_id = request.GET.get('kiosk_id')
+        
+        print("KioskID:", kiosk_id)
+        
+        kioks = Kiosk.objects.get(KioskID=kiosk_id)  # Use QueueID instead of just kiosk_id
+        queue_id = kioks.QueueID 
+        visitor_id = queue_id.user.pk  # Store the primary key instead
+        
+        # Now you have the visitor_id associated with the kiosk_id, you can use it as needed
+        print("VisitorID:", visitor_id)
+
+        questions = fetch_quiz_questions(module_type, municipality)
         if not questions:
-            return render(request, 'quiz.html', {'question': None})
+            return render(request, 'quiz.html', {
+                'question_content': None,
+                'question_image': None,
+                'random_images': None,
+                'module_type': module_type,
+                'municipality': municipality,
+            })
 
         selected_question = random.choice(questions)
+
         request.session['game_session'] = {
             'question_id': selected_question.TriviaQuestionID,
             'reward_points': 0,
             'guesses_left': 3,
-            'start_time': timezone.now().isoformat()
-        }
+            'start_time': timezone.now().isoformat(),
+            'module_type': module_type,
+            'municipality': municipality,
+            'kiosk_id': kiosk_id,
+            'VisitorID': visitor_id,
+            'TriviaQuestion': selected_question.TriviaQuestionID,
 
-    game_session = request.session['game_session']
+        }
+    
+    game_session = request.session.get('game_session')
     question_id = game_session['question_id']
     selected_question = TriviaQuestion.objects.get(TriviaQuestionID=question_id)
 
@@ -760,46 +928,54 @@ def quiz(request):
     if remaining_time <= 0:
         return redirect('results')
 
+    question_image = selected_question.Images
+
+    random_images = TriviaQuestion.objects.exclude(TriviaQuestionID=question_id).order_by('?')[:3].values_list('Images', flat=True)
+
+    correct = None
     if request.method == 'POST':
         guess = request.POST.get('guess', '').strip().lower()
-        correct = guess == selected_question.QuestionAnswer.lower()
+        correct_answer = selected_question.QuestionAnswer.strip().lower()
+        correct = guess == correct_answer
         if correct:
-            # Calculate points based on remaining time
-            points = calculate_points(remaining_time)
-            game_session['reward_points'] += points
-            # Prepare for the next question
-            game_session['guesses_left'] = 3
-            messages.success(request, f'Correct answer! {points} points added.')
-            # Select next question
-            questions = list(TriviaQuestion.objects.exclude(TriviaQuestionID=question_id))
-            if questions:
-                next_question = random.choice(questions)
-                game_session['question_id'] = next_question.TriviaQuestionID
-            else:
-                return redirect('results')
+            game_session['reward_points'] += 1
+            messages.success(request, 'Correct answer! 1 point added.')
+            
+            # Retrieve QueueVisitor instance
+            visitor_id = game_session['VisitorID']
+            queue_visitor = get_object_or_404(QueueVisitor, pk=visitor_id)
+            
+            # Update RewardPoints
+            reward_points_entry, _ = RewardPoints.objects.get_or_create(user=queue_visitor)
+            reward_points_entry.TotalPoints += game_session['reward_points']
+            reward_points_entry.TriviaQuestionID_id = selected_question.TriviaQuestionID
+            reward_points_entry.save()
+            
+            del request.session['game_session']
+            return redirect('results')
         else:
             game_session['guesses_left'] -= 1
             if game_session['guesses_left'] <= 0:
-                user_reward_points, _ = RewardPoints.objects.get_or_create(user=request.user)
-                user_reward_points.points += game_session['reward_points']
-                user_reward_points.save()
+                reward_points_entry, _ = RewardPoints.objects.get_or_create(user=queue_visitor)
+                reward_points_entry.TotalPoints += game_session['reward_points']
+                reward_points_entry.save()
                 del request.session['game_session']
                 return redirect('results')
         request.session.modified = True
 
-    # Update the session
-    request.session['game_session'] = game_session
-    request.session.modified = True
-
     return render(request, 'quiz.html', {
-        'question': selected_question.QuestionContent,
+        'question_content': selected_question.QuestionContent,
+        'question_image': question_image,
+        'random_images': random_images,
         'guesses_left': game_session['guesses_left'],
         'remaining_time': int(remaining_time),
         'reward_points': game_session['reward_points'],
-        'correct': correct if 'correct' in locals() else None
+        'correct': correct,
+        'module_type': game_session['module_type'],
+        'municipality': game_session['municipality'],
     })
+
     
-#THE RESULT OF THE QUIZ UNDERDEVELOPMENT
 def results_view(request):
 
     reward_points = request.session.get('game_session', {}).get('reward_points', 0)

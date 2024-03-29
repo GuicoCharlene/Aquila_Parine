@@ -68,7 +68,7 @@
         position: absolute;
         top: -0.3255208333333333vw;
         left: 13.020833333333334vw;
-        width: 19.5453125vw;
+        width: 19.53125vw;
         text-align: left;
         color: #15375D;
         transform: translate(0, -50%);
@@ -181,38 +181,41 @@
         const contents = document.querySelectorAll('.content');
         const prevButton = document.querySelector('.prev');
         const nextButton = document.querySelector('.next');
-    
+
         function updateButtonState() {
             prevButton.disabled = currentSlide === 0;
             nextButton.disabled = currentSlide === items.length - 1;
         }
-    
+
         function nextSlide() {
             items[currentSlide].classList.remove('active'); // Hide current slide
             contents[currentSlide].classList.remove('active'); // Hide current content
-    
+
             currentSlide = (currentSlide + 1) % items.length; // Increment current slide index
-    
-            items[currentSlide].classList.add('active'); // Show next slide
-            contents[currentSlide].classList.add('active'); // Show next content
-    
-            backgroundSlide.style.backgroundImage = items[currentSlide].style.backgroundImage; // Set next background image
-            updateButtonState();
+
+            if (currentSlide === items.length - 1) {
+                // Redirect to take_quiz.html if it's the last module
+                window.location.href = "/take_quiz";
+            } else {
+                items[currentSlide].classList.add('active'); // Show next slide
+                contents[currentSlide].classList.add('active'); // Show next content
+                backgroundSlide.style.backgroundImage = items[currentSlide].style.backgroundImage; // Set next background image
+                updateButtonState();
+            }
         }
-    
+
         function prevSlide() {
             items[currentSlide].classList.remove('active'); // Hide current slide
             contents[currentSlide].classList.remove('active'); // Hide current content
-    
+
             currentSlide = (currentSlide - 1 + items.length) % items.length; // Decrement current slide index
-    
+
             items[currentSlide].classList.add('active'); // Show previous slide
             contents[currentSlide].classList.add('active'); // Show previous content
-    
             backgroundSlide.style.backgroundImage = items[currentSlide].style.backgroundImage; // Set previous background image
             updateButtonState();
         }
-    
+
         // Automatically start with the first slide after page load
         window.onload = function() {
             nextSlide();

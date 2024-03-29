@@ -20,15 +20,15 @@
       right: 0;
       bottom: 0;
       min-width: 100%;
-      /* Adjusted to cover the entire width of the screen */
+
       min-height: 100%;
-      /* Adjusted to cover the entire height of the screen */
+
       width: auto;
       height: auto;
       z-index: -1000;
     }
 
-    /* Media query for smaller screens */
+
     @media only screen and (max-width: 768px) {
       #video-background {
         min-width: 100%;
@@ -141,10 +141,10 @@
       top: 28.645833333333332vw;
       left: 46.875vw;
       transform: translateX(-50%);
-      /* Adjust width as needed */
+
       max-width: 5.859375vw;
       animation: moveBackAndForth 3s ease-in-out infinite alternate; glow 1s ease-in-out infinite alternate;
-      /* Adjust animation duration as needed */
+
     }
 
     @keyframes moveBackAndForth {
@@ -154,19 +154,19 @@
 
       100% {
         transform: translateX(50%);
-        /* Adjust the distance the image travels */
+
       }
     }
 
     @keyframes glow {
       0% {
           filter: drop-shadow(0 0 100px #000);
-          /* Initial glow color and radius */
+
       }
 
       100% {
           filter: drop-shadow(0 0 100px #000);
-          /* Final glow color and radius */
+
       }
   }
 

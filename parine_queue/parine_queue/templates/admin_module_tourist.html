@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parine sa Batangas</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+        }
+
+        .edit-container input[type="text"],
+        .edit-container input[type="file"],
+        .edit-container textarea,
+        .edit-container button {
+            margin-bottom: 10px;
+            /* Add margin bottom to create space between inputs */
+        }
+
+        .edit-container {
+            position: absolute;
+            z-index: 1;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border: 1px solid #0f172a;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            /* Stack child elements vertically */
+            align-items: stretch;
+            /* Stretch child elements to container width */
+        }
+
+        .edit_module_name {
+            bottom: 20px;
+
+        }
+
+        .container {
+            position: relative;
+            /* Make the container relative for absolute positioning */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            padding: 20px 80px 80px 80px;
+            margin-left: 20px;
+            max-width: calc(100% - 40px);
+            overflow-y: auto;
+        }
+
+        .tourist-place {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #0f172a;
+            position: relative;
+            /* Added for positioning */
+            transition: transform 0.3s ease;
+        }
+
+        .tourist-place:hover {
+            transform: translateY(-5px);
+        }
+
+        .tourist-place img {
+            border: 1px solid #0f172a;
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            justify-content: center;
+        }
+
+        .tourist-place h2 {
+            margin-top: 10px;
+            font-size: 24px;
+            color: #15375D;
+        }
+
+        .tourist-place p {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #666;
+            position: relative;
+            /* Added for positioning */
+        }
+
+        .edit-icon {
+            color: #666;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .edit-icon:hover {
+            color: green;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Add a hidden edit container inside each tourist-place div -->
+        {% for module in modules %}
+        <div class="tourist-place">
+            <div class="edit-container hidden">
+                <form method="post" action="{% url 'save_module_changes' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="module_id" value="{{ module.DistrictModuleID }}">
+                    <label for="new_module_name">Module Name:</label>
+                    <input type="text" id="new_module_name" name="new_module_name" value="{{ module.ModuleName }}"><br>
+                    <label for="new_module_image">Upload New Module Image:</label>
+                    <input type="file" id="new_module_image" name="image_file"><br>
+                    <label for="new_module_file">Module File:</label>
+                    {% if module.ModuleFile %}
+                    <input type="text" id="new_module_file" name="new_module_file" value="{{ module.ModuleFile }}"><br>
+                    {% else %}
+                    <input type="text" id="new_module_file" name="new_module_file" value="None"><br>
+                    {% endif %}
+                    <button type="submit">Save Changes</button>
+                </form>
+            </div>
+            <img src="{{ module.ModuleContent.url }}" alt="{{ module.ModuleName }}">
+            <h2>{{ module.ModuleName }}</h2>
+            <p>{{ module.ModuleFile }}</p>
+            <i class="fas fa-edit edit-icon" title="Edit"></i>
+        </div>
+        {% endfor %}
+    </div>
+    <script>
+        document.querySelectorAll('.edit-icon').forEach(icon => {
+            icon.addEventListener('click', function (event) {
+                event.stopPropagation(); // Prevent event bubbling
+                const container = this.parentNode;
+                const moduleName = container.querySelector('h2').textContent;
+                const moduleImage = container.querySelector('img').src;
+                const moduleFile = container.querySelector('p').textContent;
+                showEditContainer(container, moduleName, moduleImage, moduleFile);
+            });
+        });
+
+        function showEditContainer(container, moduleName, moduleImage, moduleFile) {
+            // Hide all other edit containers
+            document.querySelectorAll('.edit-container').forEach(editContainer => {
+                if (editContainer !== container.querySelector('.edit-container')) {
+                    editContainer.classList.add('hidden');
+                }
+            });
+
+            // Show the edit container for the clicked module
+            const editContainer = container.querySelector('.edit-container');
+            editContainer.classList.remove('hidden');
+
+            // Fill edit container with current module data
+            editContainer.querySelector('.edit-module-name').value = moduleName;
+            editContainer.querySelector('.edit-module-image').value = moduleImage;
+            editContainer.querySelector('.edit-module-file').value = moduleFile;
+
+            // Handle save changes
+            editContainer.querySelector('.save-changes').onclick = function () {
+                // Update current module data with new values
+                const newModuleName = editContainer.querySelector('.edit-module-name').value;
+                const newModuleImage = editContainer.querySelector('.edit-module-image').value;
+                const newModuleFile = editContainer.querySelector('.edit-module-file').value;
+
+                // Update the current module on the page
+                container.querySelector('img').src = newModuleImage;
+                container.querySelector('h2').textContent = newModuleName;
+                container.querySelector('p').textContent = newModuleFile;
+
+                // Hide the edit container
+                editContainer.classList.add('hidden');
+            };
+        }
+
+        // Hide edit containers when clicking outside tourist places
+        document.addEventListener('click', function (event) {
+            const editContainers = document.querySelectorAll('.edit-container');
+            editContainers.forEach(editContainer => {
+                if (!event.target.closest('.tourist-place') && !event.target.closest('.edit-container')) {
+                    editContainer.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

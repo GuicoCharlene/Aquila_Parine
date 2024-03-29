@@ -16,6 +16,13 @@
             overflow: hidden;
         }
 
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
         #home-container {
             display: inline-block;
             margin: 10px;
@@ -34,7 +41,26 @@
 
         .home-icon:hover {
             color: #1aa4c2;
-            transform: scale(1.1);
+        }
+
+        #history-container {
+            display: inline-block;
+            margin: 10px;
+        }
+
+        #history-link {
+            display: inline-block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .history-icon {
+            font-size: 35px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .history-icon:hover {
+            color: gray;
 
         }
 
@@ -53,9 +79,6 @@
         }
 
         .logo-container {
-            display: inline-block;
-            text-decoration: none;
-            color: inherit;
             position: relative;
             width: 200px;
             background-color: rgba(21, 55, 93, 0.7);
@@ -248,7 +271,7 @@
         }
 
         .total-queue-card {
-            height: 25vh;
+            height: 28vh;
             order: 4;
             margin-top: 300px;
             margin-left: -350px;
@@ -431,16 +454,22 @@
 <body>
     <header>
         <h1>Parine sa Batangas!</h1>
-        <div id="home-container">
-            <a href="#" id="home-link">
-                <span class="fas fa-home home-icon " title="Home"></span>
-            </a>
+        <div id="header-icons">
+            <div id="history-container">
+                <a href=" #" id="history-link">
+                    <span class="fas fa-calendar-alt history-icon" title="History"></span>
+                </a>
+            </div>
+            <div id="home-container">
+                <a href="#" id="home-link">
+                    <span class="fas fa-home home-icon" title="Home"></span>
+                </a>
+            </div>
         </div>
     </header>
 
     <div class="logo-container">
         <img src="{% static 'logo.png' %}" class="logo-image">
-        <a href="#" id="home-link"></a>
         <div class="dashboard-word">Dashboard</div>
     </div>
 
@@ -491,12 +520,12 @@
                     <li><button class="district3-button">CUENCA</button></li>
                     <li><button class="district3-button">LAUREL</button></li>
                     <li><button class="district3-button">MALVAR</button></li>
-                    <li><button class="district3-button">MATAASNAKAHOY</button></li>
+                    <li><button class="district3-button">MATAAS NA KAHOY</button></li>
                     <li><button class="district3-button">SAN NICOLAS</button></li>
-                    <li><button class="district3-button">SAN TERESITA</button></li>
-                    <li><button class="district3-button">STO. TOMAS</button></li>
+                    <li><button class="district3-button">STA. TERESITA</button></li>
+                    <li><button class="district3-button">STO.TOMAS</button></li>
                     <li><button class="district3-button">TALISAY</button></li>
-                    <li><button class="district3-button">TANUAN</button></li>
+                    <li><button class="district3-button">TANAUAN</button></li>
                 </ul>
             </div>
 
@@ -521,7 +550,7 @@
             <button class="district-button">DISTRICT 5</button>
             <div class="district-info-content hidden">
                 <ul>
-                    <li><button class="district5-button">BATANGAS CITY</button></li>
+                    <li><button class="district5-button">BATANGAS</button></li>
 
                 </ul>
             </div>
@@ -532,10 +561,9 @@
             <button class="district-button">DISTRICT 6</button>
             <div class="district-info-content hidden">
                 <ul>
-                    <li><button class="district6-button">LIPA CITY</button></li>
+                    <li><button class="district6-button">LIPA</button></li>
                 </ul>
             </div>
-
         </div>
 
         <form action="/homepage/" method="get">
@@ -552,7 +580,7 @@
                 <div class="queue-capacity-container">
                     <form action="{% url 'update_queue_capacity' %}" method="post">
                         {% csrf_token %}
-                        <!-- Show the Queue Lst in the admin dashboard -->
+                        <!-- Place the text directly before the input field -->
                         <span class="queue-label">Queue Capacity:</span>
                         <input type="number" id="queueCapacity" class="queue-input" name="queue_capacity"
                             value="{{ queue_capacity.queue_capacity }}" min="0" max="100" />
@@ -691,7 +719,7 @@
                 });
             });
 
-            // Add event listener to each district button
+            // Add mouseenter event listener to each district button
             districtButtons.forEach(button => {
                 button.addEventListener('mouseenter', () => {
                     // If there's a district info currently displayed and it's not associated with the hovered button, hide it
@@ -793,6 +821,14 @@
 
                 });
             });
+        });
+    </script>
+
+    <script>
+        // Add event listener to the history button
+        document.querySelector('#history-link').addEventListener('click', function () {
+            // Redirect to the history page
+            window.location.href = '/adminpage/history/'; // Update the URL as needed
         });
     </script>
 
