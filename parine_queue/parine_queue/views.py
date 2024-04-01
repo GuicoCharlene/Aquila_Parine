@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
+from django.db import models
 from .models import QueueVisitor, QueueEntry, Kiosk, Admin, Queue_Capacity, Visitor_History, DistrictModules, TriviaQuestion, RewardPoints, VisitorProgress
 import random, os
 from django.utils import timezone
@@ -19,6 +20,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings 
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from django.db.models import Sum
 
 logger = logging.getLogger(__name__)
 
@@ -872,117 +874,138 @@ def take_quiz(request):
    
     return render(request, 'take_quiz.html')
 
-# Function to fetch quiz questions based on ModuleType and Municipality
-def fetch_quiz_questions(module_type, municipality, ):
-    # Filter questions based on module type, municipality, and kiosk_id
+logger = logging.getLogger(__name__)
+
+def fetch_quiz_questions(module_type, municipality):
+    # Filter questions based on module type and municipality
     questions = TriviaQuestion.objects.filter(ModuleType=module_type, Municipality__iexact=municipality)
     return questions
 
-
 def quiz(request):
     if 'game_session' not in request.session:
+        # Initialize session data if it doesn't exist
         module_type = request.GET.get('module_type')
         municipality = request.GET.get('municipality')
         kiosk_id = request.GET.get('kiosk_id')
-        
-        print("KioskID:", kiosk_id)
-        
-        kioks = Kiosk.objects.get(KioskID=kiosk_id)  # Use QueueID instead of just kiosk_id
-        queue_id = kioks.QueueID 
-        visitor_id = queue_id.user.pk  # Store the primary key instead
-        
-        # Now you have the visitor_id associated with the kiosk_id, you can use it as needed
-        print("VisitorID:", visitor_id)
 
-        questions = fetch_quiz_questions(module_type, municipality)
-        if not questions:
-            return render(request, 'quiz.html', {
-                'question_content': None,
-                'question_image': None,
-                'random_images': None,
+        try:
+            kiosk = Kiosk.objects.get(KioskID=kiosk_id)
+            queue_id = kiosk.QueueID
+            visitor_id = queue_id.user.pk
+
+            questions = fetch_quiz_questions(module_type, municipality)
+            if not questions:
+                return render(request, 'quiz.html', {'question_content': None})
+
+            selected_question_ids = [question.TriviaQuestionID for question in questions]
+            request.session['game_session'] = {
+                'question_ids': selected_question_ids,
+                'answered_question_ids': [],
+                'correct_answer_ids': [],
+                'reward_points': 0,
+                'guesses_left': 3,
+                'start_time': timezone.now().isoformat(),
                 'module_type': module_type,
                 'municipality': municipality,
-            })
+                'kiosk_id': kiosk_id,
+                'VisitorID': visitor_id,
+                'incorrect_guesses': 0,
+                'current_question_id': None  # Add a field to track the current question
+            }
 
-        selected_question = random.choice(questions)
+            if not RewardPoints.objects.filter(user_id=visitor_id).exists():
+                RewardPoints.objects.create(user_id=visitor_id, TotalPoints=5)
 
-        request.session['game_session'] = {
-            'question_id': selected_question.TriviaQuestionID,
-            'reward_points': 0,
-            'guesses_left': 3,
-            'start_time': timezone.now().isoformat(),
-            'module_type': module_type,
-            'municipality': municipality,
-            'kiosk_id': kiosk_id,
-            'VisitorID': visitor_id,
-            'TriviaQuestion': selected_question.TriviaQuestionID,
+        except:
+            logger.error("Kiosk matching query does not exist.")
 
-        }
-    
+    else:
+        game_session = request.session.get('game_session')
+        visitor_id = game_session.get('VisitorID')
+        module_type = game_session.get('module_type')
+        municipality = game_session.get('municipality')
+
+        answered_questions = RewardPoints.objects.filter(user_id=visitor_id).values_list('TriviaQuestionID', flat=True)
+        all_questions = fetch_quiz_questions(module_type, municipality)
+        remaining_questions = [q for q in all_questions if q.TriviaQuestionID not in answered_questions]
+
+        remaining_question_ids = [question.TriviaQuestionID for question in remaining_questions]
+        request.session['game_session']['question_ids'] = remaining_question_ids
+
     game_session = request.session.get('game_session')
-    question_id = game_session['question_id']
-    selected_question = TriviaQuestion.objects.get(TriviaQuestionID=question_id)
+    question_ids = game_session['question_ids']
+    answered_question_ids = game_session.get('answered_question_ids', [])
 
-    remaining_time = (180 - (timezone.now() - timezone.datetime.fromisoformat(game_session['start_time'])).total_seconds())
+    remaining_question_ids = [q_id for q_id in question_ids if q_id not in answered_question_ids]
 
-    if remaining_time <= 0:
-        return redirect('results')
-
-    question_image = selected_question.Images
-
-    random_images = TriviaQuestion.objects.exclude(TriviaQuestionID=question_id).order_by('?')[:3].values_list('Images', flat=True)
-
-    correct = None
-    if request.method == 'POST':
-        guess = request.POST.get('guess', '').strip().lower()
-        correct_answer = selected_question.QuestionAnswer.strip().lower()
-        correct = guess == correct_answer
-        if correct:
-            game_session['reward_points'] += 1
-            messages.success(request, 'Correct answer! 1 point added.')
-            
-            # Retrieve QueueVisitor instance
-            visitor_id = game_session['VisitorID']
-            queue_visitor = get_object_or_404(QueueVisitor, pk=visitor_id)
-            
-            # Update RewardPoints
-            reward_points_entry, _ = RewardPoints.objects.get_or_create(user=queue_visitor)
-            reward_points_entry.TotalPoints += game_session['reward_points']
-            reward_points_entry.TriviaQuestionID_id = selected_question.TriviaQuestionID
-            reward_points_entry.save()
-            
-            del request.session['game_session']
-            return redirect('results')
+    if remaining_question_ids:
+        if game_session['current_question_id'] is None:
+            question_id = random.choice(remaining_question_ids)
         else:
-            game_session['guesses_left'] -= 1
-            if game_session['guesses_left'] <= 0:
-                reward_points_entry, _ = RewardPoints.objects.get_or_create(user=queue_visitor)
-                reward_points_entry.TotalPoints += game_session['reward_points']
-                reward_points_entry.save()
-                del request.session['game_session']
-                return redirect('results')
-        request.session.modified = True
+            question_id = game_session['current_question_id']
 
-    return render(request, 'quiz.html', {
-        'question_content': selected_question.QuestionContent,
-        'question_image': question_image,
-        'random_images': random_images,
-        'guesses_left': game_session['guesses_left'],
-        'remaining_time': int(remaining_time),
-        'reward_points': game_session['reward_points'],
-        'correct': correct,
-        'module_type': game_session['module_type'],
-        'municipality': game_session['municipality'],
-    })
+        selected_question = TriviaQuestion.objects.get(TriviaQuestionID=question_id)
 
-    
+        initial_start_time = timezone.datetime.fromisoformat(game_session['start_time'])
+        remaining_time = (60 - (timezone.now() - initial_start_time).total_seconds())
+        if remaining_time <= 0:
+            return redirect('results')
+
+        correct = None
+        if request.method == 'POST':
+            guess = request.POST.get('guess', '').strip().lower()
+            correct_answer = selected_question.QuestionAnswer.strip().lower()
+            correct = guess == correct_answer
+
+            if correct:
+                game_session['answered_question_ids'].append(question_id)
+                game_session['correct_answer_ids'].append(question_id)
+                game_session['guesses_left'] = 3
+                game_session['incorrect_guesses'] = 0
+                game_session['current_question_id'] = None
+
+                reward_points_instance, created = RewardPoints.objects.get_or_create(
+                    user_id=visitor_id,
+                    TriviaQuestionID=question_id,  # Associate the question with TriviaQuestionID
+                    defaults={'TotalPoints': 0}
+                )
+                reward_points_instance.TotalPoints += 1
+                reward_points_instance.save()
+
+                game_session['reward_points'] = RewardPoints.objects.filter(user_id=visitor_id).aggregate(Sum('TotalPoints'))['TotalPoints__sum']
+            else:
+                game_session['guesses_left'] -= 1
+                game_session['incorrect_guesses'] += 1
+
+            request.session.modified = True
+
+        incorrect_guesses = game_session['incorrect_guesses']
+
+        return render(request, 'quiz.html', {
+            'question_content': selected_question.QuestionContent,
+            'question_image': selected_question.Images,
+            'random_images': TriviaQuestion.objects.exclude(TriviaQuestionID=question_id).order_by('?')[:3].values_list('Images', flat=True),
+            'guesses_left': game_session['guesses_left'],
+            'remaining_time': int(remaining_time),
+            'reward_points': game_session.get('reward_points', 0),
+            'correct': correct,
+            'module_type': game_session['module_type'],
+            'municipality': game_session['municipality'],
+            'incorrect_guesses': incorrect_guesses,
+        })
+    else:
+        return redirect('done_quiz')
+
+def done_quiz(request):
+    return render(request, 'done_quiz.html')
+
 def results_view(request):
-
-    reward_points = request.session.get('game_session', {}).get('reward_points', 0)
+    visitor_id = request.session.get('game_session').get('VisitorID')
+    total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=models.Sum('TotalPoints'))
+    total_points = total_points_entry['total_points'] if total_points_entry['total_points'] else 0
 
     if 'game_session' in request.session:
         del request.session['game_session']
     
-    return render(request, 'results.html', {
-        'reward_points': reward_points
-    })
+    return render(request, 'results.html', {'total_points': total_points})
+

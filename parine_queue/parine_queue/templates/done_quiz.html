@@ -114,23 +114,14 @@
         <source src="{% static 'aquila.mp4' %}" type="video/mp4">
         Your browser does not support HTML5 video.
     </video>
-    <img src="{% static 'all batangas.png' %}" class=batslogo >
+    <img src= "{% static 'all batangas.png' %}" class=batslogo >
     <div class=" queue-container">
     <div class="message-container">
         <img src="{% static 'logo.png' %}" class="parinelogo">
-        <h2>Welcome to Parine sa Batangas!</h2>
-        <p>Before you get to explore the beauty of Batangas Province, you will be added to the queue.</p>
+        <h2>Congratulations!</h2>
+        <p>You've answer all of the question for this module</p>
     </div>
 
-    <button onclick="redirectToQueueList()" class="btn-primary">View Queue List</button>
-
-    </div>
-
-    <script>
-        function redirectToQueueList() {
-            window.location.href = "/queue_list/";
-        }
-    </script>
 </body>
 
 </html>

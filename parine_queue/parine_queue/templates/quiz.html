@@ -7,14 +7,12 @@
 <title>Parine sa Batangas</title>
 
 <style>
-
     body {
         font-family: 'Arial', sans-serif;
         background-color: #BFEBF4;
         margin: 0;
         padding: 20px;
     }
-    
     
     @keyframes tada {
         0% {
@@ -31,6 +29,16 @@
         }
         100% {
             transform: scale(1) rotate(0deg);
+        }
+    }
+
+    /* Added new keyframes animation for the pop effect */
+    @keyframes pop {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
         }
     }
     
@@ -52,7 +60,6 @@
         width: 80%; 
     }
     
-    
     form {
         margin-bottom: 20px;
     }
@@ -63,7 +70,6 @@
         left: 50%;
         transform: translate(-50%, -50%);
         text-align: center;
-        font-family: YAD1aYG82rc-0;
         color: #010355;
         border: 1px solid #1db4ff;
         border-radius: 10px;
@@ -86,7 +92,7 @@
     }
     
     button {
-        padding: 10px 20px;
+        padding: 10px;
         background-color: #00a2ff;
         color: white;
         border: none;
@@ -110,9 +116,56 @@
         color: #333;
         margin-bottom: 20px;
     }
+
+    .content-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        height: auto;
+        padding: 20px;
+    }
     
+    .image-container {
+        height: 100%;
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 10px;
+        justify-content: center;
+        align-items: center;
+        animation: pop 3s ease-in-out infinite; 
+    }
+    
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        max-width: 345px;
+        max-height: 229px;
+        object-fit: cover;
+        border-radius: 15px;
+        animation: pop 3s ease-in-out infinite; 
+    }
+    
+    .question-container {
+        width: 90%;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
     @media (max-width: 768px) {
-        input[type="text"] {
+        .content-container {
+            flex-direction: column;
+        }
+
+        .image-container, .question-container {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        input[type="text"], button {
             width: 60%;
         }
     
@@ -130,54 +183,6 @@
             width: 40%;
         }
     }
-    
-
-    .content-container {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start; /* Adjust alignment as needed */
-        height: auto; /* Adjust based on your content */
-        padding: 20px; /* Added padding for spacing */
-    }
-    
-    .image-container {
-        height: 100%;
-        width: 100%; /* Adjust if you want a different size */
-        display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Creates two columns */
-        grid-gap: 10px; /* Space between grid items */
-        justify-content: center;
-        align-items: center;
-    }
-    
-    .image-container img {
-        width: 100%; /* Make images fill the container */
-        height: 100%; /* Make images fill the container */
-        max-width: 345px;
-        max-height: 229px;
-        object-fit: cover; /* Ensure images maintain aspect ratio */
-        border-radius: 15px;
-    }
-    
-    
-    .question-container {
-        width: 90%; /* Adjust if you want a different size */
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center; /* Center the content */
-    }
-
-    @media (max-width: 768px) {
-        .content-container {
-            flex-direction: column;
-        }
-
-        .image-container, .question-container {
-            width: 100%;
-        }
-    }
-
 </style>
 </head>
 <body>
@@ -185,9 +190,15 @@
         <h2>I SPY WITH MY LITTLE EYE...</h2>
         <div class="content-container">
             <div class="image-container">
-                <img src="/media/{{ question_image }}" alt="Trivia Image">
+                <!-- Example for the correct answer image -->
+                <button onclick="submitForm('{{ correct_answer }}')">
+                    <img class="trivia-image" src="/media/{{ question_image }}" alt="Trivia Image">
+                </button>
+                <!-- Example for random images. This should be in a loop as before. -->
                 {% for image_url in random_images %}
-                <img src="/media/{{ image_url }}" alt="Trivia Image">  
+                <button onclick="submitForm('{{ image_url }}')">
+                    <img class="trivia-image" src="/media/{{ image_url }}" alt="Trivia Image">
+                </button>
                 {% endfor %}
             </div>
         
@@ -196,22 +207,56 @@
                 <div class="question-box">{{ question_content }}</div>
                 <form method="post" action="{% url 'quiz' %}?module_type={{ module_type }}&municipality={{ municipality }}" id="guess-form">
                     {% csrf_token %}
-                    <input type="text" name="guess" placeholder="Your guess" {% if correct or guesses_left <= 0 %}disabled{% endif %}>
-                    <button type="submit" {% if correct or guesses_left <= 0 %}disabled{% endif %}>ENTER</button>
+                    <input type="hidden" name="guess" id="guess-input">
                 </form>
                 
                 {% if correct %}
                     <div class="correct">Correct! You've earned points!</div>
-                    <a href="{% url 'results' kiosk_id=kiosk_id %}">View Results</a>
+                {% endif %}
+                
+                <div class="incorrect-guesses">INCORRECT GUESSES: {{ incorrect_guesses }}/3</div>
+                
+                {% else %}
+                <p>No question available at this time.</p>
+                {% endif %}
 
-                {% endif %}
-                
-                <div class="incorrect-guesses">INCORRECT GUESS: {{ guess }} / 3</div>
-                
-                {% endif %}
+                    <!-- Timer Display -->
+                <div class="timer" id="timer">Time Left: <span id="timeLeft">60</span> seconds</div>
+
             </div>
         </div>
-    </div>
-</body>
-</html>
 
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var container = document.querySelector('.image-container');
+            var images = Array.prototype.slice.call(container.children);
+            var shuffledImages = images.sort(function () { return 0.5 - Math.random(); });
+    
+            // Clear the container and re-append the images in randomized order
+            container.innerHTML = "";
+            shuffledImages.forEach(function (image) {
+                container.appendChild(image);
+            });
+    
+            // Existing timer script remains the same
+            var timeLeft = 60;
+            var timerElement = document.getElementById('timeLeft');
+            var countdownTimer = setInterval(function () {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countdownTimer);
+                    submitForm('{{ correct_answer }}'); // Adjust as needed
+                }
+            }, 1000);
+        });
+    
+        function submitForm(answer) {
+            document.getElementById('guess-input').value = answer;
+            document.getElementById('guess-form').submit();
+        }
+    </script>
+
+</body>

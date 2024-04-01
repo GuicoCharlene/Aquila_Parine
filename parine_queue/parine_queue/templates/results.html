@@ -1,17 +1,127 @@
-<!DOCTYPE html>
-{% load static %}
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Results</title>
+    <title>Queue</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: YAD1aYG82rc-0, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background-color: rgb(348, 347, 347);
+        }
+
+        #video-background {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+
+            min-height: 100%;
+
+            width: auto;
+            height: auto;
+            z-index: -1000;
+        }
+
+        @media only screen and (max-width: 768px) {
+            #video-background {
+                min-width: 100%;
+                min-height: 100%;
+            }
+        }
+
+        .queue-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #010355;
+            border: 1px solid #0f172a;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            max-width: 80%;
+        }
+
+        h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .batslogo {
+            width: auto;
+            max-width: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .parinelogo {
+            width: 130px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .btn-primary {
+            width: 200px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding: 12px;
+            border: none;
+            border-radius: 15px;
+            background-color: #1db4ff;
+            border: 1px solid #0f172a;
+            color: #fdf9f9;
+            cursor: pointer;
+            font-size: 23px;
+            text-decoration: none;
+            display: inline-block;
+            animation: heartbeat 1s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .btn-primary:hover {
+            background-color: #0c7abc;
+        }
+    </style>
 </head>
 
 <body>
-
-    <h1>Thank you for playing!</h1>
-    <p>Your total reward points: {{ RewardPoints.TotalPoints }}</p>
-
-
+    {% load static %}
+    <video autoplay muted loop id="video-background">
+        <source src="{% static 'aquila.mp4' %}" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+    <img src="{% static 'all batangas.png' %}" class=batslogo >
+    <div class=" queue-container">
+        <div class="message-container">
+            <img src="{% static 'logo.png' %}" class="parinelogo">
+            <h2>Thank you for playing!</h2>
+            <p>Total Points: {{ total_points }}</p> 
+        </div>
+    </div>
 </body>
+
 </html>
