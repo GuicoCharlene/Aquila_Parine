@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.db import models
+from django.db.models import Case, When, Value, CharField
 from .models import QueueVisitor, QueueEntry, Kiosk, Admin, Queue_Capacity, Visitor_History, DistrictModules, TriviaQuestion, RewardPoints, VisitorProgress
 import random, os
 from django.utils import timezone
@@ -11,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseRedirect
 import logging
 from django.db import transaction
 from django.urls import reverse
@@ -93,27 +94,28 @@ def queue_list(request):
 
     # Assign users from the queue to available kiosks
     for queue_entry in QueueEntry.objects.exclude(QueueStatus='IN KIOSK').exclude(QueueStatus='IN MODULE').exclude(QueueStatus='INACTIVE').select_related('user').order_by('PriorityLevel'):
+        # Calculate time spent in the queue
+        if queue_entry.StartTime:
+            time_spent = timezone.now() - queue_entry.StartTime
+            # Change priority level from low to mid
+            if queue_entry.PriorityLevel == 'low' and time_spent.total_seconds() >= 180 * 60: # Minutes
+                queue_entry.PriorityLevel = 'mid'
+                queue_entry.save()
+            # Change priority level from mid to high
+            elif queue_entry.PriorityLevel == 'mid' and time_spent.total_seconds() >= 300 * 60: # Minutes
+                queue_entry.PriorityLevel = 'high'
+                queue_entry.save()
+
         available_kiosk = Kiosk.objects.filter(KioskStatus=False).first()
         if available_kiosk:
             available_kiosk.KioskStatus = True
             available_kiosk.QueueID = queue_entry
             available_kiosk.TimeDuration = timezone.now()
             available_kiosk.save()
-            queue_entry.EndTime = timezone.now()  # Update EndTime to match current time of when the user left the queue
-            if queue_entry.StartTime:
-                time_spent = timezone.now() - queue_entry.StartTime
-                hours = int(time_spent.total_seconds() // 3600)
-                minutes = int((time_spent.total_seconds() % 3600) // 60)
-                queue_entry.EndTime = queue_entry.StartTime + timedelta(hours=hours, minutes=minutes)
             # Update QueueStatus to 'IN KIOSK' only if it's not already 'IN MODULE' or 'INACTIVE'
-            #This is to send the user to the available kiosk, sending the data is based on the QueueStatus
             if queue_entry.QueueStatus != 'IN MODULE':
                 queue_entry.QueueStatus = 'IN KIOSK'
                 queue_entry.save()
-                
-            else: queue_entry.QueueStatus != 'INACTIVE'
-            queue_entry.QueueStatus = 'IN KIOSK'
-            queue_entry.save()
                 
 
     # Check if the current user is assigned to a kiosk
@@ -141,8 +143,18 @@ def queue_list(request):
             'status': '0' if not kiosk.KioskStatus else '1'
         })
 
+    queue_entries = QueueEntry.objects.exclude(QueueStatus='IN KIOSK').exclude(QueueStatus='IN MODULE').exclude(QueueStatus='INACTIVE').select_related('user').order_by(
+        Case(
+            When(PriorityLevel='high', then=Value(0)),
+            When(PriorityLevel='mid', then=Value(1)),
+            When(PriorityLevel='low', then=Value(2)),
+            default=Value(3),
+            output_field=CharField(),
+        ),
+    )
+
     context = {
-        'queue_entries': QueueEntry.objects.exclude(QueueStatus='IN KIOSK').exclude(QueueStatus='IN MODULE').exclude(QueueStatus='INACTIVE').select_related('user').order_by('PriorityLevel'),
+        'queue_entries': queue_entries,
         'kiosks_data': kiosks_data,
         'is_admin': is_admin,
         'logged_in_username': logged_in_username,
@@ -458,6 +470,62 @@ def get_district_modules(suffix):
     return modules
 
 
+def add_module(request):
+    if request.method == 'POST':
+        module_name = request.POST.get('new_module_name')
+        module_file = request.POST.get('new_module_file')
+        module_image = request.FILES.get('new_module_image')
+        municipality = request.POST.get('municipality_name')
+        moduletype = request.POST.get('moduletype_suffix')
+
+        # Get the district suffix for the municipality
+        district_suffix = get_district_suffix(municipality)
+
+        if district_suffix:
+            # Get existing modules to determine the numeric part
+            existing_modules = DistrictModules.objects.filter(DistrictModuleID__startswith=moduletype, DistrictModuleID__endswith=district_suffix)
+
+            # Extract the numeric parts
+            numeric_parts = [int(module.DistrictModuleID[len(moduletype):-len(district_suffix)]) for module in existing_modules]
+
+            # Find the maximum numeric part
+            if numeric_parts:
+                numeric_part = max(numeric_parts) + 1
+            else:
+                numeric_part = 1
+
+            # Generate the DistrictModuleID
+            district_module_id = f'{moduletype}{str(numeric_part).zfill(3)}{district_suffix}'  # Ensure numeric part is padded with zeros
+
+            # Save the module to the database with the generated DistrictModuleID
+            new_module = DistrictModules(DistrictModuleID=district_module_id, Municipality=municipality, ModuleName=module_name, ModuleContent=module_image, ModuleFile=module_file)
+
+            if module_image:  # Check if module_image is not None
+                new_module.ModuleContent = os.path.basename(module_image.name)  # Save only the filename
+
+                # Save the uploaded image to the media directory
+                image_path = os.path.join(settings.MEDIA_ROOT, module_image.name)
+                default_storage.save(image_path, ContentFile(module_image.read()))
+
+            new_module.save()
+
+    return redirect(request.META.get('HTTP_REFERER', 'admin_dashboard'))
+def delete_module(request):
+    if request.method == 'POST':
+        module_id = request.POST.get('module_id')    
+        try:
+            module_to_delete = DistrictModules.objects.get(DistrictModuleID=module_id)
+            
+            # Delete associated image file if it exists
+            if module_to_delete.ModuleContent:
+                image_path = module_to_delete.ModuleContent.path  # Get the path of the image file
+                if default_storage.exists(image_path):
+                    default_storage.delete(image_path)  # Delete the image file
+            module_to_delete.delete()
+        except DistrictModules.DoesNotExist:
+            pass
+    return redirect(request.META.get('HTTP_REFERER', 'admin_dashboard'))
+  
 def save_module_changes(request):
     if request.method == 'POST':
         module_id = request.POST.get('module_id')
@@ -509,7 +577,6 @@ def admin_module_craft(request, municipality):
     if modules is None:
         return render(request, 'error.html', {'message': 'Municipality not found.'})
     return render(request, 'admin_module_craft.html', {'modules': modules, 'municipality': municipality})
-
 
 def selectmunicipality1(request, kiosk_id):
     logged_in_username = request.session.get('logged_in_username')
@@ -954,7 +1021,7 @@ def quiz(request):
         correct = None
         if request.method == 'POST':
             guess = request.POST.get('guess', '').strip().lower()
-            correct_answer = selected_question.QuestionAnswer.strip().lower()
+            correct_answer = selected_question.Images.strip().lower()
             correct = guess == correct_answer
 
             if correct:
@@ -974,8 +1041,10 @@ def quiz(request):
 
                 game_session['reward_points'] = RewardPoints.objects.filter(user_id=visitor_id).aggregate(Sum('TotalPoints'))['TotalPoints__sum']
             else:
-                game_session['guesses_left'] -= 1
-                game_session['incorrect_guesses'] += 1
+                # Only decrease guesses_left if the guess is incorrect
+                if game_session['incorrect_guesses'] < 2:
+                    game_session['guesses_left'] -= 1
+                    game_session['incorrect_guesses'] += 1
 
             request.session.modified = True
 
@@ -1008,4 +1077,5 @@ def results_view(request):
         del request.session['game_session']
     
     return render(request, 'results.html', {'total_points': total_points})
+
 

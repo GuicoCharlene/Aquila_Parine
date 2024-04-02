@@ -31,17 +31,18 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 1625px;
-        height: 820px;
+        width: 100vw;
+        height: 39.84375vw;
         z-index: -1;
     }
     
     .background-slide .item {
-        width: 1625px;
-        height: 820px;
+        width: 100vw;
+        height: 39.84375vw;
         background-position: center;
         background-size: cover;
         transition: background-image 0.5s ease-in-out;
+        background-size: cover;
     }
     
     .slide {
@@ -50,8 +51,8 @@
     }
     
     .slide .item {
-        width: 1625px;
-        height: 820px;
+        width: 100vw;
+        height: 39.84375vw;
         position: absolute;
         top: 0;
         left: 0;
@@ -67,8 +68,8 @@
     .content {
         position: absolute;
         top: -0.3255208333333333vw;
-        left: 13.020833333333334vw;
-        width: 19.53125vw;
+        left: 5.020833333333334vw;
+        width: 40.53125vw;
         text-align: left;
         color: #15375D;
         transform: translate(0, -50%);
@@ -81,24 +82,29 @@
         display: block;
     }
     
-
-    
     .content .name {
         margin-top: 32.552083333333336vw;
         font-size: 2.6041666666666665vw;
         text-transform: uppercase;
         font-weight: bold;
+        padding: 0 2vw; /* Add horizontal padding */
         opacity: 0;
+        text-align: justify;
         background: rgba(255, 255, 255, 0.8);
         animation: animateName 0.5s ease-in-out 0.5s forwards; /* Changed animation name and delay */
     }
     
     .content .des {
-        margin-top: 0.6510416666666666vw;
-        margin-bottom: 1.3020833333333333vw;
+        margin-top: 1vw; 
+        margin-bottom: 1vw;
+        padding: 2vw; 
         opacity: 0;
+        font-size: 20px; 
+        text-align: justify;
         background: rgba(255, 255, 255, 0.8);
-        animation: animateDes 0.5s ease-in-out 1s forwards; /* Changed animation name and delay */
+        animation: animateDes 0.5s ease-in-out 1s forwards;
+        /* Ensure the width accounts for padding */
+        box-sizing: border-box;
     }
     
     /* Keyframes for animations */
@@ -151,6 +157,7 @@
         background: #ababab;
         color: #fff;
     }
+    
 </style>
 </head>
 <body>

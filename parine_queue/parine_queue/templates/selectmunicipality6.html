@@ -374,11 +374,11 @@
     
     .mcontainer {
         position: absolute;
-        top: 21.809895833333332vw;
+        top: 22.447916666666668vw;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 84.63541666666667vw;
-        height: 33.854166666666664vw;
+        width: 100vw;
+        height: 39.84375vw;
         background: #18395E;
         box-shadow: 0 30px 50px #dbdbdb;
     }
@@ -524,6 +524,14 @@
         margin-left: 20px;
         text-align: left; 
     }
+    #points {
+        margin-top: 11.458333333333334vw; 
+        margin-left: 1.0416666666666667vw;
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        color: #333; 
+        font-size: 2.0833333333333335vw; 
+    } 
 </style>
 </head>
 <body>
@@ -546,6 +554,7 @@
         </div>
         <div id="rightPanel">
             <img id="backButton" src="{% static 'backbutton.png' %}" alt="Back Button" />
+            <div id="points">Points:</div>
             <div id="usertopPanel">
                 {% if kiosk_username %}
                 <h3 class="username">{{ kiosk_username }}</h3>

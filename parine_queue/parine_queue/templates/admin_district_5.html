@@ -71,44 +71,6 @@
 
         }
 
-        #action-buttons {
-            position: absolute;
-            right: 28px;
-
-        }
-
-        #action-buttons button {
-            padding: 10px 20px;
-            color: #15375D;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: transform 0.3s;
-            background: none;
-            width: 60px;
-            /* Fixed width for the buttons */
-            height: 60px;
-            /* Fixed height for the buttons */
-
-        }
-
-        #action-buttons #add-button:hover i {
-
-            color: blue;
-        }
-
-        #action-buttons #delete-button:hover i {
-
-            color: red;
-        }
-
-        /* Styling for icons */
-        #action-buttons button i {
-            margin-right: 10px;
-            margin-left: 5px;
-            font-size: 35px;
-        }
-
         /*NAV FOR CONTENT*/
         .nav-bar {
             color: #1E4C79;
@@ -333,10 +295,7 @@
             </div>
         </div>
     </header>
-    <div id="action-buttons">
-        <button id="add-button"><i class="fas fa-plus" title="Add"></i></button>
-        <button id="delete-button"><i class="fas fa-trash-alt" title="Delete"></i></button>
-    </div>
+
     <div class="logo-container">
         <img src="{% static 'logo.png' %}" class="logo-image">
         <div class="municipality-container" id="selected-municipality-display"></div>
@@ -612,6 +571,11 @@
 
     </script>
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Trigger click event on the "Tourist Spot" tab
+            document.querySelector('[data-nav="tourist"]').click();
+        });
+
         function loadModule(button) {
             // Remove active class from all buttons
             document.querySelectorAll('.nav-item').forEach(btn => {

@@ -190,16 +190,19 @@
         <h2>I SPY WITH MY LITTLE EYE...</h2>
         <div class="content-container">
             <div class="image-container">
-                <!-- Example for the correct answer image -->
-                <button onclick="submitForm('{{ correct_answer }}')">
-                    <img class="trivia-image" src="/media/{{ question_image }}" alt="Trivia Image">
-                </button>
-                <!-- Example for random images. This should be in a loop as before. -->
-                {% for image_url in random_images %}
-                <button onclick="submitForm('{{ image_url }}')">
-                    <img class="trivia-image" src="/media/{{ image_url }}" alt="Trivia Image">
-                </button>
-                {% endfor %}
+
+            <!-- Correct image -->
+            <button onclick="submitForm('{{ question_image }}')">
+                <img src="/media/{{ question_image }}" alt="Trivia Image">
+            </button>
+
+            <!-- Incorrect images -->
+            {% for image_url in random_images %}
+            <button onclick="submitForm('{{ image_url }}')">
+                <img src="/media/{{ image_url }}" alt="Trivia Image">
+            </button>
+            {% endfor %}
+
             </div>
         
             <div class="question-container">
@@ -253,10 +256,15 @@
             }, 1000);
         });
     
-        function submitForm(answer) {
+        function submitForm(answer, isCorrect) {
             document.getElementById('guess-input').value = answer;
+            // Assuming you add a new hidden input for correctness
+            document.getElementById('correct-input').value = isCorrect ? "true" : "false";
             document.getElementById('guess-form').submit();
         }
+        
+        
     </script>
 
 </body>
+</html>
