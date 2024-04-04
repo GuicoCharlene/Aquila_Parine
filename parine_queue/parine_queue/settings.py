@@ -73,7 +73,7 @@ TEMPLATES = [
 STATIC_ROOT = 'C:\\Users\\guico\\OneDrive\\Desktop\\ParinesaBatangas\\parine_queue\\static'
 
 
-
+STATIC_ROOT = 'Aquila_Parine\\parine_queue\\static'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [

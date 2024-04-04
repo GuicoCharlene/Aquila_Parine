@@ -92,37 +92,43 @@ def queue(request):
 def queue_list(request):
     is_admin = request.session.get('is_admin', False)
 
-    # Assign users from the queue to available kiosks
+    # Aging mechanism: Increase priority level based on waiting time
     for queue_entry in QueueEntry.objects.exclude(QueueStatus='IN KIOSK').exclude(QueueStatus='IN MODULE').exclude(QueueStatus='INACTIVE').select_related('user').order_by('PriorityLevel'):
-        # Calculate time spent in the queue
         if queue_entry.StartTime:
             time_spent = timezone.now() - queue_entry.StartTime
-            # Change priority level from low to mid
-            if queue_entry.PriorityLevel == 'low' and time_spent.total_seconds() >= 180 * 60: # Minutes
+	        # Change priority level from low to mid
+            if queue_entry.PriorityLevel == 'low' and time_spent.total_seconds() >= 60 * 60:  # first number is equivalent to minutes
                 queue_entry.PriorityLevel = 'mid'
                 queue_entry.save()
-            # Change priority level from mid to high
-            elif queue_entry.PriorityLevel == 'mid' and time_spent.total_seconds() >= 300 * 60: # Minutes
+	        # Change priority level from mid to high
+            elif queue_entry.PriorityLevel == 'mid' and time_spent.total_seconds() >= 120 * 60:  # first number is equivalent to minutes
                 queue_entry.PriorityLevel = 'high'
                 queue_entry.save()
 
+    # Assign users from the queue to available kiosks
+    for queue_entry in QueueEntry.objects.exclude(QueueStatus='IN KIOSK').exclude(QueueStatus='IN MODULE').exclude(QueueStatus='INACTIVE').select_related('user').order_by('PriorityLevel'):
         available_kiosk = Kiosk.objects.filter(KioskStatus=False).first()
         if available_kiosk:
             available_kiosk.KioskStatus = True
             available_kiosk.QueueID = queue_entry
             available_kiosk.TimeDuration = timezone.now()
             available_kiosk.save()
+            # Update queue entry status and end time
+            queue_entry.EndTime = timezone.now()  # Update EndTime to match current time
+            if queue_entry.StartTime:
+                time_spent = timezone.now() - queue_entry.StartTime
+                hours = int(time_spent.total_seconds() // 3600)
+                minutes = int((time_spent.total_seconds() % 3600) // 60)
+                queue_entry.EndTime = queue_entry.StartTime + timedelta(hours=hours, minutes=minutes)
             # Update QueueStatus to 'IN KIOSK' only if it's not already 'IN MODULE' or 'INACTIVE'
             if queue_entry.QueueStatus != 'IN MODULE':
                 queue_entry.QueueStatus = 'IN KIOSK'
                 queue_entry.save()
-                
 
     # Check if the current user is assigned to a kiosk
     logged_in_username = request.session.get('logged_in_username')
     if logged_in_username:
         assigned_kiosk = Kiosk.objects.filter(QueueID__user__username=logged_in_username).first()
-        
 
     # Prepare the data for displaying in the kiosk container
     kiosks_data = []
@@ -578,10 +584,179 @@ def admin_module_craft(request, municipality):
         return render(request, 'error.html', {'message': 'Municipality not found.'})
     return render(request, 'admin_module_craft.html', {'modules': modules, 'municipality': municipality})
 
+def add_module(request):
+    if request.method == 'POST':
+        module_name = request.POST.get('new_module_name')
+        module_file = request.POST.get('new_module_file')
+        module_image = request.FILES.get('new_module_image')
+        municipality = request.POST.get('municipality_name')
+        moduletype = request.POST.get('moduletype_suffix')
+
+        # Get the district suffix for the municipality
+        district_suffix = get_district_suffix(municipality)
+
+        if district_suffix:
+            # Get existing modules to determine the numeric part
+            existing_modules = DistrictModules.objects.filter(DistrictModuleID__startswith=moduletype, DistrictModuleID__endswith=district_suffix)
+
+            # Extract the numeric parts
+            numeric_parts = [int(module.DistrictModuleID[len(moduletype):-len(district_suffix)]) for module in existing_modules]
+
+            # Find the maximum numeric part
+            if numeric_parts:
+                numeric_part = max(numeric_parts) + 1
+            else:
+                numeric_part = 1
+
+            # Generate the DistrictModuleID
+            district_module_id = f'{moduletype}{str(numeric_part).zfill(3)}{district_suffix}'  # Ensure numeric part is padded with zeros
+
+            # Save the module to the database with the generated DistrictModuleID
+            new_module = DistrictModules(DistrictModuleID=district_module_id, Municipality=municipality, ModuleName=module_name, ModuleContent=module_image, ModuleFile=module_file)
+
+            if module_image:  # Check if module_image is not None
+                new_module.ModuleContent = os.path.basename(module_image.name)  # Save only the filename
+
+                # Save the uploaded image to the media directory
+                image_path = os.path.join(settings.MEDIA_ROOT, module_image.name)
+                default_storage.save(image_path, ContentFile(module_image.read()))
+
+            new_module.save()
+
+    return redirect(request.META.get('HTTP_REFERER', 'admin_dashboard'))
+def delete_module(request):
+    if request.method == 'POST':
+        module_id = request.POST.get('module_id')    
+        try:
+            module_to_delete = DistrictModules.objects.get(DistrictModuleID=module_id)
+            
+            # Delete associated image file if it exists
+            if module_to_delete.ModuleContent:
+                image_path = module_to_delete.ModuleContent.path  # Get the path of the image file
+                if default_storage.exists(image_path):
+                    default_storage.delete(image_path)  # Delete the image file
+            module_to_delete.delete()
+        except DistrictModules.DoesNotExist:
+            pass
+    return redirect(request.META.get('HTTP_REFERER', 'admin_dashboard'))
+  
+def save_module_changes(request):
+    if request.method == 'POST':
+        module_id = request.POST.get('module_id')
+        new_module_name = request.POST.get('new_module_name')
+        new_module_image = request.FILES.get('image_file')  # Get the uploaded image file
+        new_module_file = request.POST.get('new_module_file')
+
+        try:
+            module = DistrictModules.objects.get(DistrictModuleID=module_id)
+            if module.ModuleName == new_module_name and module.ModuleFile == new_module_file:
+                if new_module_image:
+                    module.ModuleContent = os.path.basename(new_module_image.name)  # Save only the filename
+                    module.save()
+                    messages.info(request, "No changes made to the module.")
+            else:
+                module.ModuleName = new_module_name
+                if new_module_file is not None and new_module_file != "":
+                    module.ModuleFile = new_module_file
+                else:
+                    module.ModuleFile = "None"  # Set to "None" if the field is empty
+                if new_module_image:
+                    # Save the uploaded image to the media directory
+                    image_path = os.path.join(settings.MEDIA_ROOT, new_module_image.name)
+                    default_storage.save(image_path, ContentFile(new_module_image.read()))
+                    module.ModuleContent = os.path.basename(new_module_image.name)  # Save only the filename
+                module.save()
+        except DistrictModules.DoesNotExist:
+            messages.error(request, "Module does not exist.")
+
+        return redirect(request.META.get('HTTP_REFERER', 'admin_dashboard'))
+
+def add_quiz(request):
+    if request.method == 'POST':
+        quiz_file = request.POST.get('new_quiz_file')
+        quiz_image = request.FILES.get('new_quiz_image')
+        municipality = request.POST.get('municipality_name')
+        moduletype = request.POST.get('quiztype')
+   
+        # Save the module to the database with the generated TriviaQuestionID
+        new_quiz = TriviaQuestion(Municipality=municipality, ModuleType=moduletype, Images=quiz_image, QuestionContent=quiz_file)
+
+        if quiz_image:  # Check if quiz_image is not None
+            new_quiz.Images = os.path.basename(quiz_image.name)  # Save only the filename
+
+            # Save the uploaded image to the media directory
+            image_path = os.path.join(settings.MEDIA_ROOT, quiz_image.name)
+            default_storage.save(image_path, ContentFile(quiz_image.read()))
+                
+        new_quiz.save()
+
+    return redirect(request.META.get('HTTP_REFERER', 'admin_dashboard'))
+
+def delete_quiz(request):
+    if request.method == 'POST':
+        quiz_id = request.POST.get('quiz_id')    
+        try:
+            quiz_to_delete = TriviaQuestion.objects.get(TriviaQuestionID=quiz_id)
+            
+            # Delete associated image file if it exists
+            if quiz_to_delete.Images:
+                image_path = quiz_to_delete.Images.path  # Get the path of the image file
+                if default_storage.exists(image_path):
+                    default_storage.delete(image_path)  # Delete the image file
+            quiz_to_delete.delete()
+        except TriviaQuestion.DoesNotExist:
+            pass
+    return redirect(request.META.get('HTTP_REFERER', 'admin_dashboard'))
+  
+def save_quiz_changes(request):
+    if request.method == 'POST':
+        quiz_id = request.POST.get('quiz_id')
+        new_quiz_name = request.POST.get('quiz_name')
+        new_quiz_image = request.FILES.get('image_file')  # Get the uploaded image file
+        new_quiz_file = request.POST.get('new_quiz_file')
+
+        try:
+            save_quiz = TriviaQuestion.objects.get(TriviaQuestionID=quiz_id)
+            if save_quiz.Municipality == new_quiz_name and save_quiz.QuestionContent == new_quiz_file:
+                if new_quiz_image:
+                    save_quiz.Images = os.path.basename(new_quiz_image.name) # Set the Images field directly with the file object
+                    save_quiz.save()
+                    messages.info(request, "No changes made to the module.")
+            else:
+                save_quiz.Municipality = new_quiz_name  # Update the Municipality field
+                if new_quiz_file is not None and new_quiz_file != "":
+                    save_quiz.QuestionContent = new_quiz_file
+                else:
+                    save_quiz.QuestionContent = "None"  # Set to "None" if the field is empty
+                if new_quiz_image:
+                    # Save the uploaded image to the media directory
+                    image_path = os.path.join(settings.MEDIA_ROOT, new_quiz_image.name)
+                    default_storage.save(image_path, ContentFile(new_quiz_image.read()))
+                    save_quiz.Images = new_quiz_image  # Set the Images field directly with the file object
+                
+                save_quiz.save()
+        except TriviaQuestion.DoesNotExist:
+            messages.error(request, "Module does not exist.")
+
+        return redirect(request.META.get('HTTP_REFERER', 'admin_dashboard'))
+
+def admin_quiz_tourist(request, municipality):
+    questions = fetch_quiz_questions('module_tourist', municipality)
+    return render(request, 'admin_quiz_tourist.html', {'questions': questions, 'municipality': municipality})
+
+def admin_quiz_food(request, municipality):
+    questions = fetch_quiz_questions('module_food', municipality)
+    return render(request, 'admin_quiz_food.html', {'questions': questions, 'municipality': municipality})
+
+def admin_quiz_craft(request, municipality):
+    questions = fetch_quiz_questions('module_craft', municipality)
+    return render(request, 'admin_quiz_craft.html', {'questions': questions, 'municipality': municipality})
+
 def selectmunicipality1(request, kiosk_id):
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
+    
 
     # Check and handle kiosks that have exceeded time limits
     for kiosk in Kiosk.objects.filter(KioskStatus=True).select_related('QueueID'):

@@ -5,7 +5,7 @@ from . import views
 from .views import login, homepage, queue, queue_list, adminpage, selectdistrict, update_queue_capacity, kiosk_logout, kiosk_login, get_queue_data, admin_district_1, history, take_quiz, results_view
 from .views import admin_district_2, admin_district_3, admin_district_4, admin_district_5, admin_district_6, selectmunicipality1, selectmunicipality2, selectmunicipality3, selectmunicipality4, selectmunicipality5, selectmunicipality6, selectmodule, module_tourist, module_food, module_craft, quiz
 from .views import admin_module_tourist, admin_module_food, admin_module_craft, save_module_changes, done_quiz, delete_module, add_module
-
+from .views import admin_module_tourist, admin_module_food, admin_module_craft, save_module_changes, done_quiz, delete_module,add_module, admin_quiz_tourist, admin_quiz_food, admin_quiz_craft, save_quiz_changes,  delete_quiz,add_quiz
 
 urlpatterns = [
     path('login/', login, name='login'),
@@ -52,13 +52,20 @@ urlpatterns = [
     path('adminpage/module_tourist/<str:municipality>/', admin_module_tourist, name='admin_module_tourist'),
     path('adminpage/module_food/<str:municipality>/', admin_module_food, name='admin_module_food'),
     path('adminpage/module_craft/<str:municipality>/', admin_module_craft, name='admin_module_craft'),
-
+    
+    path('adminpage/quiz_tourist/<str:municipality>/', admin_quiz_tourist, name='admin_module_tourist'),
+    path('adminpage/quiz_food/<str:municipality>/', admin_quiz_food, name='admin_module_food'),
+    path('adminpage/quiz_craft/<str:municipality>/', admin_quiz_craft, name='admin_module_craft'),
 
     path('done_quiz/', done_quiz, name='done_quiz'),
     
     path('delete_module/', delete_module, name='delete_module'),  
     path('add_module/', add_module, name='add_module'),  
     path('save_module_changes/', save_module_changes, name='save_module_changes'),
+    path('delete_quiz/', delete_quiz, name='delete_quiz'),  
+    path('add_quiz/', add_quiz, name='add_quiz'),  
+    path('save_quiz_changes/', save_quiz_changes, name='save_quiz_changes'),
+    
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -18,6 +18,25 @@
             font-family: 'Georgia', serif;
         }
 
+        .scrollbar {
+            max-height: 650px;
+            overflow-y: auto;
+            display: block;
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 4px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background-color: #f2f2f2;
+        }
+
         .edit-icon,
         .delete-icon {
             color: #fff;
@@ -71,6 +90,14 @@
             height: 30px;
         }
 
+        .add-container textarea {
+            width: 100%;
+            /* Full width */
+            height: 180px;
+            resize: none;
+            /* Allows vertical resize, none to disable resize */
+        }
+
         .add-container {
             position: absolute;
             z-index: 999;
@@ -105,15 +132,17 @@
         .edit-container textarea,
         .edit-container button {
             margin-bottom: 10px;
-            
+
         }
 
         .edit-container textarea {
-            width: 100%; /* Full width */
-            height: 180px; 
-            resize: vertical; /* Allows vertical resize, none to disable resize */
+            width: 100%;
+            /* Full width */
+            height: 120px;
+            resize: none;
+            /* Allows vertical resize, none to disable resize */
         }
-        
+
 
         .edit-container input[type="text"] {
             width: 100%;
@@ -124,6 +153,7 @@
         .edit-container {
             position: absolute;
             z-index: 1;
+            height: 370px;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -197,6 +227,7 @@
             padding: 20px 80px 80px 80px;
             margin-left: 20px;
             max-width: calc(100% - 40px);
+
         }
 
         .tourist-place {
@@ -204,15 +235,15 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin: 10px;
-            margin-bottom: 20px; 
-            width: 300px; 
-            padding: 20px; 
+            margin-bottom: 20px;
+            width: 300px;
+            padding: 20px;
             border: 1px solid #0f172a;
             position: relative;
             transition: transform 0.3s ease;
-            overflow: hidden; 
+            overflow: hidden;
         }
-        
+
 
 
         .tourist-place:hover {
@@ -238,17 +269,18 @@
 
 
         }
+
         .tourist-place p {
-            max-height: 150px; 
-            overflow-y: auto; 
-            padding-right: 8px; 
-            margin-top: 10px; 
-            
-            font-size: 16px; 
-            color: #666; 
-            position: relative; 
-            word-wrap: break-word; 
-            text-align: justify; 
+            max-height: 150px;
+            overflow-y: auto;
+            padding-right: 8px;
+            margin-top: 10px;
+
+            font-size: 16px;
+            color: #666;
+            position: relative;
+            word-wrap: break-word;
+            text-align: justify;
         }
 
         .hidden {
@@ -283,13 +315,11 @@
 </head>
 
 <body>
-
     <div class="container">
         <!-- Add a hidden edit container inside each tourist-place div -->
-
         {% for module in modules %}
         <div class="tourist-place">
-            
+
             <div class="edit-container hidden">
                 <form method="post" action="{% url 'save_module_changes' %}" enctype="multipart/form-data">
                     {% csrf_token %}
@@ -300,7 +330,8 @@
                     <input type="text" id="new_module_name" name="new_module_name" value="{{ module.ModuleName }}"><br>
                     <label for="new_module_file">Module File:</label>
                     {% if module.ModuleFile %}
-                    <textarea id="new_module_file" name="new_module_file" rows="4">{{ module.ModuleFile }}</textarea>
+                    <textarea id="new_module_file" name="new_module_file" class="scrollbar"
+                        rows="4">{{ module.ModuleFile }}</textarea><br>
                     {% else %}
                     <textarea type="text" id="new_module_file" name="new_module_file" value="None"></textarea>
                     {% endif %}
@@ -320,7 +351,7 @@
             <i class="fas fa-trash delete-icon" title="Delete"></i>
             <img src="{{ module.ModuleContent.url }}" alt="{{ module.ModuleName }}">
             <h2>{{ module.ModuleName }}</h2>
-            <p>{{ module.ModuleFile }}</p>
+            <p class="scrollbar">{{ module.ModuleFile }}</p>
 
         </div>
         {% endfor %}
@@ -336,11 +367,11 @@
             <label for="new_module_name">Module Name:</label>
             <input type="text" id="new_module_name" name="new_module_name" required><br>
             <label for="new_module_file">Module File:</label>
-            <input type="text" id="new_module_file" name="new_module_file" required><br>
+            <textarea id="new_module_file" name="new_module_file" class="scrollbar" rows="10"></textarea><br>
             <button type="submit">Add Module</button>
         </form>
     </div>
-    <i class="fas fa-plus add-icon" title="Add"></i>
+    <i class="fas fa-plus add-icon" title="Add Module"></i>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 

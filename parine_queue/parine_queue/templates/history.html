@@ -233,7 +233,6 @@
     </script>
 
     <script>
-        // Function to filter table rows based on selected month or year
         function filterRows() {
             var filterType = document.getElementById('filter-dropdown').value;
             var filterValue = document.getElementById('filter-input').value.trim().toLowerCase();
@@ -260,12 +259,21 @@
                         row.style.display = 'none';
                     }
                 } else if (filterType === 'All') {
-                    // Display all rows if no filter type is selected or if "All" is selected
-                    row.style.display = '';
+                    // Check if filterValue is provided
+                    if (filterValue.length > 0) {
+                        // If filterValue is provided, check if the row data contains the provided date
+                        if (rowData.includes(filterValue)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    } else {
+                        // Display all rows if no filter value is provided
+                        row.style.display = '';
+                    }
                 }
             });
         }
-
     </script>
     <script>
         document.getElementById("home-link").onclick = function (event) {

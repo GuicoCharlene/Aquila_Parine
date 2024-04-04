@@ -153,7 +153,7 @@
         .edit-container {
             position: absolute;
             z-index: 1;
-            height: 370px;
+            height: 350px;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -227,9 +227,10 @@
             padding: 20px 80px 80px 80px;
             margin-left: 20px;
             max-width: calc(100% - 40px);
+
         }
 
-        .tourist-craft {
+        .tourist-place {
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -245,11 +246,11 @@
 
 
 
-        .tourist-craft:hover {
+        .tourist-place:hover {
             transform: translateY(-5px);
         }
 
-        .tourist-craft img {
+        .tourist-place img {
             border: 1px solid #0f172a;
             margin-top: 10px;
             width: 100%;
@@ -259,7 +260,7 @@
             justify-content: center;
         }
 
-        .tourist-craft h2 {
+        .tourist-place h2 {
             margin-top: 10px;
             font-size: 24px;
             color: #15375D;
@@ -269,7 +270,7 @@
 
         }
 
-        .tourist-craft p {
+        .tourist-place p {
             max-height: 150px;
             overflow-y: auto;
             padding-right: 8px;
@@ -314,65 +315,62 @@
 </head>
 
 <body>
-
     <div class="container">
-        <!-- Add a hidden edit container inside each tourist-place div -->
+        <!-- Add a hidden edit container inside each quiz div -->
+        {% for question in questions %}
+        <div class="tourist-place">
 
-        {% for module in modules %}
-        <div class="tourist-craft">
 
             <div class="edit-container hidden">
-                <form method="post" action="{% url 'save_module_changes' %}" enctype="multipart/form-data">
+                <form method="post" action="{% url 'save_quiz_changes' %}" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <input type="hidden" name="module_id" value="{{ module.DistrictModuleID }}">
-                    <label for="new_module_image">Upload New Module Image:</label>
-                    <input type="file" id="new_module_image" name="image_file"><br>
-                    <label for="new_module_name">Module Name:</label>
-                    <input type="text" id="new_module_name" name="new_module_name" value="{{ module.ModuleName }}"><br>
-                    <label for="new_module_file">Module File:</label>
-                    {% if module.ModuleFile %}
-                    <textarea id="new_module_file" name="new_module_file" class="scrollbar"
-                        rows="4 ">{{ module.ModuleFile }}</textarea><br>
+                    <input type="hidden" name="quiz_id" value="{{ question.TriviaQuestionID }}">
+                    <input type="hidden" name="quiz_name" value="{{ question.Municipality }}">
+                    <label for="new_quiz_image">Upload New Quiz Image:</label>
+                    <input type="file" id="new_quiz_image" name="image_file"><br>
+                    <label for="new_quiz_file">Quiz File:</label>
+                    {% if question.QuestionContent %}
+                    <textarea id="new_quiz_file" name="new_quiz_file" class="scrollbar"
+                        rows="4">{{  question.QuestionContent }}</textarea><br>
                     {% else %}
-                    <textarea type="text" id="new_module_file" name="new_module_file" value="None"></textarea>
+                    <textarea type="text" id="new_quiz_file" name="new_quiz_file" value="None"></textarea>
                     {% endif %}
                     <button type="submit">Save Changes</button>
                 </form>
             </div>
             <div class="delete-container hidden">
-                <form method="post" action="{% url 'delete_module' %}">
+                <form method="post" action="{% url 'delete_quiz' %}">
                     {% csrf_token %}
-                    <input type="hidden" name="module_id" value="{{ module.DistrictModuleID }}">
-                    <p>Are you sure you want to delete this module?</p>
+                    <input type="hidden" name="quiz_id" value="{{ question.TriviaQuestionID }}">
+                    <p>Are you sure you want to delete this quiz?</p>
                     <button type="submit" class="delete-yes">Yes</button>
                     <button type="button" class="delete-no">No</button>
                 </form>
             </div>
             <i class="fas fa-edit edit-icon" title="Edit"></i>
             <i class="fas fa-trash delete-icon" title="Delete"></i>
-            <img src="{{ module.ModuleContent.url }}" alt="{{ module.ModuleName }}">
-            <h2>{{ module.ModuleName }}</h2>
-            <p class="scrollbar">{{ module.ModuleFile }}</p>
+            <img src="{{ question.Images.url }}" alt="{{ question.Municipality }}">
+            <h2>{{ question.Municipality }}</h2>
+            <p class="scrollbar">{{ question.QuestionContent }}</p>
 
         </div>
         {% endfor %}
     </div>
     <div class="add-container hidden">
-        <form method="post" action="{% url 'add_module' %}" enctype="multipart/form-data">
+        <form method="post" action="{% url 'add_quiz' %}" enctype="multipart/form-data">
             {% csrf_token %}
             <!-- Include input field for municipality name -->
-            <input type="hidden" id="moduletype_suffix" name="moduletype_suffix" value="c">
-            <input type="hidden" id="municipality_name" name="municipality_name">
-            <label for="new_module_image">Upload Module Image:</label>
-            <input type="file" id="new_module_image" name="new_module_image" required><br>
-            <label for="new_module_name">Module Name:</label>
-            <input type="text" id="new_module_name" name="new_module_name" required><br>
-            <label for="new_module_file">Module File:</label>
-            <textarea id="new_module_file" name="new_module_file" class="scrollbar" rows="10"></textarea><br>
-            <button type="submit">Add Module</button>
+            <input type="hidden" id="quiztype" name="quiztype" value="module_tourist">
+            <label for="new_quiz_image">Upload Quiz Image:</label>
+            <input type="file" id="new_quiz_image" name="new_quiz_image" required><br>
+            <label for="new_quiz_municipality">Quiz Municipality:</label>
+            <input type="text" id="municipality_name" name="municipality_name" value="municipality_name" readonly><br>
+            <label for="new_quiz_file">Quiz Content:</label>
+            <textarea id="new_quiz_file" name="new_quiz_file" class="scrollbar" rows="10"></textarea><br>
+            <button type="submit">Add Quiz</button>
         </form>
     </div>
-    <i class="fas fa-plus add-icon" title="Add Module"></i>
+    <i class="fas fa-plus add-icon" title="Add Quiz"></i>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
@@ -446,15 +444,15 @@
                     const editContainer = container.querySelector('.edit-container');
                     editContainer.classList.remove('hidden');
 
-                    // Get current module data
-                    const moduleName = container.querySelector('h2').textContent;
-                    const moduleImage = container.querySelector('img').src;
-                    const moduleFile = container.querySelector('p').textContent;
+                    // Get current quiz data
+                    const quizname = container.querySelector('h2').textContent;
+                    const quizimage = container.querySelector('img').src;
+                    const quizcontent = container.querySelector('p').textContent;
 
-                    // Fill edit container with current module data
-                    editContainer.querySelector('#new_module_name').value = moduleName;
-                    editContainer.querySelector('#new_module_image').value = moduleImage;
-                    editContainer.querySelector('#new_module_file').value = moduleFile;
+                    // Fill edit container with current quiz data
+                    editContainer.querySelector('#new_quiz_municipality').value = quizname;
+                    editContainer.querySelector('#new_quiz_image').value = quizimage;
+                    editContainer.querySelector('#new_quiz_file').value = quizcontent;
                 });
             });
 
@@ -498,7 +496,6 @@
                 document.getElementById('municipality_name').value = selectedDistrict;
             }
         });
-
     </script>
 </body>
 

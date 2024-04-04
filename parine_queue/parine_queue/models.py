@@ -62,7 +62,7 @@ class TriviaQuestion(models.Model):
     TriviaQuestionID = models.AutoField(primary_key=True)
     Municipality = models.CharField(max_length=100)
     ModuleType = models.CharField(max_length=100)
-    Images = models.TextField() #HOLDS THE IMAGE
+    Images =models.FileField(upload_to='module_content/')
     QuestionContent = models.TextField() #HOLDS THE QUESTION
     QuestionAnswer = models.TextField() #HOLDS THE ANSWER
     DistrictModuleID = models.ForeignKey('Kiosk', on_delete=models.CASCADE, db_column='DistrictModuleID(TQ)')
