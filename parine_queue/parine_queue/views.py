@@ -481,7 +481,11 @@ def add_module(request):
         module_name = request.POST.get('new_module_name')
         module_file = request.POST.get('new_module_file')
         module_image = request.FILES.get('new_module_image')
+        module_first = request.FILES.get('new_first_image')
+        module_second = request.FILES.get('new_second_image')
+        module_third = request.FILES.get('new_third_image')
         municipality = request.POST.get('municipality_name')
+        module_location = request.POST.get('new_module_location')
         moduletype = request.POST.get('moduletype_suffix')
 
         # Get the district suffix for the municipality
@@ -504,7 +508,7 @@ def add_module(request):
             district_module_id = f'{moduletype}{str(numeric_part).zfill(3)}{district_suffix}'  # Ensure numeric part is padded with zeros
 
             # Save the module to the database with the generated DistrictModuleID
-            new_module = DistrictModules(DistrictModuleID=district_module_id, Municipality=municipality, ModuleName=module_name, ModuleContent=module_image, ModuleFile=module_file)
+            new_module = DistrictModules(DistrictModuleID=district_module_id, Municipality=municipality, ModuleName=module_name,ModuleLocation=module_location, FirstImage = module_first, SecondImage= module_second,ThirdImage=module_third,ModuleContent=module_image, ModuleFile=module_file)
 
             if module_image:  # Check if module_image is not None
                 new_module.ModuleContent = os.path.basename(module_image.name)  # Save only the filename
@@ -512,6 +516,26 @@ def add_module(request):
                 # Save the uploaded image to the media directory
                 image_path = os.path.join(settings.MEDIA_ROOT, module_image.name)
                 default_storage.save(image_path, ContentFile(module_image.read()))
+            if module_first:  # Check if module_image is not None
+                new_module.FirstImage = os.path.basename(module_first.name)  # Save only the filename
+
+                # Save the uploaded image to the media directory
+                image_path = os.path.join(settings.MEDIA_ROOT, module_first.name)
+                default_storage.save(image_path, ContentFile(module_first.read()))
+
+            if module_second:  # Check if module_image is not None
+                new_module.SecondImage = os.path.basename(module_second.name)  # Save only the filename
+
+                # Save the uploaded image to the media directory
+                image_path = os.path.join(settings.MEDIA_ROOT, module_second.name)
+                default_storage.save(image_path, ContentFile(module_second.read()))
+
+            if module_third:  # Check if module_image is not None
+                new_module.ThirdImage = os.path.basename(module_third.name)  # Save only the filename
+
+                # Save the uploaded image to the media directory
+                image_path = os.path.join(settings.MEDIA_ROOT, module_third.name)
+                default_storage.save(image_path, ContentFile(module_third.read()))
 
             new_module.save()
 
@@ -538,10 +562,13 @@ def save_module_changes(request):
         new_module_name = request.POST.get('new_module_name')
         new_module_image = request.FILES.get('image_file')  # Get the uploaded image file
         new_module_file = request.POST.get('new_module_file')
-
+        new_module_first = request.FILES.get('first_image')
+        new_module_second = request.FILES.get('second_image')
+        new_module_third = request.FILES.get('third_image')
+        new_module_location = request.POST.get('new_module_location')
         try:
             module = DistrictModules.objects.get(DistrictModuleID=module_id)
-            if module.ModuleName == new_module_name and module.ModuleFile == new_module_file:
+            if module.ModuleName == new_module_name and module.ModuleFile == new_module_file == new_module_location:
                 if new_module_image:
                     module.ModuleContent = os.path.basename(new_module_image.name)  # Save only the filename
                     module.save()
@@ -552,11 +579,30 @@ def save_module_changes(request):
                     module.ModuleFile = new_module_file
                 else:
                     module.ModuleFile = "None"  # Set to "None" if the field is empty
+                if new_module_location is not None and new_module_location != "":
+                    module.ModuleLocation = new_module_location
+                else:
+                    module.ModuleLocation = "None"  # Set to "None" if the field is empty
                 if new_module_image:
                     # Save the uploaded image to the media directory
                     image_path = os.path.join(settings.MEDIA_ROOT, new_module_image.name)
                     default_storage.save(image_path, ContentFile(new_module_image.read()))
                     module.ModuleContent = os.path.basename(new_module_image.name)  # Save only the filename
+                if new_module_first:
+                    # Save the uploaded image to the media directory
+                    image_path = os.path.join(settings.MEDIA_ROOT, new_module_first.name)
+                    default_storage.save(image_path, ContentFile(new_module_first.read()))
+                    module.FirstImage = os.path.basename(new_module_first.name)  # Save only the filename
+                if new_module_second:
+                    # Save the uploaded image to the media directory
+                    image_path = os.path.join(settings.MEDIA_ROOT, new_module_second.name)
+                    default_storage.save(image_path, ContentFile(new_module_second.read()))
+                    module.SecondImage = os.path.basename(new_module_second.name)  # Save only the filename
+                if new_module_third:
+                    # Save the uploaded image to the media directory
+                    image_path = os.path.join(settings.MEDIA_ROOT, new_module_third.name)
+                    default_storage.save(image_path, ContentFile(new_module_third.read()))
+                    module.ThirdImage = os.path.basename(new_module_third.name)  # Save only the filename
                 module.save()
                 messages.success(request, "Module updated successfully.")
         except DistrictModules.DoesNotExist:
@@ -584,92 +630,6 @@ def admin_module_craft(request, municipality):
         return render(request, 'error.html', {'message': 'Municipality not found.'})
     return render(request, 'admin_module_craft.html', {'modules': modules, 'municipality': municipality})
 
-def add_module(request):
-    if request.method == 'POST':
-        module_name = request.POST.get('new_module_name')
-        module_file = request.POST.get('new_module_file')
-        module_image = request.FILES.get('new_module_image')
-        municipality = request.POST.get('municipality_name')
-        moduletype = request.POST.get('moduletype_suffix')
-
-        # Get the district suffix for the municipality
-        district_suffix = get_district_suffix(municipality)
-
-        if district_suffix:
-            # Get existing modules to determine the numeric part
-            existing_modules = DistrictModules.objects.filter(DistrictModuleID__startswith=moduletype, DistrictModuleID__endswith=district_suffix)
-
-            # Extract the numeric parts
-            numeric_parts = [int(module.DistrictModuleID[len(moduletype):-len(district_suffix)]) for module in existing_modules]
-
-            # Find the maximum numeric part
-            if numeric_parts:
-                numeric_part = max(numeric_parts) + 1
-            else:
-                numeric_part = 1
-
-            # Generate the DistrictModuleID
-            district_module_id = f'{moduletype}{str(numeric_part).zfill(3)}{district_suffix}'  # Ensure numeric part is padded with zeros
-
-            # Save the module to the database with the generated DistrictModuleID
-            new_module = DistrictModules(DistrictModuleID=district_module_id, Municipality=municipality, ModuleName=module_name, ModuleContent=module_image, ModuleFile=module_file)
-
-            if module_image:  # Check if module_image is not None
-                new_module.ModuleContent = os.path.basename(module_image.name)  # Save only the filename
-
-                # Save the uploaded image to the media directory
-                image_path = os.path.join(settings.MEDIA_ROOT, module_image.name)
-                default_storage.save(image_path, ContentFile(module_image.read()))
-
-            new_module.save()
-
-    return redirect(request.META.get('HTTP_REFERER', 'admin_dashboard'))
-def delete_module(request):
-    if request.method == 'POST':
-        module_id = request.POST.get('module_id')    
-        try:
-            module_to_delete = DistrictModules.objects.get(DistrictModuleID=module_id)
-            
-            # Delete associated image file if it exists
-            if module_to_delete.ModuleContent:
-                image_path = module_to_delete.ModuleContent.path  # Get the path of the image file
-                if default_storage.exists(image_path):
-                    default_storage.delete(image_path)  # Delete the image file
-            module_to_delete.delete()
-        except DistrictModules.DoesNotExist:
-            pass
-    return redirect(request.META.get('HTTP_REFERER', 'admin_dashboard'))
-  
-def save_module_changes(request):
-    if request.method == 'POST':
-        module_id = request.POST.get('module_id')
-        new_module_name = request.POST.get('new_module_name')
-        new_module_image = request.FILES.get('image_file')  # Get the uploaded image file
-        new_module_file = request.POST.get('new_module_file')
-
-        try:
-            module = DistrictModules.objects.get(DistrictModuleID=module_id)
-            if module.ModuleName == new_module_name and module.ModuleFile == new_module_file:
-                if new_module_image:
-                    module.ModuleContent = os.path.basename(new_module_image.name)  # Save only the filename
-                    module.save()
-                    messages.info(request, "No changes made to the module.")
-            else:
-                module.ModuleName = new_module_name
-                if new_module_file is not None and new_module_file != "":
-                    module.ModuleFile = new_module_file
-                else:
-                    module.ModuleFile = "None"  # Set to "None" if the field is empty
-                if new_module_image:
-                    # Save the uploaded image to the media directory
-                    image_path = os.path.join(settings.MEDIA_ROOT, new_module_image.name)
-                    default_storage.save(image_path, ContentFile(new_module_image.read()))
-                    module.ModuleContent = os.path.basename(new_module_image.name)  # Save only the filename
-                module.save()
-        except DistrictModules.DoesNotExist:
-            messages.error(request, "Module does not exist.")
-
-        return redirect(request.META.get('HTTP_REFERER', 'admin_dashboard'))
 
 def add_quiz(request):
     if request.method == 'POST':
@@ -1086,10 +1046,9 @@ def get_modules_by_type_and_municipality(module_type, municipality):
 
 def module_tourist(request, kiosk_id, municipality):
     modules = get_modules_by_type_and_municipality('t', municipality)
+    
     if modules is None:
         return render(request, 'error.html', {'message': 'Municipality not found.'})
-    
-    # Display the module view
     return render(request, 'module_tourist.html', {'modules': modules, 'municipality': municipality})
 
 #MODULES FOR FOOD
@@ -1124,6 +1083,8 @@ def fetch_quiz_questions(module_type, municipality):
     return questions
 
 def quiz(request):
+    remaining_question_ids = []
+
     if 'game_session' not in request.session:
         # Initialize session data if it doesn't exist
         module_type = request.GET.get('module_type')
@@ -1151,7 +1112,6 @@ def quiz(request):
                 'municipality': municipality,
                 'kiosk_id': kiosk_id,
                 'VisitorID': visitor_id,
-                'incorrect_guesses': 0,
                 'current_question_id': None  # Add a field to track the current question
             }
 
@@ -1174,17 +1134,29 @@ def quiz(request):
         remaining_question_ids = [question.TriviaQuestionID for question in remaining_questions]
         request.session['game_session']['question_ids'] = remaining_question_ids
 
-    game_session = request.session.get('game_session')
-    question_ids = game_session['question_ids']
-    answered_question_ids = game_session.get('answered_question_ids', [])
-
-    remaining_question_ids = [q_id for q_id in question_ids if q_id not in answered_question_ids]
-
     if remaining_question_ids:
-        if game_session['current_question_id'] is None:
-            question_id = random.choice(remaining_question_ids)
+        game_session = request.session.get('game_session')
+        question_ids = game_session['question_ids']
+        answered_question_ids = game_session.get('answered_question_ids', [])
+
+        remaining_question_ids = [q_id for q_id in question_ids if q_id not in answered_question_ids]
+
+        if game_session.get('current_question_id') is None:  
+            # Ensure that the next question has a different ID than the current one
+            current_question_id = game_session.get('current_question_id')
+            available_question_ids = [qid for qid in remaining_question_ids if qid != current_question_id]
+            
+            if available_question_ids:
+                question_id = random.choice(available_question_ids)
+            else:
+                # Handle the case when all remaining questions have the same ID as the current question
+                # Choose a random question from all remaining questions
+                question_id = random.choice(remaining_question_ids)
+            
+            question = TriviaQuestion.objects.get(TriviaQuestionID=question_id)
+            request.session['game_session']['current_question_id'] = question.TriviaQuestionID  # Store the TriviaQuestionID
         else:
-            question_id = game_session['current_question_id']
+            question_id = game_session.get('current_question_id')
 
         selected_question = TriviaQuestion.objects.get(TriviaQuestionID=question_id)
 
@@ -1203,7 +1175,6 @@ def quiz(request):
                 game_session['answered_question_ids'].append(question_id)
                 game_session['correct_answer_ids'].append(question_id)
                 game_session['guesses_left'] = 3
-                game_session['incorrect_guesses'] = 0
                 game_session['current_question_id'] = None
 
                 reward_points_instance, created = RewardPoints.objects.get_or_create(
@@ -1215,30 +1186,24 @@ def quiz(request):
                 reward_points_instance.save()
 
                 game_session['reward_points'] = RewardPoints.objects.filter(user_id=visitor_id).aggregate(Sum('TotalPoints'))['TotalPoints__sum']
-            else:
-                # Only decrease guesses_left if the guess is incorrect
-                if game_session['incorrect_guesses'] < 2:
-                    game_session['guesses_left'] -= 1
-                    game_session['incorrect_guesses'] += 1
 
             request.session.modified = True
-
-        incorrect_guesses = game_session['incorrect_guesses']
 
         return render(request, 'quiz.html', {
             'question_content': selected_question.QuestionContent,
             'question_image': selected_question.Images,
-            'random_images': TriviaQuestion.objects.exclude(TriviaQuestionID=question_id).order_by('?')[:3].values_list('Images', flat=True),
+            'random_images': TriviaQuestion.objects.exclude(TriviaQuestionID=question_id).order_by('?')[:3].values_list('TriviaQuestionID', 'Images'),  # Modify to include TriviaQuestionID
             'guesses_left': game_session['guesses_left'],
             'remaining_time': int(remaining_time),
             'reward_points': game_session.get('reward_points', 0),
             'correct': correct,
             'module_type': game_session['module_type'],
             'municipality': game_session['municipality'],
-            'incorrect_guesses': incorrect_guesses,
+            'question_id': selected_question.TriviaQuestionID,  # Include full TriviaQuestionID
         })
     else:
-        return redirect('done_quiz')
+        # Handle the case when there are no remaining questions
+        return render(request, 'results.html')
 
 def done_quiz(request):
     return render(request, 'done_quiz.html')
@@ -1252,5 +1217,3 @@ def results_view(request):
         del request.session['game_session']
     
     return render(request, 'results.html', {'total_points': total_points})
-
-

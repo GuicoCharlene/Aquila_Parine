@@ -50,7 +50,11 @@ class DistrictModules(models.Model):
     DistrictModuleID = models.CharField(primary_key=True, max_length=10)
     Municipality = models.CharField(max_length=100)
     ModuleName = models.CharField(max_length=100)
+    ModuleLocation = models.CharField(max_length=100)
     ModuleContent = models.FileField(upload_to='module_content/')
+    FirstImage = models.FileField(upload_to='module_content/')
+    SecondImage = models.FileField(upload_to='module_content/')
+    ThirdImage = models.FileField(upload_to='module_content/')
     ModuleFile = models.TextField()  # Use TextField for longtext
     KioskID = models.ForeignKey('Kiosk', on_delete=models.CASCADE, db_column='KioskID')
     AdminID = models.ForeignKey('Admin', on_delete=models.CASCADE, db_column='AdminID(DM)')

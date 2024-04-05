@@ -1,251 +1,318 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Parine sa Batangas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parine sa Batangas</title>
 
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #BFEBF4;
-        margin: 0;
-        padding: 20px;
-    }
-    
-    @keyframes tada {
-        0% {
-            transform: scale(1);
-        }
-        10%, 20% {
-            transform: scale(0.9) rotate(-3deg);
-        }
-        30%, 50%, 70%, 90% {
-            transform: scale(1.1) rotate(3deg);
-        }
-        40%, 60%, 80% {
-            transform: scale(1.1) rotate(-3deg);
-        }
-        100% {
-            transform: scale(1) rotate(0deg);
-        }
-    }
-
-    /* Added new keyframes animation for the pop effect */
-    @keyframes pop {
-        0%, 100% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.05);
-        }
-    }
-    
-    h2 {
-        color: #0c005b;
-        font-size: 2em;
-        margin-bottom: 20px;
-        animation: tada 1s ease-in-out infinite;
-    }
-    
-    .question-box {
-        background-color: #BFEBF4;
-        border-radius: 30px;
-        padding: 20px;
-        margin-top: 100px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        font-size: 24px;
-        box-sizing: border-box;
-        width: 80%; 
-    }
-    
-    form {
-        margin-bottom: 20px;
-    }
-    
-    .game-container {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        color: #010355;
-        border: 1px solid #1db4ff;
-        border-radius: 10px;
-        width: 100vw;
-        height: 39.84375vw;
-        background: #ffffff;
-        z-index: 1;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    input[type="text"] {
-        padding: 10px;
-        width: 70%;
-        margin-right: 10px;
-        border: 2px solid #00a2ff;
-        border-radius: 5px;
-        font-size: 1em;
-    }
-    
-    button {
-        padding: 1px;
-        background-color: #ffffff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1em;
-    }
-    
-    button:hover {
-        background-color: #006fb0;
-    }
-    
-    .incorrect-guesses {
-        color: #ff4500;
-        font-size: 1.2em;
-        margin-bottom: 20px;
-    }
-    
-    .timer {
-        font-size: 1.5em;
-        color: #333;
-        margin-bottom: 20px;
-    }
-
-    .content-container {
-        width: 100vw;
-        height: 39.84375vw;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        height: auto;
-        padding: 20px;
-    }
-    
-    .image-container {
-        margin-top: 50px;
-        margin-left: 100px;
-        height: 100%;
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-gap: 20px;
-        justify-content: center;
-        align-items: center;
-        animation: pop 3s ease-in-out infinite; 
-    }
-    
-    .image-container img {
-        width: 100%;
-        height: 100%;
-        max-width: 400px;
-        max-height: 229px;
-        object-fit: cover;
-        border-radius: 15px;
-        animation: pop 3s ease-in-out infinite; 
-    }
-    
-    .question-container {
-        width: 90%;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    @media (max-width: 768px) {
-        .content-container {
-            flex-direction: column;
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #BFEBF4;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
         }
 
-        .image-container, .question-container {
-            width: 100%;
-        }
-    }
+        @keyframes tada {
+            0% {
+                transform: scale(1);
+            }
 
-    @media (max-width: 768px) {
-        input[type="text"], button {
-            width: 60%;
+            10%,
+            20% {
+                transform: scale(0.9) rotate(-3deg);
+            }
+
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: scale(1.1) rotate(3deg);
+            }
+
+            40%,
+            60%,
+            80% {
+                transform: scale(1.1) rotate(-3deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
         }
-    
-        button {
-            width: 30%;
+
+        /* Added new keyframes animation for the pop effect */
+        @keyframes pop {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
         }
-    }
-    
-    @media (max-width: 480px) {
+
+        h2 {
+            color: #0c005b;
+            font-size: 2em;
+            margin-bottom: 20px;
+            animation: tada 1s ease-in-out infinite;
+        }
+
+        .question-box {
+            background-color: #BFEBF4;
+            border-radius: 30px;
+            padding: 20px;
+            margin-top: 100px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 24px;
+            box-sizing: border-box;
+            width: 80%;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        .game-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+            width: 100vw;
+            height: 39.84375vw;
+            background: #ffffff;
+            z-index: 1;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
         input[type="text"] {
-            width: 50%;
+            padding: 10px;
+            width: 70%;
+            margin-right: 10px;
+            border: 2px solid #00a2ff;
+            border-radius: 5px;
+            font-size: 1em;
         }
-    
+
         button {
-            width: 40%;
+            padding: 1px;
+            background-color: #ffffff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
         }
-    }
-</style>
+
+        button:hover {
+            background-color: #006fb0;
+        }
+
+        .incorrect-guesses {
+            color: #ff4500;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .timer {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .content-container {
+            width: 100vw;
+            height: 39.84375vw;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: auto;
+            padding: 20px;
+        }
+
+        .image-container {
+            margin-top: 50px;
+            margin-left: 100px;
+            height: 100%;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 20px;
+            justify-content: center;
+            align-items: center;
+            animation: pop 3s ease-in-out infinite;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            max-width: 400px;
+            max-height: 229px;
+            object-fit: cover;
+            border-radius: 15px;
+            animation: pop 3s ease-in-out infinite;
+        }
+
+        .question-container {
+            width: 90%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .content-container {
+                flex-direction: column;
+            }
+
+            .image-container,
+            .question-container {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            input[type="text"],
+            button {
+                width: 60%;
+            }
+
+            button {
+                width: 30%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            input[type="text"] {
+                width: 50%;
+            }
+
+            button {
+                width: 40%;
+            }
+        }
+
+        /* New style for the Next Question button */
+        #next-question-btn {
+            display: none;
+            padding: 10px 20px;
+            background-color: #006fb0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+        }
+    </style>
 </head>
+
 <body>
     <div class="game-container">
         <h2>I SPY WITH MY LITTLE EYE...</h2>
         <div class="content-container">
             <div class="image-container">
 
-            <!-- Correct image -->
-            <button onclick="submitForm('{{ question_image }}')">
-                <img src="/media/{{ question_image }}" alt="Trivia Image">
-            </button>
+                <!-- Correct image -->
+                <button onclick="submitForm('{{ question_image }}', '{{ question_content }}', '{{ question_id }}')">
+                    <img src="/media/{{ question_image }}" alt="Trivia Image">
+                </button>
 
-            <!-- Incorrect images -->
-            {% for image_url in random_images %}
-            <button onclick="submitForm('{{ image_url }}')">
-                <img src="/media/{{ image_url }}" alt="Trivia Image">
-            </button>
-            {% endfor %}
+                <!-- Incorrect images -->
+                {% for trivia_id, image_url in random_images %}
+                <button onclick="submitForm('{{ image_url }}', '{{ question_content }}', '{{ trivia_id }}')">
+                    <img src="/media/{{ image_url }}" alt="Trivia Image">
+                </button>
+                {% endfor %}
 
             </div>
-        
+
             <div class="question-container">
                 {% if question_content %}
                 <div class="question-box">{{ question_content }}</div>
-                <form method="post" action="{% url 'quiz' %}?module_type={{ module_type }}&municipality={{ municipality }}" id="guess-form">
+                <form method="post"
+                    action="{% url 'quiz' %}?module_type={{ module_type }}&municipality={{ municipality }}"
+                    id="guess-form">
                     {% csrf_token %}
                     <input type="hidden" name="guess" id="guess-input">
                 </form>
-                
+
                 {% if correct %}
-                    <div class="correct">Correct! You've earned points!</div>
+                <div class="correct">Correct! You've earned points!</div>
                 {% endif %}
-                
-                <div class="incorrect-guesses">INCORRECT GUESSES: {{ incorrect_guesses }}/3</div>
-                
+
                 {% else %}
                 <p>No question available at this time.</p>
                 {% endif %}
 
-                    <!-- Timer Display -->
+                <!-- Timer Display -->
                 <div class="timer" id="timer">Time Left: <span id="timeLeft">60</span> seconds</div>
-
+                <button id="next-question-btn" onclick="nextQuestion()">Next Question</button>
             </div>
         </div>
 
     </div>
 
     <script>
+        // Initialize an empty list to keep track of answered questions
+        var answeredQuestions = [];
+
         document.addEventListener('DOMContentLoaded', function () {
             var container = document.querySelector('.image-container');
-            var images = Array.prototype.slice.call(container.children);
-            var shuffledImages = images.sort(function () { return 0.5 - Math.random(); });
-    
-            // Clear the container and re-append the images in randomized order
-            container.innerHTML = "";
-            shuffledImages.forEach(function (image) {
-                container.appendChild(image);
+            var images = container.querySelectorAll('button img');
+            var correctAnswer = '{{ question_image }}'; // Store correct answer
+            var userAnswer = null; // Track user's answer
+
+            // Function to handle user's selection
+            function handleSelection(clickedButton, imageUrl) {
+                // If user has already answered, return
+                if (userAnswer !== null) return;
+
+                // Disable all buttons to prevent further selections
+                images.forEach(function (image) {
+                    image.parentNode.disabled = true;
+                });
+
+                // Check if the answer is correct
+                var isCorrect = (imageUrl === correctAnswer);
+
+                // Change background color based on correctness
+                clickedButton.style.backgroundColor = isCorrect ? 'green' : 'red';
+
+                // If the answer is incorrect, highlight the correct image
+                if (!isCorrect) {
+                    var correctButton = container.querySelector('button img[src="/media/' + correctAnswer + '"]').parentNode;
+                    correctButton.style.backgroundColor = 'green';
+                    correctButton.style.border = '2px solid green';
+                }
+
+                // Update user's answer
+                userAnswer = imageUrl;
+
+                // Show the Next Question button
+                document.getElementById('next-question-btn').style.display = 'block';
+            }
+
+            // Attach click event listeners to each button
+            images.forEach(function (image) {
+                image.parentNode.addEventListener('click', function () {
+                    handleSelection(this, image.src.split('/').pop());
+                });
             });
-    
+
             // Existing timer script remains the same
             var timeLeft = 60;
             var timerElement = document.getElementById('timeLeft');
@@ -254,20 +321,19 @@
                 timerElement.textContent = timeLeft;
                 if (timeLeft <= 0) {
                     clearInterval(countdownTimer);
-                    submitForm('{{ correct_answer }}'); // Adjust as needed
                 }
             }, 1000);
         });
-    
-        function submitForm(answer, isCorrect) {
-            document.getElementById('guess-input').value = answer;
-            // Assuming you add a new hidden input for correctness
-            document.getElementById('correct-input').value = isCorrect ? "true" : "false";
-            document.getElementById('guess-form').submit();
-        }
-        
-        
-    </script>
 
+        // Function to reload the page for the next question
+        function nextQuestion() {
+            // Add the current question to the list of answered questions
+            answeredQuestions.push('{{ question_content }}');
+
+            // Reload the page to generate the next question
+            location.reload();
+        }
+    </script>
 </body>
+
 </html>

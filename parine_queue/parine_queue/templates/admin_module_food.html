@@ -138,7 +138,7 @@
         .edit-container textarea {
             width: 100%;
             /* Full width */
-            height: 120px;
+            height: 130px;
             resize: none;
             /* Allows vertical resize, none to disable resize */
         }
@@ -152,8 +152,9 @@
 
         .edit-container {
             position: absolute;
-            z-index: 1;
-            height: 370px;
+            z-index: 999;
+            width: 100%;
+            max-width: 800px;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -168,6 +169,7 @@
             align-items: stretch;
             /* Stretch child elements to container width */
         }
+
 
         .edit-container button {
             height: 30px;
@@ -227,6 +229,7 @@
             padding: 20px 80px 80px 80px;
             margin-left: 20px;
             max-width: calc(100% - 40px);
+
         }
 
         .tourist-food {
@@ -235,7 +238,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin: 10px;
             margin-bottom: 20px;
-            width: 300px;
+            width: 500px;
             padding: 20px;
             border: 1px solid #0f172a;
             position: relative;
@@ -259,9 +262,41 @@
             justify-content: center;
         }
 
+        .additional-images {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .additional-images img {
+            width: calc(33.333% - 10px);
+            /* Subtract some pixels for margin */
+            height: 100px;
+            /* Or any other fixed height you prefer */
+            object-fit: cover;
+            margin-right: 5px;
+            /* Half of the subtracted amount */
+        }
+
+        .additional-images img:last-child {
+            margin-right: 0;
+            /* No margin on the right for the last image */
+        }
+
+
         .tourist-food h2 {
             margin-top: 10px;
             font-size: 24px;
+            color: #15375D;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+
+
+        }
+
+        .tourist-food h3 {
+            margin-top: 10px;
+            font-size: 16px;
             color: #15375D;
             word-wrap: break-word;
             white-space: pre-wrap;
@@ -318,21 +353,34 @@
     <div class="container">
         {% for module in modules %}
         <div class="tourist-food">
-
             <div class="edit-container hidden">
                 <form method="post" action="{% url 'save_module_changes' %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     <input type="hidden" name="module_id" value="{{ module.DistrictModuleID }}">
                     <label for="new_module_image">Upload New Module Image:</label>
                     <input type="file" id="new_module_image" name="image_file"><br>
+
+                    <label for="first_image">First Image:</label>
+                    <input type="file" id="first_image" name="first_image"><br>
+
+                    <label for="second_image">Second Image:</label>
+                    <input type="file" id="second_image" name="second_image"><br>
+
+                    <label for="third_image">Third Image:</label>
+                    <input type="file" id="third_image" name="third_image"><br>
+
                     <label for="new_module_name">Module Name:</label>
                     <input type="text" id="new_module_name" name="new_module_name" value="{{ module.ModuleName }}"><br>
+                    <label for="new_module_location">Module Location:</label>
+                    <input type="text" id="new_module_location" name="new_module_location"
+                        value="{{ module.ModuleLocation }}"><br>
+
                     <label for="new_module_file">Module File:</label>
                     {% if module.ModuleFile %}
                     <textarea id="new_module_file" name="new_module_file" class="scrollbar"
                         rows="4">{{ module.ModuleFile }}</textarea><br>
                     {% else %}
-                    <textarea type="text" id="new_module_file" name="new_module_file" value="None"></textarea>
+                    <textarea id="new_module_file" name="new_module_file"></textarea><br>
                     {% endif %}
                     <button type="submit">Save Changes</button>
                 </form>
@@ -349,22 +397,41 @@
             <i class="fas fa-edit edit-icon" title="Edit"></i>
             <i class="fas fa-trash delete-icon" title="Delete"></i>
             <img src="{{ module.ModuleContent.url }}" alt="{{ module.ModuleName }}">
+            <!-- Display the three additional images -->
+            <div class="additional-images">
+                {% if module.FirstImage %}
+                <img src="{{ module.FirstImage.url }}" alt="First Image">
+                {% endif %}
+                {% if module.SecondImage %}
+                <img src="{{ module.SecondImage.url }}" alt="Second Image">
+                {% endif %}
+                {% if module.ThirdImage %}
+                <img src="{{ module.ThirdImage.url }}" alt="Third Image">
+                {% endif %}
+            </div>
             <h2>{{ module.ModuleName }}</h2>
+            <h3>{{ module.ModuleLocation }}</h3>
             <p class="scrollbar">{{ module.ModuleFile }}</p>
-
         </div>
         {% endfor %}
     </div>
     <div class="add-container hidden">
         <form method="post" action="{% url 'add_module' %}" enctype="multipart/form-data">
             {% csrf_token %}
-            <!-- Include input field for municipality name -->
             <input type="hidden" id="moduletype_suffix" name="moduletype_suffix" value="f">
             <input type="hidden" id="municipality_name" name="municipality_name">
             <label for="new_module_image">Upload Module Image:</label>
             <input type="file" id="new_module_image" name="new_module_image" required><br>
+            <label for="new_first_image">First Image:</label>
+            <input type="file" id="new_first_image" name="new_first_image"><br>
+            <label for="new_second_image">Second Image:</label>
+            <input type="file" id="new_second_image" name="new_second_image"><br>
+            <label for="new_third_image">Third Image:</label>
+            <input type="file" id="new_third_image" name="new_third_image"><br>
             <label for="new_module_name">Module Name:</label>
             <input type="text" id="new_module_name" name="new_module_name" required><br>
+            <label for="new_module_location">Module Location:</label>
+            <input type="text" id="new_module_location" name="new_module_location" required><br>
             <label for="new_module_file">Module File:</label>
             <textarea id="new_module_file" name="new_module_file" class="scrollbar" rows="10"></textarea><br>
             <button type="submit">Add Module</button>
@@ -446,11 +513,13 @@
 
                     // Get current module data
                     const moduleName = container.querySelector('h2').textContent;
+                    const moduleLocation = container.querySelector('h3').textContent;
                     const moduleImage = container.querySelector('img').src;
                     const moduleFile = container.querySelector('p').textContent;
 
                     // Fill edit container with current module data
                     editContainer.querySelector('#new_module_name').value = moduleName;
+                    editContainer.querySelector('#new_module_location').value = moduleLocation;
                     editContainer.querySelector('#new_module_image').value = moduleImage;
                     editContainer.querySelector('#new_module_file').value = moduleFile;
                 });
