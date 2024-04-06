@@ -58,8 +58,8 @@
         }
 
         h2 {
-            color: #0c005b;
-            font-size: 2em;
+            color: #15375D;
+            font-size: 3em;
             margin-bottom: 20px;
             animation: tada 1s ease-in-out infinite;
         }
@@ -227,9 +227,9 @@
             <div class="image-container">
 
                 <!-- Correct image -->
-                <button onclick="submitForm('{{ question_image }}', '{{ question_content }}', '{{ question_id }}')">
+                <button id="correct-answer" onclick="submitForm('{{ question_image }}', '{{ question_content }}', '{{ question_id }}')">
                     <img src="/media/{{ question_image }}" alt="Trivia Image">
-                </button>
+                </button>                             
 
                 <!-- Incorrect images -->
                 {% for trivia_id, image_url in random_images %}
@@ -239,7 +239,7 @@
                 {% endfor %}
 
             </div>
-
+            
             <div class="question-container">
                 {% if question_content %}
                 <div class="question-box">{{ question_content }}</div>
@@ -248,92 +248,108 @@
                     id="guess-form">
                     {% csrf_token %}
                     <input type="hidden" name="guess" id="guess-input">
+                    <!-- Assuming is_correct is set by JavaScript based on the selection -->
+                    <input type="hidden" name="is_correct" id="is_correct">
                 </form>
-
+            
                 {% if correct %}
                 <div class="correct">Correct! You've earned points!</div>
                 {% endif %}
-
+            
                 {% else %}
                 <p>No question available at this time.</p>
                 {% endif %}
 
                 <!-- Timer Display -->
                 <div class="timer" id="timer">Time Left: <span id="timeLeft">60</span> seconds</div>
-                <button id="next-question-btn" onclick="nextQuestion()">Next Question</button>
+                {% comment %} <button id="next-question-btn" onclick="location.href='?next=true'">Next Question</button>  {% endcomment %}
             </div>
         </div>
 
     </div>
 
     <script>
-        // Initialize an empty list to keep track of answered questions
         var answeredQuestions = [];
-
-        document.addEventListener('DOMContentLoaded', function () {
-            var container = document.querySelector('.image-container');
-            var images = container.querySelectorAll('button img');
-            var correctAnswer = '{{ question_image }}'; // Store correct answer
-            var userAnswer = null; // Track user's answer
-
-            // Function to handle user's selection
-            function handleSelection(clickedButton, imageUrl) {
-                // If user has already answered, return
-                if (userAnswer !== null) return;
-
-                // Disable all buttons to prevent further selections
-                images.forEach(function (image) {
-                    image.parentNode.disabled = true;
-                });
-
-                // Check if the answer is correct
-                var isCorrect = (imageUrl === correctAnswer);
-
-                // Change background color based on correctness
-                clickedButton.style.backgroundColor = isCorrect ? 'green' : 'red';
-
-                // If the answer is incorrect, highlight the correct image
-                if (!isCorrect) {
-                    var correctButton = container.querySelector('button img[src="/media/' + correctAnswer + '"]').parentNode;
-                    correctButton.style.backgroundColor = 'green';
-                    correctButton.style.border = '2px solid green';
+        var totalQuestions; // Should be initialized based on the total number of questions you have
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            totalQuestions = {{ total_questions }}; // Initialize with the actual total questions
+    
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
                 }
-
-                // Update user's answer
+            }
+    
+            var correctAnswer = '{{ question_image }}';
+            var userAnswer = null; 
+            var container = document.querySelector('.image-container');
+            var buttons = container.querySelectorAll('button');
+            var buttonsArray = Array.from(buttons);
+            shuffleArray(buttonsArray); // Shuffle buttons
+            container.innerHTML = ''; // Clear container
+            buttonsArray.forEach(button => container.appendChild(button)); // Re-add buttons
+    
+            function handleSelection(clickedButton, imageUrl) {
+                if (userAnswer !== null) return;
+                buttons.forEach(button => button.disabled = true);
+                var isCorrect = imageUrl.endsWith(correctAnswer);
+                clickedButton.style.backgroundColor = isCorrect ? 'green' : 'red';
                 userAnswer = imageUrl;
-
-                // Show the Next Question button
+                answeredQuestions.push('{{ question_content }}');
                 document.getElementById('next-question-btn').style.display = 'block';
             }
 
-            // Attach click event listeners to each button
-            images.forEach(function (image) {
-                image.parentNode.addEventListener('click', function () {
-                    handleSelection(this, image.src.split('/').pop());
+            function submitForm(imageUrl, questionContent, triviaId) {
+                // Assuming you have a form with id 'guess-form' 
+                // and you want to set a hidden input field with the guess before submitting
+                var form = document.getElementById('guess-form');
+                // Set form action or hidden fields as needed
+                form.submit();
+            }
+            
+    
+            function nextQuestion() {
+                if (answeredQuestions.length >= totalQuestions) {
+                    finishQuiz();
+                } else {
+                    location.reload();
+                }
+            }
+    
+            function finishQuiz() {
+                window.location.href = '/results';
+            }
+    
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    handleSelection(this, this.children[0].src);
                 });
             });
-
-            // Existing timer script remains the same
+    
             var timeLeft = 60;
-            var timerElement = document.getElementById('timeLeft');
-            var countdownTimer = setInterval(function () {
-                timeLeft--;
-                timerElement.textContent = timeLeft;
-                if (timeLeft <= 0) {
+            var countdownTimer = setInterval(function() {
+                if (--timeLeft <= 0) {
                     clearInterval(countdownTimer);
+                    finishQuiz();
                 }
+                document.getElementById('timeLeft').textContent = timeLeft;
             }, 1000);
+    
+            function handleNextQuestion() {
+                // Implement logic to load the next question here
+                // This might involve making an AJAX request or simply submitting the form to reload the page with the next question
+                document.getElementById('guess-form').submit();
+            }
+            
+            document.getElementById('correct-answer').addEventListener('click', function() {
+                submitForm('{{ question_image }}', '{{ question_content }}', '{{ question_id }}');
+            });
+        
         });
-
-        // Function to reload the page for the next question
-        function nextQuestion() {
-            // Add the current question to the list of answered questions
-            answeredQuestions.push('{{ question_content }}');
-
-            // Reload the page to generate the next question
-            location.reload();
-        }
     </script>
-</body>
 
+
+</body>
 </html>

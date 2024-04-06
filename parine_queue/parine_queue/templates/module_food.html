@@ -263,88 +263,103 @@
         const prevButton = document.querySelector('.prev');
         const nextButton = document.querySelector('.next');
         const rightSideContainer = document.querySelector('.rightside-container');
-
+    
         function updateButtonState() {
             prevButton.disabled = currentSlide === 0;
-            nextButton.disabled = currentSlide === items.length - 1;
+            // Next button should not be disabled on the last slide
+            // Since it will be used for 'Take Quiz'
         }
-
+    
         function updateVisibleImages() {
-            // Fetch the DistrictModuleID of the active slide.
             const activeModuleID = items[currentSlide].getAttribute('data-district-module-id');
             const images = document.querySelectorAll('.rightside-container img');
-        
+    
             images.forEach(img => {
-                // Compare the DistrictModuleID of each image to the active one.
-                if (img.getAttribute('data-district-module-id') === activeModuleID) {
-                    img.classList.remove('hidden');
-                } else {
-                    img.classList.add('hidden');
-                }
+                img.classList.toggle('hidden', img.getAttribute('data-district-module-id') !== activeModuleID);
             });
-        
-            // Adjust visibility or styling of the rightSideContainer based on visible images
+    
             const hasVisibleImages = Array.from(images).some(img => !img.classList.contains('hidden'));
             rightSideContainer.style.display = hasVisibleImages ? 'block' : 'none';
         }
-        
-
-        function nextSlide() {
-            items[currentSlide].classList.remove('active'); // Hide current slide
-            contents[currentSlide].classList.remove('active'); // Hide current content
-
-            currentSlide = (currentSlide + 1) % items.length; // Increment current slide index
-
-            if (currentSlide === items.length - 1) {
-                // Redirect to take_quiz.html if it's the last module
-                window.location.href = "/take_quiz";
+    
+        function navigateToQuiz() {
+            window.location.href = "/take_quiz";
+        }
+    
+        function updateNextButtonForLastSlide() {
+            if(currentSlide === items.length - 1) {
+                nextButton.innerHTML = "Quiz";
+                nextButton.onclick = navigateToQuiz;
             } else {
-                items[currentSlide].classList.add('active'); // Show next slide
-                contents[currentSlide].classList.add('active'); // Show next content
-                backgroundSlide.style.backgroundImage = items[currentSlide].style.backgroundImage; // Set next background image
-                updateButtonState();
-                updateVisibleImages();
+                nextButton.innerHTML = "<i class='fas fa-arrow-right'></i>";
+                nextButton.onclick = nextSlide;
             }
         }
-        
-        function prevSlide() {
-            items[currentSlide].classList.remove('active'); // Hide current slide
-            contents[currentSlide].classList.remove('active'); // Hide current content
-
-            currentSlide = (currentSlide - 1 + items.length) % items.length; // Decrement current slide index
-
-            items[currentSlide].classList.add('active'); // Show previous slide
-            contents[currentSlide].classList.add('active'); // Show previous content
-            backgroundSlide.style.backgroundImage = items[currentSlide].style.backgroundImage; // Set previous background image
+    
+        function nextSlide() {
+            if(currentSlide === items.length - 1) {
+                navigateToQuiz();
+                return;
+            }
+    
+            items[currentSlide].classList.remove('active');
+            contents[currentSlide].classList.remove('active');
+            currentSlide++;
+            
+            if(currentSlide >= items.length) {
+                navigateToQuiz();
+                return;
+            }
+    
+            items[currentSlide].classList.add('active');
+            contents[currentSlide].classList.add('active');
+            backgroundSlide.style.backgroundImage = items[currentSlide].style.backgroundImage;
             updateButtonState();
-            updateVisibleImages(); // Update visible images when the slide changes
-        }        
-
-        
+            updateVisibleImages();
+            updateNextButtonForLastSlide();
+        }
+    
+        function prevSlide() {
+            if(currentSlide === 0) {
+                return;
+            }
+    
+            items[currentSlide].classList.remove('active');
+            contents[currentSlide].classList.remove('active');
+            currentSlide--;
+            items[currentSlide].classList.add('active');
+            contents[currentSlide].classList.add('active');
+            backgroundSlide.style.backgroundImage = items[currentSlide].style.backgroundImage;
+            updateButtonState();
+            updateVisibleImages();
+            updateNextButtonForLastSlide();
+        }    
+    
         window.onload = function() {
+            prevButton.disabled = true; // Disable the Previous button initially
             updateButtonState();
             updateVisibleImages();
             rotateImagesAutomatically();
+            updateNextButtonForLastSlide(); // Set the Next button text for the first slide
         };
-
+    
         function rotateImagesAutomatically() {
             setInterval(() => {
                 const activeImg = document.querySelector('.rightside-container img.active');
                 const images = Array.from(document.querySelectorAll('.rightside-container img'));
                 const index = images.indexOf(activeImg);
                 const nextIndex = (index + 1) % images.length;
-                rotateImages(images[nextIndex]); // Rotate to the next image
-            }, 2000); // Rotate every 3000 milliseconds (3 seconds)
+                rotateImages(images[nextIndex]);
+            }, 2000);
         }
         
         function rotateImages(clickedImg) {
             var images = document.querySelectorAll('.rightside-container img');
             var index = Array.from(images).indexOf(clickedImg);
-        
-            // Rotate images
+    
             images.forEach((img, i) => {
                 img.classList.remove('active', 'inactive1', 'inactive2');
-        
+    
                 if (i === index) {
                     img.classList.add('active');
                 } else if (i === (index + 1) % images.length) {
@@ -355,22 +370,14 @@
             });
         }
         
-
-        // JavaScript to enlarge the clicked image
         function enlargeImage(img) {
-            // Use an overlay to highlight the image and darken the rest of the screen
             document.getElementById('overlay').style.display = 'block';
-            // Add the 'large' class to the clicked image
             img.classList.add('large');
-            // Prevent the default action of the image if it's a link
-            event.preventDefault();
+            event.stopPropagation();
         }
-    
-        // JavaScript to shrink the enlarged image back to its original size
+        
         function shrinkImage() {
-            // Hide the overlay
             document.getElementById('overlay').style.display = 'none';
-            // Remove the 'large' class from any enlarged images
             var enlargedImages = document.querySelectorAll('.large');
             if(enlargedImages) {
                 enlargedImages.forEach(function(image) {
@@ -378,7 +385,8 @@
                 });
             }
         }
-
     </script>
+    
+    
 </body>
 </html>
