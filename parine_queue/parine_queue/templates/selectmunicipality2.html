@@ -870,12 +870,16 @@ h3 {
     text-align: left; 
 }
 #points {
-    margin-top: 11.458333333333334vw; 
-    margin-left: 1.0416666666666667vw;
+    position: absolute;
+    top: 15.625vw;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-family: Arial, sans-serif;
     font-weight: bold;
     color: #333; 
     font-size: 2.0833333333333335vw; 
+    width: 17.708333333333332vw;
+    text-align: center;
 }
 </style>
 </head>
@@ -899,7 +903,11 @@ h3 {
         </div>
         <div id="rightPanel">
             <img id="backButton" src="{% static 'backbutton.png' %}" alt="Back Button" />
-            <div id="points">Points:</div>
+                {% if total_points %}
+            <div id="points">Points: {{ total_points }} </div>
+                {% else %}
+            <div id="points">Points: 0 </div>
+                {% endif %}
             <div id="usertopPanel">
                 {% if kiosk_username %}
                 <h3 class="username">{{ kiosk_username }}</h3>

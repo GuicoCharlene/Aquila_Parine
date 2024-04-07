@@ -308,6 +308,18 @@
         margin-left: 20px;
         text-align: left; 
     }
+    #points {
+        position: absolute;
+        top: 15.625vw;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        color: #333; 
+        font-size: 2.0833333333333335vw; 
+        width: 17.708333333333332vw;
+        text-align: center;
+    }
 </style>
 </head>
 <body>
@@ -318,6 +330,11 @@
         </div>
         <div id="rightPanel">
             <img id="backButton" src="{% static 'backbutton.png' %}" alt="Back Button" />
+                {% if total_points %}
+            <div id="points">Points: {{ total_points }} </div>
+                {% else %}
+            <div id="points">Points: 0 </div>
+                {% endif %}
             <div id="usertopPanel">
                 {% if kiosk_username %}
                 <h3 class="username">{{ kiosk_username }}</h3>
@@ -360,6 +377,8 @@
         backButton.addEventListener('click', () => {
             rightPanel.style.display = 'none';
         });
+
+
     </script>
 </body>
 </html>

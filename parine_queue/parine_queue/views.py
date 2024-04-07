@@ -1,3 +1,5 @@
+from operator import le
+from pyexpat import model
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.db import models
@@ -16,6 +18,7 @@ from django.http import HttpResponseRedirect
 import logging
 from django.db import transaction
 from django.urls import reverse
+from datetime import datetime
 from django.db.models import F, Count, Q
 from django.contrib.auth.decorators import login_required
 from django.conf import settings 
@@ -248,10 +251,22 @@ def selectdistrict(request, kiosk_id):
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
 
+
+    total_points = None
+    if logged_in_username:
+        try:
+            queue_entry = QueueEntry.objects.get(QueueID=kiosk.QueueID_id)
+            reward_points = RewardPoints.objects.filter(user=queue_entry.user_id).last()
+            if reward_points:
+                total_points = reward_points.TotalPoints
+        except QueueEntry.DoesNotExist:
+            pass
+
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
+        'total_points': total_points,
     }
     return render(request, 'selectdistrict.html',context)
 
@@ -701,15 +716,15 @@ def save_quiz_changes(request):
         return redirect(request.META.get('HTTP_REFERER', 'admin_dashboard'))
 
 def admin_quiz_tourist(request, municipality):
-    questions = fetch_quiz_questions('module_tourist', municipality)
+    questions = TriviaQuestion.objects.filter(ModuleType='module_tourist', Municipality__iexact=municipality)
     return render(request, 'admin_quiz_tourist.html', {'questions': questions, 'municipality': municipality})
 
 def admin_quiz_food(request, municipality):
-    questions = fetch_quiz_questions('module_food', municipality)
+    questions = TriviaQuestion.objects.filter(ModuleType='module_food', Municipality__iexact=municipality)
     return render(request, 'admin_quiz_food.html', {'questions': questions, 'municipality': municipality})
 
 def admin_quiz_craft(request, municipality):
-    questions = fetch_quiz_questions('module_craft', municipality)
+    questions = TriviaQuestion.objects.filter(ModuleType='module_craft', Municipality__iexact=municipality)
     return render(request, 'admin_quiz_craft.html', {'questions': questions, 'municipality': municipality})
 
 def selectmunicipality1(request, kiosk_id):
@@ -755,10 +770,21 @@ def selectmunicipality1(request, kiosk_id):
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
 
+    total_points = None
+    if logged_in_username:
+        try:
+            queue_entry = QueueEntry.objects.get(QueueID=kiosk.QueueID_id)
+            reward_points = RewardPoints.objects.filter(user=queue_entry.user_id).last()
+            if reward_points:
+                total_points = reward_points.TotalPoints
+        except QueueEntry.DoesNotExist:
+            pass
+
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
+        'total_points': total_points,
     }
 
     return render(request, 'selectmunicipality1.html', context)
@@ -805,10 +831,21 @@ def selectmunicipality2(request, kiosk_id):
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
 
+    total_points = None
+    if logged_in_username:
+        try:
+            queue_entry = QueueEntry.objects.get(QueueID=kiosk.QueueID_id)
+            reward_points = RewardPoints.objects.filter(user=queue_entry.user_id).last()
+            if reward_points:
+                total_points = reward_points.TotalPoints
+        except QueueEntry.DoesNotExist:
+            pass
+
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
+        'total_points': total_points,
     }
 
     return render(request, 'selectmunicipality2.html', context)
@@ -855,12 +892,22 @@ def selectmunicipality3(request, kiosk_id):
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
 
+    total_points = None
+    if logged_in_username:
+        try:
+            queue_entry = QueueEntry.objects.get(QueueID=kiosk.QueueID_id)
+            reward_points = RewardPoints.objects.filter(user=queue_entry.user_id).last()
+            if reward_points:
+                total_points = reward_points.TotalPoints
+        except QueueEntry.DoesNotExist:
+            pass
+
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
+        'total_points': total_points,
     }
-
     return render(request, 'selectmunicipality3.html', context)
 
 def selectmunicipality4(request, kiosk_id):
@@ -905,10 +952,21 @@ def selectmunicipality4(request, kiosk_id):
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
 
+    total_points = None
+    if logged_in_username:
+        try:
+            queue_entry = QueueEntry.objects.get(QueueID=kiosk.QueueID_id)
+            reward_points = RewardPoints.objects.filter(user=queue_entry.user_id).last()
+            if reward_points:
+                total_points = reward_points.TotalPoints
+        except QueueEntry.DoesNotExist:
+            pass
+
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
+        'total_points': total_points,
     }
 
     return render(request, 'selectmunicipality4.html', context)
@@ -955,10 +1013,21 @@ def selectmunicipality5(request, kiosk_id):
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
 
+    total_points = None
+    if logged_in_username:
+        try:
+            queue_entry = QueueEntry.objects.get(QueueID=kiosk.QueueID_id)
+            reward_points = RewardPoints.objects.filter(user=queue_entry.user_id).last()
+            if reward_points:
+                total_points = reward_points.TotalPoints
+        except QueueEntry.DoesNotExist:
+            pass
+
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
+        'total_points': total_points,
     }
 
     return render(request, 'selectmunicipality5.html', context)
@@ -1005,10 +1074,21 @@ def selectmunicipality6(request, kiosk_id):
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
 
+    total_points = None
+    if logged_in_username:
+        try:
+            queue_entry = QueueEntry.objects.get(QueueID=kiosk.QueueID_id)
+            reward_points = RewardPoints.objects.filter(user=queue_entry.user_id).last()
+            if reward_points:
+                total_points = reward_points.TotalPoints
+        except QueueEntry.DoesNotExist:
+            pass
+
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
+        'total_points': total_points,
     }
 
     return render(request, 'selectmunicipality6.html', context)
@@ -1078,6 +1158,7 @@ def take_quiz(request):
 logger = logging.getLogger(__name__)
 
 def fetch_quiz_questions(module_type, municipality, visitor_id):
+    # Fetch questions that haven't been answered by the user, filtered by module type and municipality
     answered_questions = RewardPoints.objects.filter(user_id=visitor_id, TriviaQuestionID__isnull=False) \
                                               .values_list('TriviaQuestionID', flat=True)
 
@@ -1088,84 +1169,179 @@ def fetch_quiz_questions(module_type, municipality, visitor_id):
     return questions
 
 def quiz(request):
+    # Define questions variable at the top so it's available in the entire function scope
+    questions = None
+
     if 'game_session' not in request.session:
-        # Initial quiz setup
         module_type = request.GET.get('module_type', '')
         municipality = request.GET.get('municipality', '')
         kiosk_id = request.GET.get('kiosk_id', '')
 
         try:
             kiosk = Kiosk.objects.get(KioskID=kiosk_id)
-            queue_id = kiosk.QueueID
-            visitor_id = queue_id.user.pk
+            visitor_id = kiosk.QueueID.user.pk
+
+            # Check if the visitor has already completed the quiz for this module type and municipality
+            visitor_progress = VisitorProgress.objects.filter(VisitorID_id=visitor_id, 
+                                                              Municipality__iexact=municipality, 
+                                                              ModuleType=module_type, 
+                                                              Status='DONE').exists()
+            if visitor_progress:
+                # Redirect to the done_quiz page if the visitor has already completed the quiz
+                return redirect('done_quiz')
 
             questions = fetch_quiz_questions(module_type, municipality, visitor_id)
+
             if not questions.exists():
                 return render(request, 'quiz.html', {'message': 'No questions available.'})
 
             selected_question_ids = list(questions.values_list('TriviaQuestionID', flat=True))
+
             request.session['game_session'] = {
                 'selected_questions': selected_question_ids,
                 'answered_questions': [],
                 'reward_points': 0,
                 'visitor_id': visitor_id,
-                'current_question_index': 0  # Initialize the current question index
+                'current_question_index': 0,
+                'total_questions': len(selected_question_ids),
+                'module_type': module_type,
+                'municipality': municipality,
             }
-            # Award 5 points for the first creation of VisitorID
-            if not RewardPoints.objects.filter(user_id=visitor_id).exists():
-                RewardPoints.objects.create(user_id=visitor_id, TotalPoints=5)
-                
             return redirect('quiz')
         except Kiosk.DoesNotExist:
             return HttpResponse("Error: Kiosk not found.", status=404)
     else:
         game_session = request.session['game_session']
-        question_ids = game_session['selected_questions']
-        answered_questions = game_session['answered_questions']
+        visitor_id = game_session['visitor_id']
+        module_type = game_session['module_type']
+        municipality = game_session['municipality']
+        # Fetch questions for the existing game session if not a POST request or for the first POST request handling
+        if questions is None:
+            questions = fetch_quiz_questions(module_type, municipality, visitor_id)
 
         if request.method == 'POST':
-            # Process the submitted answer
-            guess = request.POST.get('guess', '')
-            is_correct = request.POST.get('is_correct', 'false') == 'true'
+            process_submitted_answer(request, game_session, questions)
+        return display_next_question_or_finish_quiz(request)
 
-            if guess.isdigit():
-                trivia_id = int(guess)
-                if trivia_id not in answered_questions:
-                    answered_questions.append(trivia_id)
+def process_submitted_answer(request, game_session, questions):
+    current_question_index = game_session['current_question_index']
+    selected_question_ids = game_session['selected_questions']
 
-                if is_correct:
-                    game_session['reward_points'] += 1
-                    RewardPoints.objects.create(user_id=game_session['visitor_id'], TriviaQuestionID=trivia_id, TotalPoints=1)
+    if current_question_index < len(selected_question_ids):
+        current_question_id = selected_question_ids[current_question_index]
+        is_correct = request.POST.get('is_correct', 'false') == 'true'
+        points_for_current_question = 1 if is_correct else 0
+        visitor_id = game_session.get('visitor_id', None)
+        module_type = game_session.get('module_type', '')  # Retrieve module_type from game_session
+        municipality = game_session.get('municipality', '')  # Retrieve municipality from game_session
 
-                game_session['answered_questions'] = answered_questions
-                request.session.modified = True
-
-        # Check if there are more questions to show
-        current_question_index = game_session['current_question_index']
-        if current_question_index < len(question_ids):
-            next_question_id = question_ids[current_question_index]
-            current_question = TriviaQuestion.objects.get(TriviaQuestionID=next_question_id)
+        if visitor_id:
+            # Now passing module_type and municipality as arguments
+            update_or_create_reward_points(visitor_id, points_for_current_question, current_question_id, module_type, municipality)
             game_session['current_question_index'] += 1
+            game_session['answered_questions'].append(current_question_id)
             request.session.modified = True
-            return render(request, 'quiz.html', {
-                'question_content': current_question.QuestionContent,
-                'question_image': current_question.Images,
-                'random_images': list(TriviaQuestion.objects.exclude(TriviaQuestionID=current_question.TriviaQuestionID).order_by('?')[:3].values_list('TriviaQuestionID', 'Images')),
-                'reward_points': game_session['reward_points'],
-                'total_questions': len(question_ids)
-            })
+
+
+def display_next_question_or_finish_quiz(request):
+    game_session = request.session['game_session']
+    
+    if game_session['current_question_index'] >= len(game_session['selected_questions']):
+        return redirect('results')
+    else:
+        next_question_id = game_session['selected_questions'][game_session['current_question_index']]
+        current_question = TriviaQuestion.objects.get(TriviaQuestionID=next_question_id)
         
-        return redirect('results')  # Quiz is done or no questions
+        # Increment is done here to prepare for the next question, ensuring `current_question_index` is always pointing to the next question
+        return render(request, 'quiz.html', {
+            'question_content': current_question.QuestionContent,
+            'question_image': current_question.Images,
+            'random_images': list(TriviaQuestion.objects.exclude(TriviaQuestionID=current_question.TriviaQuestionID).order_by('?')[:3].values_list('TriviaQuestionID', 'Images')),
+            'reward_points': game_session['reward_points'],
+            'total_questions': game_session['total_questions']
+        })
+
+def update_visitor_progress(visitor_id, module_type, municipality):
+    # Update the visitor's progress to 'DONE' for the current module and municipality
+    visitor_progress, created = VisitorProgress.objects.get_or_create(
+        VisitorID_id=visitor_id,
+        Municipality=municipality,
+        ModuleType=module_type,
+        defaults={'Status': 'DONE'}
+    )
+    if not created:
+        visitor_progress.Status = 'DONE'  # Ensure the status is updated to DONE if the entry already exists
+    visitor_progress.save()
+
+    # Check if the visitor has completed all required module types for the municipality
+    required_modules = ['module_tourist', 'module_food', 'module_craft']
+    completed_modules = VisitorProgress.objects.filter(
+        VisitorID_id=visitor_id,
+        Municipality=municipality,
+        Status='DONE'
+    ).values_list('ModuleType', flat=True)
+    
+    if all(module in completed_modules for module in required_modules):
+        # Add 5 extra points to the total points if all required modules are completed
+        add_extra_points(visitor_id, municipality)
+
+def add_extra_points(visitor_id, municipality):
+    extra_points_id = None  # Ajust this based on how your database is structured
+    
+    total_points_entry, created = RewardPoints.objects.get_or_create(
+        user_id=visitor_id,
+        Municipality=municipality,
+        TriviaQuestionID_id=extra_points_id,  # Adjust based on your model fields
+        defaults={'TotalPoints': 5, 'create_time': timezone.now()}
+    )
+    
+    if not created:
+        total_points_entry.TotalPoints += 5
+        total_points_entry.update_time = timezone.now()
+        total_points_entry.save()
+
+
+def update_or_create_reward_points(visitor_id, points_to_add, trivia_question_id, module_type, municipality):
+    lookup_criteria = {
+        'user_id': visitor_id, 
+        'TriviaQuestionID_id': trivia_question_id,
+        'ModuleType': module_type, 
+        'Municipality': municipality
+    }
+    defaults = {
+        'TotalPoints': points_to_add, 
+        'create_time': timezone.now(), 
+        'update_time': timezone.now()
+    }
+    existing_entry, created = RewardPoints.objects.get_or_create(
+        defaults=defaults,
+        **lookup_criteria
+    )
+
+    if not created:
+        existing_entry.TotalPoints += points_to_add
+        existing_entry.update_time = timezone.now()
+
+    existing_entry.save()
+
 
 def results_view(request):
     visitor_id = request.session.get('game_session', {}).get('visitor_id')
+    module_type = request.session.get('game_session', {}).get('module_type', '')
+    municipality = request.session.get('game_session', {}).get('municipality', '')
+
+    # Update the visitor's progress before calculating the total points
+    update_visitor_progress(visitor_id, module_type, municipality)
+
     total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
     total_points = total_points_entry.get('total_points', 0)
-
+    
+    # Clear the game session after updating visitor progress and before rendering results
     if 'game_session' in request.session:
         del request.session['game_session']
     
     return render(request, 'results.html', {'total_points': total_points})
+
 
 def done_quiz(request):
     return render(request, 'done_quiz.html')

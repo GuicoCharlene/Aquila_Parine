@@ -55,7 +55,7 @@
     #imageButtonContainer {
         position: fixed;
         top: 1.3020833333333333vw; 
-        right: 1.953125vw;
+        right: 1.953125vw; 
         z-index: 1000; 
       }
       
@@ -93,7 +93,7 @@
         z-index: 1;
         display: flex;
         align-items: center;
-        overflow: hidden; 
+        overflow: hidden; /* Ensure the text is clipped if it's too long */
     }
     
     .username {
@@ -102,8 +102,8 @@
         white-space: nowrap;
         max-width: 10.416666666666666vw; 
         font-size: 1.8229166666666667vw; 
-        margin: 0; /* Remove default margin */
-        padding: 0; /* Remove default padding */
+        margin: 0; 
+        padding: 0; 
         font-family: Arial, sans-serif;
         font-weight: bold;
         color: #333; 
@@ -522,16 +522,20 @@
         font-size: 18px; 
         margin-top: 60px; 
         margin-left: 20px;
-        text-align: left; 
+        text-align: left;
     }
     #points {
-        margin-top: 11.458333333333334vw; 
-        margin-left: 1.0416666666666667vw;
+        position: absolute;
+        top: 15.625vw;
+        left: 50%;
+        transform: translate(-50%, -50%);
         font-family: Arial, sans-serif;
         font-weight: bold;
         color: #333; 
         font-size: 2.0833333333333335vw; 
-    } 
+        width: 17.708333333333332vw;
+        text-align: center;
+    }
 </style>
 </head>
 <body>
@@ -554,7 +558,11 @@
         </div>
         <div id="rightPanel">
             <img id="backButton" src="{% static 'backbutton.png' %}" alt="Back Button" />
-            <div id="points">Points:</div>
+                {% if total_points %}
+            <div id="points">Points: {{ total_points }} </div>
+                {% else %}
+            <div id="points">Points: 0 </div>
+                {% endif %}
             <div id="usertopPanel">
                 {% if kiosk_username %}
                 <h3 class="username">{{ kiosk_username }}</h3>
@@ -584,13 +592,6 @@
             <h2>Welcome to <br> LIPA CITY!</h2>
     </div>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const username = urlParams.get('username');
-            const usertopPanel = document.getElementById('usertopPanel');
-            usertopPanel.textContent = username;
-        });
-
         const imageButton = document.getElementById('imageButton');
         const rightPanel = document.getElementById('rightPanel');
         const backButton = document.getElementById('backButton');

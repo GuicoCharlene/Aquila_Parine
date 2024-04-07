@@ -223,21 +223,25 @@
 <body>
     <div class="game-container">
         <h2>I SPY WITH MY LITTLE EYE...</h2>
+
+        <div type="hidden" class="points-container">
+            <span type="hidden" id="points-gained">{{ total_points }}</span>/<span type="hidden" id="total-questions">{{ total_questions }}</span>
+        </div>        
+
         <div class="content-container">
             <div class="image-container">
 
-                <!-- Correct image -->
-                <button id="correct-answer" onclick="submitForm('{{ question_image }}', '{{ question_content }}', '{{ question_id }}')">
+                <!-- Correct answer button -->
+                <button onclick="handleSelection(this, '{{ question_image }}', '{{ question_id }}', true)">
                     <img src="/media/{{ question_image }}" alt="Trivia Image">
                 </button>                             
-
-                <!-- Incorrect images -->
+            
+                <!-- Incorrect answer buttons -->
                 {% for trivia_id, image_url in random_images %}
-                <button onclick="submitForm('{{ image_url }}', '{{ question_content }}', '{{ trivia_id }}')">
+                <button onclick="handleSelection(this, '{{ image_url }}', '{{ trivia_id }}', false)">
                     <img src="/media/{{ image_url }}" alt="Trivia Image">
                 </button>
                 {% endfor %}
-
             </div>
             
             <div class="question-container">
@@ -250,6 +254,7 @@
                     <input type="hidden" name="guess" id="guess-input">
                     <!-- Assuming is_correct is set by JavaScript based on the selection -->
                     <input type="hidden" name="is_correct" id="is_correct">
+
                 </form>
             
                 {% if correct %}
@@ -291,25 +296,32 @@
             container.innerHTML = ''; // Clear container
             buttonsArray.forEach(button => container.appendChild(button)); // Re-add buttons
     
-            function handleSelection(clickedButton, imageUrl) {
-                if (userAnswer !== null) return;
-                buttons.forEach(button => button.disabled = true);
-                var isCorrect = imageUrl.endsWith(correctAnswer);
-                clickedButton.style.backgroundColor = isCorrect ? 'green' : 'red';
-                userAnswer = imageUrl;
-                answeredQuestions.push('{{ question_content }}');
-                document.getElementById('next-question-btn').style.display = 'block';
-            }
-
-            function submitForm(imageUrl, questionContent, triviaId) {
-                // Assuming you have a form with id 'guess-form' 
-                // and you want to set a hidden input field with the guess before submitting
+            function submitForm(imageUrl, questionContent, triviaId, isCorrect) {
+                var guessInput = document.getElementById('guess-input');
+                var isCorrectInput = document.getElementById('is_correct');
+                guessInput.value = triviaId;
+                isCorrectInput.value = isCorrect; // This value is a boolean, convert it to a string if necessary
                 var form = document.getElementById('guess-form');
-                // Set form action or hidden fields as needed
-                form.submit();
+                form.submit(); // Submit the form to move to the next question or finish the quiz
             }
             
-    
+            function handleSelection(clickedButton, imageUrl, triviaId, isCorrect) {
+                if (userAnswer !== null) return;
+                buttons.forEach(button => button.disabled = true);
+                var isCorrectBool = imageUrl.endsWith(correctAnswer); // Assuming this determines correctness
+                clickedButton.style.backgroundColor = isCorrectBool ? 'green' : 'red';
+                userAnswer = imageUrl;
+
+                // Update points display if the answer is correct
+                if (isCorrectBool) {
+                    var currentPoints = parseInt(document.getElementById('points-gained').textContent, 10);
+                    document.getElementById('points-gained').textContent = currentPoints + 1;
+                }
+
+                // Assuming submitForm sends the answer to your backend
+                submitForm(imageUrl, '{{ question_content }}', triviaId, isCorrectBool);
+            }
+        
             function nextQuestion() {
                 if (answeredQuestions.length >= totalQuestions) {
                     finishQuiz();
@@ -342,10 +354,19 @@
                 // This might involve making an AJAX request or simply submitting the form to reload the page with the next question
                 document.getElementById('guess-form').submit();
             }
+
+            function selectAnswer(triviaQuestionID) {
+                // Assuming you have a function triggered upon selecting an answer
+                document.getElementById('guess-input').value = triviaQuestionID;
+            }
+            
             
             document.getElementById('correct-answer').addEventListener('click', function() {
                 submitForm('{{ question_image }}', '{{ question_content }}', '{{ question_id }}');
             });
+
+            document.getElementById('guess-input').value = selectedTriviaQuestionId;
+
         
         });
     </script>

@@ -81,8 +81,9 @@ class RewardPoints(models.Model):
     create_time = models.DateTimeField(null=True, blank=True)
     update_time = models.DateTimeField(null=True, blank=True)
     user = models.ForeignKey(QueueVisitor, on_delete=models.CASCADE, db_column='VisitorID(RP)')
-    DistrictModuleID = models.ForeignKey(DistrictModules, on_delete=models.CASCADE, db_column='DistrictModuleID')
-    TriviaQuestionID = models.ForeignKey(TriviaQuestion, on_delete=models.CASCADE, db_column='TriviaQuestionID')
+    Municipality = models.CharField(max_length=100)
+    ModuleType = models.CharField(max_length=100)
+    TriviaQuestionID = models.ForeignKey(TriviaQuestion, on_delete=models.CASCADE, db_column='TriviaQuestionID', null=True, blank=True)
 
     class Meta:
         db_table = 'rewardpoints'
@@ -98,8 +99,9 @@ class Visitor_History(models.Model):
 class VisitorProgress(models.Model):
     VisitorProgressID = models.AutoField(primary_key=True)
     VisitorID = models.ForeignKey(QueueVisitor, on_delete=models.CASCADE, db_column='VisitorID')
-    DistrictModuleID = models.ForeignKey(DistrictModules, on_delete=models.CASCADE, db_column='DistrictModuleID')
-    TriviaQuestionID = models.ForeignKey(TriviaQuestion, on_delete=models.CASCADE, db_column='TriviaQuestionID')
+    Municipality = models.CharField(max_length=100)
+    ModuleType = models.CharField(max_length=100)
+    Status = models.CharField(max_length=100)
     class Meta:
         db_table = 'visitorprogress'
         
