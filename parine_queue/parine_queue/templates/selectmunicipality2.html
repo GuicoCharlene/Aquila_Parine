@@ -1065,6 +1065,7 @@
 
         backToMainButton.addEventListener('click', () => {
             moduleContainer.style.display = 'none';
+            window.location.reload(); // Reload the page
         });
         //-----EXPLOREBUTTONS
         document.querySelectorAll('.exploreSL-button, .exploreB-button, .exploreSP-button, .exploreM-button, .exploreT-button, .exploreL-button').forEach(button => {
