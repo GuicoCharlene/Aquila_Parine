@@ -68,9 +68,8 @@ class TriviaQuestion(models.Model):
     ModuleType = models.CharField(max_length=100)
     Images =models.FileField(upload_to='module_content/')
     QuestionContent = models.TextField() #HOLDS THE QUESTION
-    QuestionAnswer = models.TextField() #HOLDS THE ANSWER
     DistrictModuleID = models.ForeignKey('Kiosk', on_delete=models.CASCADE, db_column='DistrictModuleID(TQ)')
-    AdminID = models.ForeignKey('Admin', on_delete=models.CASCADE, db_column='AdminID(TQ)')
+    AdminID = models.ForeignKey(Admin, on_delete=models.CASCADE, db_column='AdminID(TQ)')
 
     class Meta:
         db_table = 'triviaquestion'
@@ -93,6 +92,7 @@ class Visitor_History(models.Model):
     date = models.DateField(null=True, blank=True)  # Changed to DateField
     user = models.CharField(max_length=255, unique=True)
     userid = models.ForeignKey(QueueVisitor, on_delete=models.CASCADE, db_column='VisitorID(Q)')
+    Admin = models.ForeignKey( Admin, on_delete=models.CASCADE, db_column='AdminID(VH)')
     class Meta:
         db_table = 'visitorhistory'
         
