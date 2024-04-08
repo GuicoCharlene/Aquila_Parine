@@ -210,6 +210,7 @@ def update_queue_capacity(request):
 
 # Views for the select district
 def selectdistrict(request, kiosk_id):
+    total_points = request.session.get('total_points', 0)
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
@@ -250,17 +251,6 @@ def selectdistrict(request, kiosk_id):
         messages.error(request, "Invalid Kiosk.")
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
-
-
-    total_points = None
-    if logged_in_username:
-        try:
-            queue_entry = QueueEntry.objects.get(QueueID=kiosk.QueueID_id)
-            reward_points = RewardPoints.objects.filter(user=queue_entry.user_id).last()
-            if reward_points:
-                total_points = reward_points.TotalPoints
-        except QueueEntry.DoesNotExist:
-            pass
 
     context = {
         'kiosk_id': kiosk_id,
@@ -728,6 +718,7 @@ def admin_quiz_craft(request, municipality):
     return render(request, 'admin_quiz_craft.html', {'questions': questions, 'municipality': municipality})
 
 def selectmunicipality1(request, kiosk_id):
+    total_points = request.session.get('total_points', 0)
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
@@ -770,15 +761,6 @@ def selectmunicipality1(request, kiosk_id):
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
 
-    total_points = None
-    if logged_in_username:
-        try:
-            queue_entry = QueueEntry.objects.get(QueueID=kiosk.QueueID_id)
-            reward_points = RewardPoints.objects.filter(user=queue_entry.user_id).last()
-            if reward_points:
-                total_points = reward_points.TotalPoints
-        except QueueEntry.DoesNotExist:
-            pass
 
     context = {
         'kiosk_id': kiosk_id,
@@ -790,6 +772,7 @@ def selectmunicipality1(request, kiosk_id):
     return render(request, 'selectmunicipality1.html', context)
 
 def selectmunicipality2(request, kiosk_id):
+    total_points = request.session.get('total_points', 0)
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
@@ -831,15 +814,6 @@ def selectmunicipality2(request, kiosk_id):
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
 
-    total_points = None
-    if logged_in_username:
-        try:
-            queue_entry = QueueEntry.objects.get(QueueID=kiosk.QueueID_id)
-            reward_points = RewardPoints.objects.filter(user=queue_entry.user_id).last()
-            if reward_points:
-                total_points = reward_points.TotalPoints
-        except QueueEntry.DoesNotExist:
-            pass
 
     context = {
         'kiosk_id': kiosk_id,
@@ -851,6 +825,7 @@ def selectmunicipality2(request, kiosk_id):
     return render(request, 'selectmunicipality2.html', context)
 
 def selectmunicipality3(request, kiosk_id):
+    total_points = request.session.get('total_points', 0)
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
@@ -891,16 +866,6 @@ def selectmunicipality3(request, kiosk_id):
         messages.error(request, "Invalid Kiosk.")
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
-
-    total_points = None
-    if logged_in_username:
-        try:
-            queue_entry = QueueEntry.objects.get(QueueID=kiosk.QueueID_id)
-            reward_points = RewardPoints.objects.filter(user=queue_entry.user_id).last()
-            if reward_points:
-                total_points = reward_points.TotalPoints
-        except QueueEntry.DoesNotExist:
-            pass
 
     context = {
         'kiosk_id': kiosk_id,
@@ -911,6 +876,7 @@ def selectmunicipality3(request, kiosk_id):
     return render(request, 'selectmunicipality3.html', context)
 
 def selectmunicipality4(request, kiosk_id):
+    total_points = request.session.get('total_points', 0)
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
@@ -951,16 +917,6 @@ def selectmunicipality4(request, kiosk_id):
         messages.error(request, "Invalid Kiosk.")
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
-
-    total_points = None
-    if logged_in_username:
-        try:
-            queue_entry = QueueEntry.objects.get(QueueID=kiosk.QueueID_id)
-            reward_points = RewardPoints.objects.filter(user=queue_entry.user_id).last()
-            if reward_points:
-                total_points = reward_points.TotalPoints
-        except QueueEntry.DoesNotExist:
-            pass
 
     context = {
         'kiosk_id': kiosk_id,
@@ -972,6 +928,7 @@ def selectmunicipality4(request, kiosk_id):
     return render(request, 'selectmunicipality4.html', context)
 
 def selectmunicipality5(request, kiosk_id):
+    total_points = request.session.get('total_points', 0)
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
@@ -1013,15 +970,6 @@ def selectmunicipality5(request, kiosk_id):
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
 
-    total_points = None
-    if logged_in_username:
-        try:
-            queue_entry = QueueEntry.objects.get(QueueID=kiosk.QueueID_id)
-            reward_points = RewardPoints.objects.filter(user=queue_entry.user_id).last()
-            if reward_points:
-                total_points = reward_points.TotalPoints
-        except QueueEntry.DoesNotExist:
-            pass
 
     context = {
         'kiosk_id': kiosk_id,
@@ -1033,6 +981,7 @@ def selectmunicipality5(request, kiosk_id):
     return render(request, 'selectmunicipality5.html', context)
 
 def selectmunicipality6(request, kiosk_id):
+    total_points = request.session.get('total_points', 0)
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
@@ -1074,15 +1023,6 @@ def selectmunicipality6(request, kiosk_id):
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
 
-    total_points = None
-    if logged_in_username:
-        try:
-            queue_entry = QueueEntry.objects.get(QueueID=kiosk.QueueID_id)
-            reward_points = RewardPoints.objects.filter(user=queue_entry.user_id).last()
-            if reward_points:
-                total_points = reward_points.TotalPoints
-        except QueueEntry.DoesNotExist:
-            pass
 
     context = {
         'kiosk_id': kiosk_id,
@@ -1128,21 +1068,21 @@ def module_tourist(request, kiosk_id, municipality):
     modules = get_modules_by_type_and_municipality('t', municipality)
     
     if modules is None:
-        return render(request, 'error.html', {'message': 'Municipality not found.'})
+        return render(request, 'no_data')
     return render(request, 'module_tourist.html', {'modules': modules, 'municipality': municipality})
 
 #MODULES FOR FOOD
 def module_food(request, kiosk_id, municipality):
     modules = get_modules_by_type_and_municipality('f', municipality)
     if modules is None:
-        return render(request, 'error.html', {'message': 'Municipality not found.'})
+        return render(request, 'no_data')
     return render(request, 'module_food.html', {'modules': modules, 'municipality': municipality})
 
 #MODULES FOR CRAFTS
 def module_craft(request, kiosk_id, municipality):
     modules = get_modules_by_type_and_municipality('c', municipality)
     if modules is None:
-        return render(request, 'error.html', {'message': 'Municipality not found.'})
+        return render(request, 'no_data')
     return render(request, 'module_craft.html', {'modules': modules, 'municipality': municipality})
 
 #THIS IS FOR CALLING THE MODULE CONTAINER AND LAYOUT FUNCTIONS
@@ -1159,8 +1099,12 @@ logger = logging.getLogger(__name__)
 
 def fetch_quiz_questions(module_type, municipality, visitor_id):
     # Fetch questions that haven't been answered by the user, filtered by module type and municipality
-    answered_questions = RewardPoints.objects.filter(user_id=visitor_id, TriviaQuestionID__isnull=False) \
-                                              .values_list('TriviaQuestionID', flat=True)
+    answered_questions = RewardPoints.objects.filter(
+        user_id=visitor_id, 
+        TriviaQuestionID__isnull=False,
+        create_time__gte=timezone.now() - timedelta(days=1)  # Filter based on the create time within the last 24 hours
+    ).values_list('TriviaQuestionID', flat=True)
+
 
     questions = TriviaQuestion.objects.exclude(TriviaQuestionID__in=answered_questions) \
                                       .filter(ModuleType=module_type, Municipality__iexact=municipality) \
@@ -1182,10 +1126,11 @@ def quiz(request):
             visitor_id = kiosk.QueueID.user.pk
 
             # Check if the visitor has already completed the quiz for this module type and municipality
-            visitor_progress = VisitorProgress.objects.filter(VisitorID_id=visitor_id, 
-                                                              Municipality__iexact=municipality, 
-                                                              ModuleType=module_type, 
-                                                              Status='DONE').exists()
+            visitor_progress = VisitorProgress.objects.filter(VisitorID_id=visitor_id,
+                                                              Municipality__iexact=municipality,
+                                                              ModuleType=module_type,
+                                                              Status='DONE',
+                                                              DateCompleted=timezone.now().date()).exists()
             if visitor_progress:
                 # Redirect to the done_quiz page if the visitor has already completed the quiz
                 return redirect('done_quiz')
@@ -1260,88 +1205,129 @@ def display_next_question_or_finish_quiz(request):
             'reward_points': game_session['reward_points'],
             'total_questions': game_session['total_questions']
         })
-
-def update_visitor_progress(visitor_id, module_type, municipality):
-    # Update the visitor's progress to 'DONE' for the current module and municipality
-    visitor_progress, created = VisitorProgress.objects.get_or_create(
+def update_visitor_progress(visitor_id, module_type, municipality, date_completed):
+    # Check if there's already a progress for the given date
+    visitor_progress_exists = VisitorProgress.objects.filter(
         VisitorID_id=visitor_id,
         Municipality=municipality,
         ModuleType=module_type,
-        defaults={'Status': 'DONE'}
-    )
-    if not created:
-        visitor_progress.Status = 'DONE'  # Ensure the status is updated to DONE if the entry already exists
-    visitor_progress.save()
+        Status='DONE',
+        DateCompleted=date_completed
+    ).exists()
+
+    # If no progress for the given date exists, create a new row
+    if not visitor_progress_exists:
+        VisitorProgress.objects.create(
+            VisitorID_id=visitor_id,
+            Municipality=municipality,
+            ModuleType=module_type,
+            Status='DONE',
+            DateCompleted=date_completed
+        )
 
     # Check if the visitor has completed all required module types for the municipality
     required_modules = ['module_tourist', 'module_food', 'module_craft']
     completed_modules = VisitorProgress.objects.filter(
         VisitorID_id=visitor_id,
         Municipality=municipality,
-        Status='DONE'
+        Status='DONE',
+        DateCompleted=date_completed
     ).values_list('ModuleType', flat=True)
     
     if all(module in completed_modules for module in required_modules):
         # Add 5 extra points to the total points if all required modules are completed
         add_extra_points(visitor_id, municipality)
-
+        
 def add_extra_points(visitor_id, municipality):
-    extra_points_id = None  # Ajust this based on how your database is structured
-    
-    total_points_entry, created = RewardPoints.objects.get_or_create(
+    # Check if there's already a reward entry for today
+    today = timezone.now().date()
+    reward_entry = RewardPoints.objects.filter(
         user_id=visitor_id,
         Municipality=municipality,
-        TriviaQuestionID_id=extra_points_id,  # Adjust based on your model fields
-        defaults={'TotalPoints': 5, 'create_time': timezone.now()}
-    )
-    
-    if not created:
-        total_points_entry.TotalPoints += 5
-        total_points_entry.update_time = timezone.now()
-        total_points_entry.save()
+        create_time__date=today
+    ).first()
 
+    if not reward_entry:
+        extra_points_id = None  # Adjust this based on how your database is structured
+        defaults = {
+            'TotalPoints': 5,
+            'create_time': timezone.now(),
+            'update_time': timezone.now()
+        }
+        RewardPoints.objects.create(
+            user_id=visitor_id,
+            Municipality=municipality,
+            TriviaQuestionID_id=extra_points_id,  # Adjust based on your model fields
+            **defaults
+        )
+    else:
+        if reward_entry.create_time.date() != today:
+            # Create new row if existing entry is not for the same date
+            extra_points_id = None  # Adjust this based on how your database is structured
+            defaults = {
+                'TotalPoints': 5,
+                'create_time': timezone.now(),
+                'update_time': timezone.now()
+            }
+            RewardPoints.objects.create(
+                user_id=visitor_id,
+                Municipality=municipality,
+                TriviaQuestionID_id=extra_points_id,  # Adjust based on your model fields
+                **defaults
+            )
+            
+        else:
+            reward_entry.TotalPoints += 5
+            reward_entry.update_time = timezone.now()
+            reward_entry.save()
 
 def update_or_create_reward_points(visitor_id, points_to_add, trivia_question_id, module_type, municipality):
+    # Lookup criteria for existing entry
     lookup_criteria = {
         'user_id': visitor_id, 
         'TriviaQuestionID_id': trivia_question_id,
         'ModuleType': module_type, 
         'Municipality': municipality
     }
-    defaults = {
-        'TotalPoints': points_to_add, 
-        'create_time': timezone.now(), 
-        'update_time': timezone.now()
-    }
-    existing_entry, created = RewardPoints.objects.get_or_create(
-        defaults=defaults,
-        **lookup_criteria
-    )
+    # Retrieve existing entry if any
+    existing_entry = RewardPoints.objects.filter(**lookup_criteria).first()
 
-    if not created:
+    # Check if the existing entry is for the same date
+    if existing_entry and existing_entry.create_time.date() == timezone.now().date():
+        # Update existing entry
         existing_entry.TotalPoints += points_to_add
         existing_entry.update_time = timezone.now()
-
-    existing_entry.save()
+        existing_entry.save()
+    else:
+        # Create new entry
+        defaults = {
+            'TotalPoints': points_to_add, 
+            'create_time': timezone.now(), 
+            'update_time': timezone.now()
+        }
+        RewardPoints.objects.create(**lookup_criteria, **defaults)
 
 
 def results_view(request):
     visitor_id = request.session.get('game_session', {}).get('visitor_id')
     module_type = request.session.get('game_session', {}).get('module_type', '')
     municipality = request.session.get('game_session', {}).get('municipality', '')
-
-    # Update the visitor's progress before calculating the total points
-    update_visitor_progress(visitor_id, module_type, municipality)
-
-    total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
-    total_points = total_points_entry.get('total_points', 0)
     
+    # Update the visitor's progress for the same date as today
+    update_visitor_progress(visitor_id, module_type, municipality, timezone.now().date())
+
+    total_points_entry = RewardPoints.objects.filter(user_id=visitor_id, create_time__date=timezone.now().date()).aggregate(total_points=Sum('TotalPoints'))
+    total_points = total_points_entry.get('total_points', 0)
+       # Store total points in session
+    request.session['total_points'] = total_points
     # Clear the game session after updating visitor progress and before rendering results
     if 'game_session' in request.session:
         del request.session['game_session']
     
     return render(request, 'results.html', {'total_points': total_points})
 
-
 def done_quiz(request):
     return render(request, 'done_quiz.html')
+
+def no_data(request):
+    return render(request, 'no_data.html')

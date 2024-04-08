@@ -1,1341 +1,1430 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Parine sa Batangas</title>
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        height: 100%;
-        background-color: #15375D;
-        overflow: hidden;
-    }
-    .modulecontainer{
-        display: none;
-        position: absolute;
-        top: 6.8359375vw;
-        left: 0;
-        width: 100%;
-        height: calc(100% - 6.8359375vw);
-        background-color: #15375D; 
-        z-index: 100;
-    }
-    #backToMainButton {
-        position: absolute;
-        top: -78px; /* Align with the top panel */
-        left: 1.953125vw; /* Adjust left position as needed */
-        font-family: 'Gotham', sans-serif;
-        font-size: 1.3020833333333333vw;
-        font-weight: bold;
-        background-color: #06C9EF;
-        color: #FFFFFF;
-        padding: 0.6510416666666666vw 1.3020833333333333vw;
-        border: 0.1953125vw solid #FFFFFF;
-        border-radius: 1.953125vw;
-        cursor: pointer;
-        z-index: 2;
-        transition: transform 0.2s; /* Add a transition for the transform property */
-    }
-    
-    #backToMainButton:active {
-        transform: scale(0.5); /* Scale down the button when clicked */
-    }
-    .top-panel {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 6.8359375vw;
-        background-color: #15375D;  
-        z-index: 1;  
-    }
-    
-    #imageButtonContainer {
-        position: fixed;
-        top: 1.3020833333333333vw; 
-        right: 1.953125vw; 
-        z-index: 1000; 
-      }
-      
-      #imageButton {
-        width: 4.557291666666667vw; 
-        height: auto; 
-        cursor: pointer; 
-        transition: transform 0.2s; /* Add a transition for the transform property */
-    }
-    
-    #imageButton:active {
-        transform: scale(0.9);
-    }
-      #rightPanel {
-        display: none;
-        position: fixed;
-        top: 0;
-        right: 0;
-        width:  19.53125vw;
-        height: 100vh;
-        background-color: #f4f4f4;
-        z-index: 999;
-        padding: 1.3020833333333333vw;
-        box-sizing: border-box;
-        border-top-left-radius: 0.9765625vw; /* Radius for top-left corner */
-        border-bottom-left-radius: 0.9765625vw;
-    }
-    #usertopPanel {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 19.53125vw;
-        height: 6.8359375vw;
-        background-color: #06C9EF;
-        z-index: 1;
-        display: flex;
-        align-items: center;
-        overflow: hidden; 
-    }
-    
-    .username {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-        max-width: 10.416666666666666vw; 
-        font-size: 1.8229166666666667vw; 
-        margin: 0; 
-        padding: 0; 
-        font-family: Arial, sans-serif;
-        font-weight: bold;
-        color: #333; 
-        top: 2.6041666666666665vw;
-        right: 7.161458333333333vw;
-        position: absolute;
-    }
-
-    #backButton {
-        position: absolute;
-        top: 0.390625vw;
-        left:  0.2604166666666667vw;
-        margin-bottom: 0.6510416666666666vw;
-        width: 3.2552083333333335vw;
-        cursor: pointer;
-        border: none;
-        border-radius: 0.3255208333333333vw;
-        color: white;
-        padding: 0.3255208333333333vw 0.6510416666666666vw;
-        text-align: center;
-        z-index: 100;
-        transition: transform 0.2s; /* Add a transition for the transform property */
-    }
-    
-    #backButton:active {
-        transform: scale(0.9);
-    }
-
-    #selectdistrict-button {
-        position: absolute;
-        bottom: 13.020833333333334vw; 
-        left: 4.427083333333333vw;
-        font-family: 'Gotham', sans-serif; 
-        font-size: 1.3020833333333333vw;
-        font-weight: bold;
-        background-color: #06C9EF;
-        color: #FFFFFF;
-        padding: 0.6510416666666666vw 1.3020833333333333vw;
-        border: 0.1953125vw solid #FFFFFF;
-        border-radius: 1.953125vw;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s;
-        z-index: 100;
-        transition: transform 0.2s; /* Add a transition for the transform property */
-    }
-    
-    #selectdistrict-button:active {
-        transform: scale(0.9); /* Scale down the button when clicked */
-    }
-
-    #logout-button {
-        position: absolute;
-        bottom: 6.510416666666667vw; 
-        left: 6.510416666666667vw;
-        font-family: 'Gotham', sans-serif; 
-        font-size: 1.3020833333333333vw;
-        font-weight: bold;
-        background-color: #06C9EF;
-        color: #FFFFFF;
-        padding: 0.6510416666666666vw 1.3020833333333333vw;
-        border: 0.1953125vw solid #FFFFFF;
-        border-radius: 1.953125vw;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s;
-        z-index: 100;
-        transition: transform 0.2s;
-    }
-    
-    #logout-button:active {
-        transform: scale(0.9); /* Scale down the button when clicked */
-    }
-
-    #logout-button {
-        position: absolute;
-        bottom: 6.510416666666667vw; 
-        left: 6.510416666666667vw;
-        font-family: 'Gotham', sans-serif; 
-        font-size: 1.3020833333333333vw;
-        font-weight: bold;
-        background-color: #06C9EF;
-        color: #FFFFFF;
-        padding: 0.6510416666666666vw 1.3020833333333333vw;
-        border: 0.1953125vw solid #FFFFFF;
-        border-radius: 1.953125vw;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s;
-        z-index: 100;
-        transition: transform 0.2s; /* Add a transition for the transform property */
-    }
-    
-    #logout-button:active {
-        transform: scale(0.9); /* Scale down the button when clicked */
-    }
-    .title {
-        position: absolute;
-        top: 2.4088541666666665vw;
-        left: 32.161458333333336vw;
-        font-family: 'Fira Sans', sans-serif;
-        font-size: 3.2552083333333335vw;
-        font-weight: bold;
-        text-align: center;
-        color: #FDF6EA;
-        z-index: 2;
-    }
-    .test
-    {
-        position: absolute;
-        top: 2.4088541666666665vw;
-        left: 50%;
-        transform: translateX(-50%);
-        font-family: 'Fira Sans', sans-serif;
-        font-size: 50px;
-        font-weight: bold;
-        text-align: center;
-        color: #FDF6EA;
-        z-index: 2;
-    }
-
-    .barrier
-    {
-        position: absolute;
-        top: 2.4088541666666665vw;
-        left: 51.432291666666664vw;
-        transform: translateX(-50%);
-        font-family: 'Fira Sans', sans-serif;
-        font-size: 3.2552083333333335vw;
-        font-weight: bold;
-        text-align: center;
-        color: #FAED23;
-        z-index: 2;
-    }
-    
-    .district
-    {
-        position: absolute;
-        top: 2.4088541666666665vw;
-        left: 52.734375vw;
-        font-family: 'Fira Sans', sans-serif;
-        font-size: 3.2552083333333335vw;
-        font-weight: bold;
-        text-align: center;
-        color: #06C9EF;
-        z-index: 2;
-    }
-    
-    .district3 {
-        position: absolute;
-        top: -2.9296875vw;
-        left: 14.973958333333334vw;
-        width: 97.65625vw;
-        z-index: 0;
-    }
-    .square {
-        position: absolute;
-        top: 21.809895833333332vw;
-        left: 25.065104166666668vw;
-        transform: translate(-50%, -50%);
-        text-align: center;
-  
-        color: #010355;
-        border: 1px solid #1db4ff;
-        border-radius: 10px;
-  
-        width: 32.552083333333336vw; 
-        height: 16.276041666666668vw;
-        background: #ffffff;
-      }
-
-      .header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.4322916666666667vw;
-        text-align: left;
-        font-family: 'DM Serif Display', serif;
-        display: flex;
-        color: #15375D;
-        margin-top:  1.6276041666666667vw;
-      }
-      .header img {
-        width: 13.020833333333334vw; 
-        height: auto;
-        margin-right:  0.6510416666666666vw; 
-        margin-top:  0.6510416666666666vw;
-        margin-left: 0px;
-    }
-    
-    .select{
-        position: absolute;
-        top:  9.114583333333334vw;
-        left: 4.231770833333333vw;
-        text-align: center;
-        font-family: 'TT Commons Pro', sans-serif;
-        font-size: 1.5625vw;
-        z-index: 2;
-        color: #15375D;
-    }
-
-    .district3ST-button {
-        position: absolute;
-        background: none;
-        border: none;
-        top:  10.872395833333334vw;
-        left:  74.28385416666667vw; 
-        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        text-decoration: none; 
-        color: #FFF; 
-        transform-origin: center;
-    }
-    
-    .district3ST-button img {
-        width: 9.309895833333334vw;
-    }
-
-    .district3ST-button.clicked {
-        transform: scale(1.4); /* Scale when clicked */
-        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 10;
-    }
-
-
-/* ----------------- */
-    .district3M-button {
-        position: absolute;
-        background: none;
-        border: none;
-        top: 18.229166666666668vw; 
-        left: 72.33072916666667vw; 
-        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        text-decoration: none; 
-        color: #FFF; 
-        transform-origin: center;
-        z-index: 2;
-    }
-    
-    .district3M-button img {
-        width: 6.901041666666667vw;
-    }
-    .district3M-button.clicked {
-        transform: scale(1.4); /* Scale when clicked */
-        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 10;
-    }
-    /* ----------------- */
-    .district3TN-button {
-        position: absolute;
-        background: none;
-        border: none;
-        top: 10.026041666666666vw; 
-        left: 67.90364583333333vw; 
-        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        text-decoration: none; 
-        color: #FFF; 
-        transform-origin: center;
-    }
-    
-    .district3TN-button img {
-        width: 9.114583333333334vw;
-    }
-    .district3TN-button.clicked {
-        transform: scale(1.4); /* Scale when clicked */
-        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 10;
-    }
-
-    /* ----------------- */
-    .district3T-button {
-        position: absolute;
-        background: none;
-        border: none;
-        top: 12.044270833333334vw;
-        left: 60.7421875vw; 
-        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        text-decoration: none; 
-        color: #FFF; 
-        transform-origin: center;
-    }
-    
-    .district3T-button img {
-        width: 8.203125vw;
-
-    }
-    .district3T-button.clicked {
-        transform: scale(1.4); /* Scale when clicked */
-        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 10;
-    }
-    /* ----------------- */
-    .district3A-button {
-        position: absolute;
-        background: none;
-        border: none;
-        top: 21.875vw; 
-        left: 55.859375vw; 
-        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transform-origin: center;
-        transition: transform 0.3s;
-    }
-    
-    .district3A-button img {
-        width: 4.6875vw;
-
-    }
-    .district3A-button.clicked {
-        transform: scale(1.4); /* Scale when clicked */
-        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 10;
-    }
-    /* ----------------- */
-    .district3SN-button {
-        position: absolute;
-        background: none;
-        border: none;
-        top: 29.166666666666668vw; 
-        left: 58.59375vw; 
-        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transform-origin: center;
-        transition: transform 0.3s;
-    }
-    
-    .district3SN-button img {
-        width: 4.557291666666667vw;
-
-    }
-    .district3SN-button.clicked {
-        transform: scale(1.4); /* Scale when clicked */
-        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 10;
-    }
-    /* ----------------- */
-    .district3B-button {
-        position: absolute;
-        background: none;
-        border: none;
-        top: 20.3125vw; 
-        left: 70.37760416666667vw; 
-        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transform-origin: center;
-        transition: transform 0.3s;
-        z-index: 4;
-    }
-    
-    .district3B-button img {
-        width: 5.6640625vw;
-
-    }
-    .district3B-button.clicked {
-        transform: scale(1.4); /* Scale when clicked */
-        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 10;
-    }
-    /* ----------------- */
-    .district3MK-button {
-        position: absolute;
-        background: none;
-        border: none;
-        top: 22.4609375vw; 
-        left: 70.44270833333333vw; 
-        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transform-origin: center;
-        transition: transform 0.3s;
-        z-index: 3;
-    }
-    
-    .district3MK-button img {
-        width: 3.90625vw;
-
-    }
-    .district3MK-button.clicked {
-        transform: scale(1.4); /* Scale when clicked */
-        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 10;
-    }
-    /* ----------------- */
-    .district3STR-button {
-        position: absolute;
-        background: none;
-        border: none;
-        top: 31.25vw; 
-        left: 59.635416666666664vw; 
-        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transform-origin: center;
-        transition: transform 0.3s;
-        z-index: 3;
-    }
-    
-    .district3STR-button img {
-        width: 3.9713541666666665vw;
-
-    }
-    .district3STR-button.clicked {
-        transform: scale(1.4); /* Scale when clicked */
-        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 10;
-    }
-    /* ----------------- */
-    .district3C-button {
-        position: absolute;
-        background: none;
-        border: none;
-        top: 28.255208333333332vw; 
-        left: 66.14583333333333vw; 
-        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transform-origin: center;
-        transition: transform 0.3s;
-        z-index: 3;
-    }
-    
-    .district3C-button img {
-        width: 4.166666666666667vw;
-
-    }
-    .district3C-button.clicked {
-        transform: scale(1.4); /* Scale when clicked */
-        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 10;
-    }
-    /* ----------------- */
-    .district3AG-button {
-        position: absolute;
-        background: none;
-        border: none;
-        top: 32.421875vw; 
-        left: 62.239583333333336vw; 
-        padding: -200px;
-        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transform-origin: center;
-        transition: transform 0.3s;
-        z-index: 3;
-    }
-    
-    .district3AG-button img {
-        width: 5.338541666666667vw;
-
-    }
-    .district3AG-button.clicked {
-        transform: scale(1.4); /* Scale when clicked */
-        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 10;
-    }
-    /* ----------------- */
-    .district3L-button {
-        position: absolute;
-        background: none;
-        border: none;
-        top: 15.559895833333334vw; 
-        left: 51.3671875vw;
-        transition: transform 0.3s, border-color 0.3s; /* Smooth transition for transform and border-color */
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transform-origin: center;
-        transition: transform 0.3s;
-        z-index: 1;
-    }
-    
-    .district3L-button img {
-        width: 9.700520833333334vw;
-
-    }
-    .district3L-button.clicked {
-        transform: scale(1.4); /* Scale when clicked */
-        filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1)); /* Add drop shadow when clicked */
-        z-index: 10;
-    }
-    /* -------------------------------------- EXPLORE-----------------------------------------*/
-
-    .exploreST {
-        display: none; /* Hide the container by default */
-        position: absolute;
-        top: 21.809895833333332vw;
-        left: 25.065104166666668vw;
-        transform: translate(-50%, -50%);
-        text-align: center;
-  
-        color: #010355;
-        border: 1px solid #1db4ff;
-        border-radius: 10px;
-  
-        width: 32.552083333333336vw; 
-        height: 16.276041666666668vw;
-        background: #ffffff;
-    }
-    .exploreST-button {
-        position: absolute;
-        top: 10.416666666666666vw; 
-        left: 10.026041666666666vw; 
-        font-family: 'Gotham', sans-serif; 
-        font-size: 1.953125vw;
-        font-weight: bold;
-        background-color: #FFFFFF;
-        color: #06C9EF;
-        padding: 0.6510416666666666vw 1.3020833333333333vw;
-        border: 3px solid #0097B2;
-        border-radius: 30px;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s;
-        z-index: 2;
-    }
-    .exploreST-button:hover {
-        background-color: #06C9EF;
-        color: #FFFFFF;
-    }
-    /*-------------------*/
-    .exploreA {
-        display: none; /* Hide the container by default */
-        position: absolute;
-        top: 21.809895833333332vw;
-        left: 25.065104166666668vw;
-        transform: translate(-50%, -50%);
-        text-align: center;
-  
-        color: #010355;
-        border: 1px solid #1db4ff;
-        border-radius: 10px;
-  
-        width: 32.552083333333336vw; 
-        height: 16.276041666666668vw;
-        background: #ffffff;
-    }
-
-    .exploreA-button {
-        position: absolute;
-        top: 10.416666666666666vw; 
-        left: 10.026041666666666vw; 
-        font-family: 'Gotham', sans-serif; 
-        font-size: 1.953125vw;
-        font-weight: bold;
-        background-color: #FFFFFF;
-        color: #06C9EF;
-        padding: 0.6510416666666666vw 1.3020833333333333vw;
-        border: 3px solid #0097B2;
-        border-radius: 30px;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s;
-        z-index: 2;
-    }
-    
-    .exploreA-button:hover {
-        background-color: #06C9EF;
-        color: #FFFFFF;
-    }
-    .exploreT {
-        display: none; /* Hide the container by default */
-        position: absolute;
-        top: 21.809895833333332vw;
-        left: 25.065104166666668vw;
-        transform: translate(-50%, -50%);
-        text-align: center;
-  
-        color: #010355;
-        border: 1px solid #1db4ff;
-        border-radius: 10px;
-  
-        width: 32.552083333333336vw; 
-        height: 16.276041666666668vw;
-        background: #ffffff;
-
-    }
-    .backT {
-        margin-top: 20px;
-        padding: 10px 20px;
-        background-color: #15375D;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .exploreT-button {
-        position: absolute;
-        top: 10.416666666666666vw; 
-        left: 10.026041666666666vw; 
-        font-family: 'Gotham', sans-serif;
-        font-size: 1.953125vw;
-        font-weight: bold;
-        background-color: #FFFFFF;
-        color: #06C9EF;
-        padding: 0.6510416666666666vw 1.3020833333333333vw;
-        border: 3px solid #0097B2;
-        border-radius: 30px;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s;
-        z-index: 2;
-    }
-    .exploreT-button:hover {
-        background-color: #06C9EF;
-        color: #FFFFFF;
-    }
-    .exploreTN {
-        display: none; /* Hide the container by default */
-        position: absolute;
-        top: 21.809895833333332vw;
-        left: 25.065104166666668vw;
-        transform: translate(-50%, -50%);
-        text-align: center;
-  
-        color: #010355;
-        border: 1px solid #1db4ff;
-        border-radius: 10px;
-  
-        width: 32.552083333333336vw; 
-        height: 16.276041666666668vw;
-        background: #ffffff;
-    }
-    .backTN {
-        margin-top: 20px;
-        padding: 10px 20px;
-        background-color: #15375D;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .exploreTN-button {
-        position: absolute;
-        top: 10.416666666666666vw; 
-        left: 10.026041666666666vw; 
-        font-family: 'Gotham', sans-serif; 
-        font-size: 1.953125vw;
-        font-weight: bold;
-        background-color: #FFFFFF;
-        color: #06C9EF;
-        padding: 0.6510416666666666vw 1.3020833333333333vw;
-        border: 3px solid #0097B2;
-        border-radius: 30px;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s;
-        z-index: 2;
-    }
-    .exploreTN-button:hover {
-        background-color: #06C9EF;
-        color: #FFFFFF;
-    }
-    
-    .exploreM {
-        display: none; /* Hide the container by default */
-        position: absolute;
-        top: 21.809895833333332vw;
-        left: 25.065104166666668vw;
-        transform: translate(-50%, -50%);
-        text-align: center;
-  
-        color: #010355;
-        border: 1px solid #1db4ff;
-        border-radius: 10px;
-  
-        width: 32.552083333333336vw; 
-        height: 16.276041666666668vw;
-        background: #ffffff;
-    }
-    .backM {
-        margin-top: 20px;
-        padding: 10px 20px;
-        background-color: #15375D;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .exploreM-button {
-        position: absolute;
-        top: 10.416666666666666vw; 
-        left: 10.026041666666666vw; 
-        font-family: 'Gotham', sans-serif; 
-        font-size: 1.953125vw;
-        font-weight: bold;
-        background-color: #FFFFFF;
-        color: #06C9EF;
-        padding: 0.6510416666666666vw 1.3020833333333333vw;
-        border: 3px solid #0097B2;
-        border-radius: 30px;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s;
-        z-index: 2;
-    }
-    .exploreM-button:hover {
-        background-color: #06C9EF;
-        color: #FFFFFF;
-    }
-/*-------------------------*/
-.exploreSN {
-    display: none; /* Hide the container by default */
-    position: absolute;
-    top: 21.809895833333332vw;
-    left: 25.065104166666668vw;
-    transform: translate(-50%, -50%);
-    text-align: center;
-
-    color: #010355;
-    border: 1px solid #1db4ff;
-    border-radius: 10px;
-
-    width: 32.552083333333336vw; 
-    height: 16.276041666666668vw;
-    background: #ffffff;
-}
-.backSN {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #15375D;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.exploreSN-button {
-    position: absolute;
-    top: 10.416666666666666vw; 
-    left: 10.026041666666666vw;
-    font-family: 'Gotham', sans-serif; 
-    font-size: 1.953125vw;
-    font-weight: bold;
-    background-color: #FFFFFF;
-    color: #06C9EF;
-    padding: 0.6510416666666666vw 1.3020833333333333vw;
-    border: 3px solid #0097B2;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    z-index: 2;
-}
-.exploreSN-button:hover {
-    background-color: #06C9EF;
-    color: #FFFFFF;
-}
-/*-------------------------*/
-.exploreB {
-    display: none; /* Hide the container by default */
-    position: absolute;
-    top: 21.809895833333332vw;
-    left: 25.065104166666668vw;
-    transform: translate(-50%, -50%);
-    text-align: center;
-
-    color: #010355;
-    border: 1px solid #1db4ff;
-    border-radius: 10px;
-
-    width: 32.552083333333336vw; 
-    height: 16.276041666666668vw;
-    background: #ffffff;
-}
-.backB {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #15375D;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.exploreB-button {
-    position: absolute;
-    top: 10.416666666666666vw; 
-    left: 10.026041666666666vw; 
-    font-family: 'Gotham', sans-serif; 
-    font-size: 1.953125vw;
-    font-weight: bold;
-    background-color: #FFFFFF;
-    color: #06C9EF;
-    padding: 0.6510416666666666vw 1.3020833333333333vw;
-    border: 3px solid #0097B2;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    z-index: 2;
-}
-.exploreB-button:hover {
-    background-color: #06C9EF;
-    color: #FFFFFF;
-}
-/*-------------------------*/
-.exploreMK {
-    display: none; /* Hide the container by default */
-    position: absolute;
-    top: 21.809895833333332vw;
-    left: 25.065104166666668vw;
-    transform: translate(-50%, -50%);
-    text-align: center;
-
-    color: #010355;
-    border: 1px solid #1db4ff;
-    border-radius: 10px;
-
-    width: 32.552083333333336vw; 
-    height: 16.276041666666668vw;
-    background: #ffffff;
-}
-.backMK {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #15375D;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.exploreMK-button {
-    position: absolute;
-    top: 10.416666666666666vw; 
-    left: 10.026041666666666vw; 
-    font-family: 'Gotham', sans-serif; 
-    font-size: 1.953125vw;
-    font-weight: bold;
-    background-color: #FFFFFF;
-    color: #06C9EF;
-    padding: 0.6510416666666666vw 1.3020833333333333vw;
-    border: 3px solid #0097B2;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    z-index: 2;
-}
-.exploreMK-button:hover {
-    background-color: #06C9EF;
-    color: #FFFFFF;
-}
-/*-------------------------*/
-.exploreSTR {
-    display: none; /* Hide the container by default */
-    position: absolute;
-    top: 21.809895833333332vw;
-    left: 25.065104166666668vw;
-    transform: translate(-50%, -50%);
-    text-align: center;
-
-    color: #010355;
-    border: 1px solid #1db4ff;
-    border-radius: 10px;
-
-    width: 32.552083333333336vw; 
-    height: 16.276041666666668vw;
-    background: #ffffff;
-}
-.backSTR {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #15375D;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.exploreSTR-button {
-    position: absolute;
-    top: 10.416666666666666vw; 
-    left: 10.026041666666666vw; 
-    font-family: 'Gotham', sans-serif;
-    font-size: 1.953125vw;
-    font-weight: bold;
-    background-color: #FFFFFF;
-    color: #06C9EF;
-    padding: 0.6510416666666666vw 1.3020833333333333vw;
-    border: 3px solid #0097B2;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    z-index: 2;
-}
-.exploreSTR-button:hover {
-    background-color: #06C9EF;
-    color: #FFFFFF;
-}
-/*-------------------------*/
-.exploreC {
-    display: none; /* Hide the container by default */
-    position: absolute;
-    top: 21.809895833333332vw;
-    left: 25.065104166666668vw;
-    transform: translate(-50%, -50%);
-    text-align: center;
-
-    color: #010355;
-    border: 1px solid #1db4ff;
-    border-radius: 10px;
-
-    width: 32.552083333333336vw; 
-    height: 16.276041666666668vw;
-    background: #ffffff;
-}
-.backC {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #15375D;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.exploreC-button {
-    position: absolute;
-    top: 10.416666666666666vw; 
-    left: 10.026041666666666vw; 
-    font-family: 'Gotham', sans-serif; 
-    font-size: 1.953125vw;
-    font-weight: bold;
-    background-color: #FFFFFF;
-    color: #06C9EF;
-    padding: 0.6510416666666666vw 1.3020833333333333vw;
-    border: 3px solid #0097B2;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    z-index: 2;
-}
-.exploreC-button:hover {
-    background-color: #06C9EF;
-    color: #FFFFFF;
-}
-/*-------------------------*/
-.exploreAG {
-    display: none; /* Hide the container by default */
-    position: absolute;
-    top: 21.809895833333332vw;
-    left: 25.065104166666668vw;
-    transform: translate(-50%, -50%);
-    text-align: center;
-
-    color: #010355;
-    border: 1px solid #1db4ff;
-    border-radius: 10px;
-
-    width: 32.552083333333336vw; 
-    height: 16.276041666666668vw;
-    background: #ffffff;
-}
-
-.exploreAG-button {
-    position: absolute;
-    top: 10.416666666666666vw; 
-    left: 10.026041666666666vw; 
-    font-family: 'Gotham', sans-serif; 
-    font-size: 1.953125vw;
-    font-weight: bold;
-    background-color: #FFFFFF;
-    color: #06C9EF;
-    padding: 0.6510416666666666vw 1.3020833333333333vw;
-    border: 3px solid #0097B2;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    z-index: 2;
-}
-.exploreAG-button:hover {
-    background-color: #06C9EF;
-    color: #FFFFFF;
-}
-/*-------------------------*/
-.exploreL {
-    display: none; /* Hide the container by default */
-    position: absolute;
-    top: 21.809895833333332vw;
-    left: 25.065104166666668vw;
-    transform: translate(-50%, -50%);
-    text-align: center;
-
-    color: #010355;
-    border: 1px solid #1db4ff;
-    border-radius: 10px;
-
-    width: 32.552083333333336vw; 
-    height: 16.276041666666668vw;
-    background: #ffffff;
-}
-
-.exploreL-button {
-    position: absolute;
-    top: 10.416666666666666vw; 
-    left: 10.026041666666666vw; 
-    font-family: 'Gotham', sans-serif; 
-    font-size: 1.953125vw;
-    font-weight: bold;
-    background-color: #FFFFFF;
-    color: #06C9EF;
-    padding: 0.6510416666666666vw 1.3020833333333333vw;
-    border: 3px solid #0097B2;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    z-index: 2;
-}
-.exploreL-button:hover {
-    background-color: #06C9EF;
-    color: #FFFFFF;
-}
-
-/*-----------------------------------------------MODULE*-------------------------------------------------*/
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-
-.mheader {
-    width: 100%;
-    text-align: center;
-    padding: 10px 0;
-    background: #fff;
-}
-
-.mheader button {
-    padding: 5px 10px;
-    margin: 0 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background: #18395E;
-    color: #fff;
-    font-size: 20px;
-}
-
-.mcontainer {
-    position: absolute;
-    top: 22.447916666666668vw;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100vw;
-    height: 39.84375vw;
-    background: #18395E;
-    box-shadow: 0 30px 50px #dbdbdb;
-}
-
-.mbackground-slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-}
-
-.mbackground-slide .item {
-    width: 100%;
-    height: 100%;
-    background-position: center;
-    background-size: cover;
-    transition: background-image 0.5s ease-in-out;
-}
-
-.mslide {
-    position: relative;
-    z-index: 1;
-}
-
-.mslide .item {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: none;
-    background-position: center;
-    background-size: cover;
-}
-
-.mslide .item.active {
-    display: block;
-}
-
-.mcontent {
-    position: absolute;
-    top: 50%;
-    left: 100px;
-    width: 300px;
-    text-align: left;
-    color: #15375D;
-    transform: translate(0, -50%);
-    font-family: system-ui;
-    display: none;
-    overflow: hidden; /* Hide overflowing blur effect */
-}
-
-.mcontent.active {
-    display: block;
-}
-
-
-.mcontent .name {
-    font-size: 40px;
-    text-transform: uppercase;
-    font-weight: bold;
-    opacity: 0;
-    background: rgba(255, 255, 255, 0.8);
-    animation: animateName 0.5s ease-in-out 0.5s forwards; /* Changed animation name and delay */
-}
-
-.mcontent .des {
-    opacity: 0;
-    background: rgba(255, 255, 255, 0.8);
-    animation: animateDes 0.5s ease-in-out 1s forwards; /* Changed animation name and delay */
-}
-
-/* Keyframes for animations */
-@keyframes animateName {
-    from {
-        opacity: 0;
-        transform: translate(0, 100px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translate(0);
-    }
-}
-
-@keyframes animateDes {
-    from {
-        opacity: 0;
-        transform: translate(0, 100px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translate(0);
-    }
-}
-
-.mheader button {
-    padding: 5px 10px;
-    margin: 0 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background: #18395E;
-    color: #fff;
-    font-size: 16px;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.mheader button:hover {
-    background: #fff;
-    color: #18395E;
-}
-
-
-.mbutton {
-    width: 100%;
-    text-align: center;
-    position: absolute;
-    bottom: 20px;
-}
-
-.mbutton button {
-    width: 40px;
-    height: 35px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    margin: 0 5px;
-    border: 1px solid #000;
-    transition: 0.3s;
-}
-
-.mactive-button {
-    background: #fff;
-    color: #ffff00;
-}
-h3 {
-    font-size: 18px; 
-    margin-top: 60px; 
-    margin-left: 20px;
-    text-align: left; 
-}
-#points {
-    position: absolute;
-    top: 15.625vw;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: Arial, sans-serif;
-    font-weight: bold;
-    color: #333; 
-    font-size: 2.0833333333333335vw; 
-    width: 17.708333333333332vw;
-    text-align: center;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parine sa Batangas</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100%;
+            background-color: #15375D;
+            overflow: hidden;
+        }
+
+        .modulecontainer {
+            display: none;
+            position: absolute;
+            top: 6.8359375vw;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 6.8359375vw);
+            background-color: #15375D;
+            z-index: 100;
+        }
+
+        #backToMainButton {
+            position: absolute;
+            top: -78px;
+            /* Align with the top panel */
+            left: 1.953125vw;
+            /* Adjust left position as needed */
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.3020833333333333vw;
+            font-weight: bold;
+            background-color: #06C9EF;
+            color: #FFFFFF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 0.1953125vw solid #FFFFFF;
+            border-radius: 1.953125vw;
+            cursor: pointer;
+            z-index: 2;
+            transition: transform 0.2s;
+            /* Add a transition for the transform property */
+        }
+
+        #backToMainButton:active {
+            transform: scale(0.5);
+            /* Scale down the button when clicked */
+        }
+
+        .top-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6.8359375vw;
+            background-color: #15375D;
+            z-index: 1;
+        }
+
+        #imageButtonContainer {
+            position: fixed;
+            top: 1.3020833333333333vw;
+            right: 1.953125vw;
+            z-index: 1000;
+        }
+
+        #imageButton {
+            width: 4.557291666666667vw;
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #imageButton:active {
+            transform: scale(0.9);
+        }
+
+        #rightPanel {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 19.53125vw;
+            height: 100vh;
+            background-color: #f4f4f4;
+            z-index: 999;
+            padding: 1.3020833333333333vw;
+            box-sizing: border-box;
+            border-top-left-radius: 2.9765625vw;
+            border-bottom-left-radius: 2.9765625vw;
+            /* Border only on the left side */
+            border-left: 0.0000625vw solid #0f172a;
+        }
+
+        #usertopPanel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 19.50125vw;
+            height: 6.8359375vw;
+            background-color: #06C9EF;
+            border-top-left-radius: 2.9765625vw;
+            /* Border only on the left side */
+            border-left: 0.0000625vw solid #0f172a;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .username {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 10.416666666666666vw;
+            font-size: 1.5229166666666667vw;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            color: #0f172a;
+            top: 2.6041666666666665vw;
+            right: 7.161458333333333vw;
+            position: absolute;
+        }
+
+
+
+        #selectdistrict-button {
+            position: absolute;
+            bottom: 13.020833333333334vw;
+            left: 4.427083333333333vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.3020833333333333vw;
+            font-weight: bold;
+            background-color: #06C9EF;
+            color: #FFFFFF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 0.0000125vw solid #0f172a;
+            border-radius: 1.953125vw;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 100;
+            transition: transform 0.2s;
+        }
+
+        #selectdistrict-button:hover {
+            background-color: #08a1c0;
+        }
+
+        #logout-button:hover {
+            background-color: #08a1c0;
+        }
+
+        #logout-button {
+            position: absolute;
+            bottom: 6.510416666666667vw;
+            left: 6.510416666666667vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.3020833333333333vw;
+            font-weight: bold;
+            background-color: #06C9EF;
+            color: #FFFFFF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 0.0000125vw solid #0f172a;
+            border-radius: 1.953125vw;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 100;
+            transition: transform 0.2s;
+        }
+
+        .title {
+            position: absolute;
+            top: 2.4088541666666665vw;
+            left: 32.161458333333336vw;
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 3.2552083333333335vw;
+            font-weight: bold;
+            text-align: center;
+            color: #FDF6EA;
+            z-index: 2;
+        }
+
+        .test {
+            position: absolute;
+            top: 2.4088541666666665vw;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 50px;
+            font-weight: bold;
+            text-align: center;
+            color: #FDF6EA;
+            z-index: 2;
+        }
+
+        .barrier {
+            position: absolute;
+            top: 2.4088541666666665vw;
+            left: 51.432291666666664vw;
+            transform: translateX(-50%);
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 3.2552083333333335vw;
+            font-weight: bold;
+            text-align: center;
+            color: #FAED23;
+            z-index: 2;
+        }
+
+        .district {
+            position: absolute;
+            top: 2.4088541666666665vw;
+            left: 52.734375vw;
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 3.2552083333333335vw;
+            font-weight: bold;
+            text-align: center;
+            color: #06C9EF;
+            z-index: 2;
+        }
+
+        .district3 {
+            position: absolute;
+            top: -2.9296875vw;
+            left: 14.973958333333334vw;
+            width: 97.65625vw;
+            z-index: 0;
+        }
+
+        .square {
+            position: absolute;
+            top: 21.809895833333332vw;
+            left: 25.065104166666668vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+
+            width: 32.552083333333336vw;
+            height: 16.276041666666668vw;
+            background: #ffffff;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4322916666666667vw;
+            text-align: left;
+            font-family: 'DM Serif Display', serif;
+            display: flex;
+            color: #15375D;
+            margin-top: 1.6276041666666667vw;
+        }
+
+        .header img {
+            width: 13.020833333333334vw;
+            height: auto;
+            margin-right: 0.6510416666666666vw;
+            margin-top: 0.6510416666666666vw;
+            margin-left: 0px;
+        }
+
+        .select {
+            position: absolute;
+            top: 9.114583333333334vw;
+            left: 4.231770833333333vw;
+            text-align: center;
+            font-family: 'TT Commons Pro', sans-serif;
+            font-size: 1.5625vw;
+            z-index: 2;
+            color: #15375D;
+        }
+
+        .district3ST-button {
+            position: absolute;
+            background: none;
+            border: none;
+            top: 10.872395833333334vw;
+            left: 74.28385416666667vw;
+            transition: transform 0.3s, border-color 0.3s;
+            /* Smooth transition for transform and border-color */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            text-decoration: none;
+            color: #FFF;
+            transform-origin: center;
+        }
+
+        .district3ST-button img {
+            width: 9.309895833333334vw;
+        }
+
+        .district3ST-button.clicked {
+            transform: scale(1.4);
+            /* Scale when clicked */
+            filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1));
+            /* Add drop shadow when clicked */
+            z-index: 10;
+        }
+
+
+        /* ----------------- */
+        .district3M-button {
+            position: absolute;
+            background: none;
+            border: none;
+            top: 18.229166666666668vw;
+            left: 72.33072916666667vw;
+            transition: transform 0.3s, border-color 0.3s;
+            /* Smooth transition for transform and border-color */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            text-decoration: none;
+            color: #FFF;
+            transform-origin: center;
+            z-index: 2;
+        }
+
+        .district3M-button img {
+            width: 6.901041666666667vw;
+        }
+
+        .district3M-button.clicked {
+            transform: scale(1.4);
+            /* Scale when clicked */
+            filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1));
+            /* Add drop shadow when clicked */
+            z-index: 10;
+        }
+
+        /* ----------------- */
+        .district3TN-button {
+            position: absolute;
+            background: none;
+            border: none;
+            top: 10.026041666666666vw;
+            left: 67.90364583333333vw;
+            transition: transform 0.3s, border-color 0.3s;
+            /* Smooth transition for transform and border-color */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            text-decoration: none;
+            color: #FFF;
+            transform-origin: center;
+        }
+
+        .district3TN-button img {
+            width: 9.114583333333334vw;
+        }
+
+        .district3TN-button.clicked {
+            transform: scale(1.4);
+            /* Scale when clicked */
+            filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1));
+            /* Add drop shadow when clicked */
+            z-index: 10;
+        }
+
+        /* ----------------- */
+        .district3T-button {
+            position: absolute;
+            background: none;
+            border: none;
+            top: 12.044270833333334vw;
+            left: 60.7421875vw;
+            transition: transform 0.3s, border-color 0.3s;
+            /* Smooth transition for transform and border-color */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            text-decoration: none;
+            color: #FFF;
+            transform-origin: center;
+        }
+
+        .district3T-button img {
+            width: 8.203125vw;
+
+        }
+
+        .district3T-button.clicked {
+            transform: scale(1.4);
+            /* Scale when clicked */
+            filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1));
+            /* Add drop shadow when clicked */
+            z-index: 10;
+        }
+
+        /* ----------------- */
+        .district3A-button {
+            position: absolute;
+            background: none;
+            border: none;
+            top: 21.875vw;
+            left: 55.859375vw;
+            transition: transform 0.3s, border-color 0.3s;
+            /* Smooth transition for transform and border-color */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: center;
+            transition: transform 0.3s;
+        }
+
+        .district3A-button img {
+            width: 4.6875vw;
+
+        }
+
+        .district3A-button.clicked {
+            transform: scale(1.4);
+            /* Scale when clicked */
+            filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1));
+            /* Add drop shadow when clicked */
+            z-index: 10;
+        }
+
+        /* ----------------- */
+        .district3SN-button {
+            position: absolute;
+            background: none;
+            border: none;
+            top: 29.166666666666668vw;
+            left: 58.59375vw;
+            transition: transform 0.3s, border-color 0.3s;
+            /* Smooth transition for transform and border-color */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: center;
+            transition: transform 0.3s;
+        }
+
+        .district3SN-button img {
+            width: 4.557291666666667vw;
+
+        }
+
+        .district3SN-button.clicked {
+            transform: scale(1.4);
+            /* Scale when clicked */
+            filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1));
+            /* Add drop shadow when clicked */
+            z-index: 10;
+        }
+
+        /* ----------------- */
+        .district3B-button {
+            position: absolute;
+            background: none;
+            border: none;
+            top: 20.3125vw;
+            left: 70.37760416666667vw;
+            transition: transform 0.3s, border-color 0.3s;
+            /* Smooth transition for transform and border-color */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: center;
+            transition: transform 0.3s;
+            z-index: 4;
+        }
+
+        .district3B-button img {
+            width: 5.6640625vw;
+
+        }
+
+        .district3B-button.clicked {
+            transform: scale(1.4);
+            /* Scale when clicked */
+            filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1));
+            /* Add drop shadow when clicked */
+            z-index: 10;
+        }
+
+        /* ----------------- */
+        .district3MK-button {
+            position: absolute;
+            background: none;
+            border: none;
+            top: 22.4609375vw;
+            left: 70.44270833333333vw;
+            transition: transform 0.3s, border-color 0.3s;
+            /* Smooth transition for transform and border-color */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: center;
+            transition: transform 0.3s;
+            z-index: 3;
+        }
+
+        .district3MK-button img {
+            width: 3.90625vw;
+
+        }
+
+        .district3MK-button.clicked {
+            transform: scale(1.4);
+            /* Scale when clicked */
+            filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1));
+            /* Add drop shadow when clicked */
+            z-index: 10;
+        }
+
+        /* ----------------- */
+        .district3STR-button {
+            position: absolute;
+            background: none;
+            border: none;
+            top: 31.25vw;
+            left: 59.635416666666664vw;
+            transition: transform 0.3s, border-color 0.3s;
+            /* Smooth transition for transform and border-color */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: center;
+            transition: transform 0.3s;
+            z-index: 3;
+        }
+
+        .district3STR-button img {
+            width: 3.9713541666666665vw;
+
+        }
+
+        .district3STR-button.clicked {
+            transform: scale(1.4);
+            /* Scale when clicked */
+            filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1));
+            /* Add drop shadow when clicked */
+            z-index: 10;
+        }
+
+        /* ----------------- */
+        .district3C-button {
+            position: absolute;
+            background: none;
+            border: none;
+            top: 28.255208333333332vw;
+            left: 66.14583333333333vw;
+            transition: transform 0.3s, border-color 0.3s;
+            /* Smooth transition for transform and border-color */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: center;
+            transition: transform 0.3s;
+            z-index: 3;
+        }
+
+        .district3C-button img {
+            width: 4.166666666666667vw;
+
+        }
+
+        .district3C-button.clicked {
+            transform: scale(1.4);
+            /* Scale when clicked */
+            filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1));
+            /* Add drop shadow when clicked */
+            z-index: 10;
+        }
+
+        /* ----------------- */
+        .district3AG-button {
+            position: absolute;
+            background: none;
+            border: none;
+            top: 32.421875vw;
+            left: 62.239583333333336vw;
+            padding: -200px;
+            transition: transform 0.3s, border-color 0.3s;
+            /* Smooth transition for transform and border-color */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: center;
+            transition: transform 0.3s;
+            z-index: 3;
+        }
+
+        .district3AG-button img {
+            width: 5.338541666666667vw;
+
+        }
+
+        .district3AG-button.clicked {
+            transform: scale(1.4);
+            /* Scale when clicked */
+            filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1));
+            /* Add drop shadow when clicked */
+            z-index: 10;
+        }
+
+        /* ----------------- */
+        .district3L-button {
+            position: absolute;
+            background: none;
+            border: none;
+            top: 15.559895833333334vw;
+            left: 51.3671875vw;
+            transition: transform 0.3s, border-color 0.3s;
+            /* Smooth transition for transform and border-color */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: center;
+            transition: transform 0.3s;
+            z-index: 1;
+        }
+
+        .district3L-button img {
+            width: 9.700520833333334vw;
+
+        }
+
+        .district3L-button.clicked {
+            transform: scale(1.4);
+            /* Scale when clicked */
+            filter: drop-shadow(0 0 100px rgba(0, 0, 0, 1));
+            /* Add drop shadow when clicked */
+            z-index: 10;
+        }
+
+        /* -------------------------------------- EXPLORE-----------------------------------------*/
+
+        .exploreST {
+            display: none;
+            /* Hide the container by default */
+            position: absolute;
+            top: 21.809895833333332vw;
+            left: 25.065104166666668vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+
+            width: 32.552083333333336vw;
+            height: 16.276041666666668vw;
+            background: #ffffff;
+        }
+
+        .exploreST-button {
+            position: absolute;
+            top: 10.416666666666666vw;
+            left: 10.026041666666666vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.953125vw;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            color: #06C9EF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 3px solid #0097B2;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 2;
+        }
+
+        .exploreST-button:hover {
+            background-color: #06C9EF;
+            color: #FFFFFF;
+        }
+
+        /*-------------------*/
+        .exploreA {
+            display: none;
+            /* Hide the container by default */
+            position: absolute;
+            top: 21.809895833333332vw;
+            left: 25.065104166666668vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+
+            width: 32.552083333333336vw;
+            height: 16.276041666666668vw;
+            background: #ffffff;
+        }
+
+        .exploreA-button {
+            position: absolute;
+            top: 10.416666666666666vw;
+            left: 10.026041666666666vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.953125vw;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            color: #06C9EF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 3px solid #0097B2;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 2;
+        }
+
+        .exploreA-button:hover {
+            background-color: #06C9EF;
+            color: #FFFFFF;
+        }
+
+        .exploreT {
+            display: none;
+            /* Hide the container by default */
+            position: absolute;
+            top: 21.809895833333332vw;
+            left: 25.065104166666668vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+
+            width: 32.552083333333336vw;
+            height: 16.276041666666668vw;
+            background: #ffffff;
+
+        }
+
+        .backT {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #15375D;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .exploreT-button {
+            position: absolute;
+            top: 10.416666666666666vw;
+            left: 10.026041666666666vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.953125vw;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            color: #06C9EF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 3px solid #0097B2;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 2;
+        }
+
+        .exploreT-button:hover {
+            background-color: #06C9EF;
+            color: #FFFFFF;
+        }
+
+        .exploreTN {
+            display: none;
+            /* Hide the container by default */
+            position: absolute;
+            top: 21.809895833333332vw;
+            left: 25.065104166666668vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+
+            width: 32.552083333333336vw;
+            height: 16.276041666666668vw;
+            background: #ffffff;
+        }
+
+        .backTN {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #15375D;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .exploreTN-button {
+            position: absolute;
+            top: 10.416666666666666vw;
+            left: 10.026041666666666vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.953125vw;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            color: #06C9EF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 3px solid #0097B2;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 2;
+        }
+
+        .exploreTN-button:hover {
+            background-color: #06C9EF;
+            color: #FFFFFF;
+        }
+
+        .exploreM {
+            display: none;
+            /* Hide the container by default */
+            position: absolute;
+            top: 21.809895833333332vw;
+            left: 25.065104166666668vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+
+            width: 32.552083333333336vw;
+            height: 16.276041666666668vw;
+            background: #ffffff;
+        }
+
+        .backM {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #15375D;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .exploreM-button {
+            position: absolute;
+            top: 10.416666666666666vw;
+            left: 10.026041666666666vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.953125vw;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            color: #06C9EF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 3px solid #0097B2;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 2;
+        }
+
+        .exploreM-button:hover {
+            background-color: #06C9EF;
+            color: #FFFFFF;
+        }
+
+        /*-------------------------*/
+        .exploreSN {
+            display: none;
+            /* Hide the container by default */
+            position: absolute;
+            top: 21.809895833333332vw;
+            left: 25.065104166666668vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+
+            width: 32.552083333333336vw;
+            height: 16.276041666666668vw;
+            background: #ffffff;
+        }
+
+        .backSN {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #15375D;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .exploreSN-button {
+            position: absolute;
+            top: 10.416666666666666vw;
+            left: 10.026041666666666vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.953125vw;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            color: #06C9EF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 3px solid #0097B2;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 2;
+        }
+
+        .exploreSN-button:hover {
+            background-color: #06C9EF;
+            color: #FFFFFF;
+        }
+
+        /*-------------------------*/
+        .exploreB {
+            display: none;
+            /* Hide the container by default */
+            position: absolute;
+            top: 21.809895833333332vw;
+            left: 25.065104166666668vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+
+            width: 32.552083333333336vw;
+            height: 16.276041666666668vw;
+            background: #ffffff;
+        }
+
+        .backB {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #15375D;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .exploreB-button {
+            position: absolute;
+            top: 10.416666666666666vw;
+            left: 10.026041666666666vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.953125vw;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            color: #06C9EF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 3px solid #0097B2;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 2;
+        }
+
+        .exploreB-button:hover {
+            background-color: #06C9EF;
+            color: #FFFFFF;
+        }
+
+        /*-------------------------*/
+        .exploreMK {
+            display: none;
+            /* Hide the container by default */
+            position: absolute;
+            top: 21.809895833333332vw;
+            left: 25.065104166666668vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+
+            width: 32.552083333333336vw;
+            height: 16.276041666666668vw;
+            background: #ffffff;
+        }
+
+        .backMK {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #15375D;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .exploreMK-button {
+            position: absolute;
+            top: 10.416666666666666vw;
+            left: 10.026041666666666vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.953125vw;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            color: #06C9EF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 3px solid #0097B2;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 2;
+        }
+
+        .exploreMK-button:hover {
+            background-color: #06C9EF;
+            color: #FFFFFF;
+        }
+
+        /*-------------------------*/
+        .exploreSTR {
+            display: none;
+            /* Hide the container by default */
+            position: absolute;
+            top: 21.809895833333332vw;
+            left: 25.065104166666668vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+
+            width: 32.552083333333336vw;
+            height: 16.276041666666668vw;
+            background: #ffffff;
+        }
+
+        .backSTR {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #15375D;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .exploreSTR-button {
+            position: absolute;
+            top: 10.416666666666666vw;
+            left: 10.026041666666666vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.953125vw;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            color: #06C9EF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 3px solid #0097B2;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 2;
+        }
+
+        .exploreSTR-button:hover {
+            background-color: #06C9EF;
+            color: #FFFFFF;
+        }
+
+        /*-------------------------*/
+        .exploreC {
+            display: none;
+            /* Hide the container by default */
+            position: absolute;
+            top: 21.809895833333332vw;
+            left: 25.065104166666668vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+
+            width: 32.552083333333336vw;
+            height: 16.276041666666668vw;
+            background: #ffffff;
+        }
+
+        .backC {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #15375D;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .exploreC-button {
+            position: absolute;
+            top: 10.416666666666666vw;
+            left: 10.026041666666666vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.953125vw;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            color: #06C9EF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 3px solid #0097B2;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 2;
+        }
+
+        .exploreC-button:hover {
+            background-color: #06C9EF;
+            color: #FFFFFF;
+        }
+
+        /*-------------------------*/
+        .exploreAG {
+            display: none;
+            /* Hide the container by default */
+            position: absolute;
+            top: 21.809895833333332vw;
+            left: 25.065104166666668vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+
+            width: 32.552083333333336vw;
+            height: 16.276041666666668vw;
+            background: #ffffff;
+        }
+
+        .exploreAG-button {
+            position: absolute;
+            top: 10.416666666666666vw;
+            left: 10.026041666666666vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.953125vw;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            color: #06C9EF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 3px solid #0097B2;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 2;
+        }
+
+        .exploreAG-button:hover {
+            background-color: #06C9EF;
+            color: #FFFFFF;
+        }
+
+        /*-------------------------*/
+        .exploreL {
+            display: none;
+            /* Hide the container by default */
+            position: absolute;
+            top: 21.809895833333332vw;
+            left: 25.065104166666668vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+
+            width: 32.552083333333336vw;
+            height: 16.276041666666668vw;
+            background: #ffffff;
+        }
+
+        .exploreL-button {
+            position: absolute;
+            top: 10.416666666666666vw;
+            left: 10.026041666666666vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.953125vw;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            color: #06C9EF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 3px solid #0097B2;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 2;
+        }
+
+        .exploreL-button:hover {
+            background-color: #06C9EF;
+            color: #FFFFFF;
+        }
+
+        /*-----------------------------------------------MODULE*-------------------------------------------------*/
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        .mheader {
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            background: #fff;
+        }
+
+        .mheader button {
+            padding: 5px 10px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #18395E;
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .mcontainer {
+            position: absolute;
+            top: 22.447916666666668vw;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 39.84375vw;
+            background: #18395E;
+            box-shadow: 0 30px 50px #dbdbdb;
+        }
+
+        .mbackground-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .mbackground-slide .item {
+            width: 100%;
+            height: 100%;
+            background-position: center;
+            background-size: cover;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        .mslide {
+            position: relative;
+            z-index: 1;
+        }
+
+        .mslide .item {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            background-position: center;
+            background-size: cover;
+        }
+
+        .mslide .item.active {
+            display: block;
+        }
+
+        .mcontent {
+            position: absolute;
+            top: 50%;
+            left: 100px;
+            width: 300px;
+            text-align: left;
+            color: #15375D;
+            transform: translate(0, -50%);
+            font-family: system-ui;
+            display: none;
+            overflow: hidden;
+            /* Hide overflowing blur effect */
+        }
+
+        .mcontent.active {
+            display: block;
+        }
+
+
+        .mcontent .name {
+            font-size: 40px;
+            text-transform: uppercase;
+            font-weight: bold;
+            opacity: 0;
+            background: rgba(255, 255, 255, 0.8);
+            animation: animateName 0.5s ease-in-out 0.5s forwards;
+            /* Changed animation name and delay */
+        }
+
+        .mcontent .des {
+            opacity: 0;
+            background: rgba(255, 255, 255, 0.8);
+            animation: animateDes 0.5s ease-in-out 1s forwards;
+            /* Changed animation name and delay */
+        }
+
+        /* Keyframes for animations */
+        @keyframes animateName {
+            from {
+                opacity: 0;
+                transform: translate(0, 100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(0);
+            }
+        }
+
+        @keyframes animateDes {
+            from {
+                opacity: 0;
+                transform: translate(0, 100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(0);
+            }
+        }
+
+        .mheader button {
+            padding: 5px 10px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #18395E;
+            color: #fff;
+            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .mheader button:hover {
+            background: #fff;
+            color: #18395E;
+        }
+
+
+        .mbutton {
+            width: 100%;
+            text-align: center;
+            position: absolute;
+            bottom: 20px;
+        }
+
+        .mbutton button {
+            width: 40px;
+            height: 35px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            margin: 0 5px;
+            border: 1px solid #000;
+            transition: 0.3s;
+        }
+
+        .mactive-button {
+            background: #fff;
+            color: #ffff00;
+        }
+
+        h3 {
+            font-size: 18px;
+            margin-top: 60px;
+            margin-left: 20px;
+            text-align: left;
+        }
+
+        #points {
+            position: absolute;
+            top: 8.625vw;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            color: #333;
+            font-size: 1.0833333333333335vw;
+            width: 17.708333333333332vw;
+            text-align: center;
+        }
+    </style>
 </head>
+
 <body>
     </div>
     {% load static %}
@@ -1355,12 +1444,11 @@ h3 {
             <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
         </div>
         <div id="rightPanel">
-            <img id="backButton" src="{% static 'backbutton.png' %}" alt="Back Button" />
-                {% if total_points %}
+            {% if total_points %}
             <div id="points">Points: {{ total_points }} </div>
-                {% else %}
+            {% else %}
             <div id="points">Points: 0 </div>
-                {% endif %}
+            {% endif %}
             <div id="usertopPanel">
                 {% if kiosk_username %}
                 <h3 class="username">{{ kiosk_username }}</h3>
@@ -1372,13 +1460,14 @@ h3 {
                 {% csrf_token %}
                 <button id="logout-button" type="submit">Logout</button>
             </form>
-            <button id="selectdistrict-button"  onclick="window.location.href='{% url 'selectdistrict' kiosk_id=kiosk_id %}'">Select District</button>
+            <button id="selectdistrict-button"
+                onclick="window.location.href='{% url 'selectdistrict' kiosk_id=kiosk_id %}'">Select District</button>
         </div>
         <div class="top-panel"></div>
         <span class="title">BATANGAS</span>
         <span class="barrier">|</span>
         <span class="district">District III</span>
-        <img class="district3" src="{% static 'district 3-1.png' %}"  alt="district3">
+        <img class="district3" src="{% static 'district 3-1.png' %}" alt="district3">
 
         <!-- MUNICIPALITIES -->
         <button class="district3ST-button" onclick="toggleButton(this)">
@@ -1422,82 +1511,117 @@ h3 {
             <div class="header">
                 <span class="select">Select a part of Batangas Province <br> District 3 to start</span>
                 <img src="{% static 'logo.png' %}" alt="header" style="width: 6.510416666666667vw;">
-                <h2>Welcome to <br> Parine sa Batangas!</h2>    
-                    <p></p>
-                </div>
+                <h2>Welcome to <br> Parine sa Batangas!</h2>
+                <p></p>
             </div>
         </div>
-        <!-- EXPLORE -->
-        <div class="exploreST" id="exploreST" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> STO.TOMAS</p>
-            <button id="exploreST-button" class="exploreST-button">EXPLORE</button>
-        </div>
+    </div>
+    <!-- EXPLORE -->
+    <div class="exploreST" id="exploreST" style="display: none;">
+        <img src="{% static 'logo.png' %}" alt="logo.png"
+            style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p
+            style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">
+            Welcome to <br> STO.TOMAS</p>
+        <button id="exploreST-button" class="exploreST-button">EXPLORE</button>
+    </div>
 
-        <div class="exploreA" id="exploreA" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> AGONCILLO</p>
-            <button id="exploreA-button" class="exploreA-button">EXPLORE</button>
-        </div>
-        <div class="exploreT" id="exploreT" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> TALISAY</p>
-            <button id="exploreT-button" class="exploreT-button">EXPLORE</button>
-        </div>
-        <div class="exploreTN" id="exploreTN" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> TANAUAN</p>
-            <button id="exploreTN-button" class="exploreTN-button">EXPLORE</button>
-        </div>
-        <div class="exploreM" id="exploreM" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> MALVAR</p>
-            <button id="exploreM-button" class="exploreM-button">EXPLORE</button>
-        </div>
-        <div class="exploreSN" id="exploreSN" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> SAN NICOLAS</p>
-            <button id="exploreSN-button" class="exploreSN-button">EXPLORE</button>
-        </div>
-        <div class="exploreB" id="exploreB" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> BALETE</p>
-            <button id="exploreB-button" class="exploreB-button">EXPLORE</button>
-        </div>
-        <div class="exploreMK" id="exploreMK" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> MATAAS NA KAHOY</p>
-            <button id="exploreMK-button" class="exploreMK-button">EXPLORE</button>
-        </div>
-        <div class="exploreSTR" id="exploreSTR" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> STA. TERESITA</p>
-            <button id="exploreSTR-button" class="exploreSTR-button">EXPLORE</button>
-        </div>
-        <div class="exploreC" id="exploreC" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> CUENCA</p>
-            <button id="exploreC-button" class="exploreC-button">EXPLORE</button>
-        </div>
-        <div class="exploreAG" id="exploreAG" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> ALITAGTAG</p>
-            <button id="exploreAG-button" class="exploreAG-button">EXPLORE</button>
-        </div>
-        <div class="exploreL" id="exploreL" style="display: none;">
-            <img src="{% static 'logo.png' %}" alt="logo.png" style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
-            <p style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">Welcome to <br> LAUREL</p>
-            <button id="exploreL-button" class="exploreL-button">EXPLORE</button>
-        </div>
+    <div class="exploreA" id="exploreA" style="display: none;">
+        <img src="{% static 'logo.png' %}" alt="logo.png"
+            style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p
+            style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">
+            Welcome to <br> AGONCILLO</p>
+        <button id="exploreA-button" class="exploreA-button">EXPLORE</button>
+    </div>
+    <div class="exploreT" id="exploreT" style="display: none;">
+        <img src="{% static 'logo.png' %}" alt="logo.png"
+            style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p
+            style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">
+            Welcome to <br> TALISAY</p>
+        <button id="exploreT-button" class="exploreT-button">EXPLORE</button>
+    </div>
+    <div class="exploreTN" id="exploreTN" style="display: none;">
+        <img src="{% static 'logo.png' %}" alt="logo.png"
+            style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p
+            style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">
+            Welcome to <br> TANAUAN</p>
+        <button id="exploreTN-button" class="exploreTN-button">EXPLORE</button>
+    </div>
+    <div class="exploreM" id="exploreM" style="display: none;">
+        <img src="{% static 'logo.png' %}" alt="logo.png"
+            style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p
+            style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">
+            Welcome to <br> MALVAR</p>
+        <button id="exploreM-button" class="exploreM-button">EXPLORE</button>
+    </div>
+    <div class="exploreSN" id="exploreSN" style="display: none;">
+        <img src="{% static 'logo.png' %}" alt="logo.png"
+            style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p
+            style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">
+            Welcome to <br> SAN NICOLAS</p>
+        <button id="exploreSN-button" class="exploreSN-button">EXPLORE</button>
+    </div>
+    <div class="exploreB" id="exploreB" style="display: none;">
+        <img src="{% static 'logo.png' %}" alt="logo.png"
+            style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p
+            style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">
+            Welcome to <br> BALETE</p>
+        <button id="exploreB-button" class="exploreB-button">EXPLORE</button>
+    </div>
+    <div class="exploreMK" id="exploreMK" style="display: none;">
+        <img src="{% static 'logo.png' %}" alt="logo.png"
+            style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p
+            style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">
+            Welcome to <br> MATAAS NA KAHOY</p>
+        <button id="exploreMK-button" class="exploreMK-button">EXPLORE</button>
+    </div>
+    <div class="exploreSTR" id="exploreSTR" style="display: none;">
+        <img src="{% static 'logo.png' %}" alt="logo.png"
+            style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p
+            style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">
+            Welcome to <br> STA. TERESITA</p>
+        <button id="exploreSTR-button" class="exploreSTR-button">EXPLORE</button>
+    </div>
+    <div class="exploreC" id="exploreC" style="display: none;">
+        <img src="{% static 'logo.png' %}" alt="logo.png"
+            style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p
+            style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">
+            Welcome to <br> CUENCA</p>
+        <button id="exploreC-button" class="exploreC-button">EXPLORE</button>
+    </div>
+    <div class="exploreAG" id="exploreAG" style="display: none;">
+        <img src="{% static 'logo.png' %}" alt="logo.png"
+            style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p
+            style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">
+            Welcome to <br> ALITAGTAG</p>
+        <button id="exploreAG-button" class="exploreAG-button">EXPLORE</button>
+    </div>
+    <div class="exploreL" id="exploreL" style="display: none;">
+        <img src="{% static 'logo.png' %}" alt="logo.png"
+            style="margin-top:  1.6276041666666667vw; max-width: 7.8125vw; height: auto; display: inline-block; vertical-align: middle;">
+        <p
+            style="font-family: 'DM Serif Display', serif; font-size: 1.953125vw; font-weight: bold; color: #15375D; display: inline-block; vertical-align: middle; text-align: left;">
+            Welcome to <br> LAUREL</p>
+        <button id="exploreL-button" class="exploreL-button">EXPLORE</button>
+    </div>
 
     <script>
         const imageButton = document.getElementById('imageButton');
         const rightPanel = document.getElementById('rightPanel');
-        const backButton = document.getElementById('backButton');
         const exploreButton = document.getElementById('exploreButton');
         const moduleContainer = document.querySelector('.modulecontainer');
         const backToMainButton = document.getElementById('backToMainButton');
-        
+
         //--------EXPLOREBUTTONS
         const exploreST = document.getElementById('exploreST');
         const exploreA = document.getElementById('exploreA');
@@ -1511,13 +1635,17 @@ h3 {
         const exploreC = document.getElementById('exploreC');
         const exploreAG = document.getElementById('exploreAG');
         const exploreL = document.getElementById('exploreL');
-
         imageButton.addEventListener('click', () => {
             rightPanel.style.display = 'block';
+            imageButton.style.display = 'none'; // Hide the image button
         });
 
-        backButton.addEventListener('click', () => {
-            rightPanel.style.display = 'none';
+        document.addEventListener('click', (event) => {
+            // Check if the click target is outside the rightPanel
+            if (!rightPanel.contains(event.target) && event.target !== imageButton) {
+                rightPanel.style.display = 'none';
+                imageButton.style.display = 'block'; // Show the image button again
+            }
         });
 
         backToMainButton.addEventListener('click', () => {
@@ -1525,52 +1653,10 @@ h3 {
         });
 
         //-----EXPLOREBUTTONS
-        exploreST.addEventListener('click', () => {
-            moduleContainer.style.display = 'block';
-        });
-
-        exploreA.addEventListener('click', () => {
-            moduleContainer.style.display = 'block';
-        });
-
-        exploreT.addEventListener('click', () => {
-            moduleContainer.style.display = 'block';
-        });
-
-        exploreTN.addEventListener('click', () => {
-            moduleContainer.style.display = 'block';
-        });
-
-        exploreM.addEventListener('click', () => {
-            moduleContainer.style.display = 'block';
-        });
-
-        exploreSN.addEventListener('click', () => {
-            moduleContainer.style.display = 'block';
-        });
-
-        exploreB.addEventListener('click', () => {
-            moduleContainer.style.display = 'block';
-        });
-
-        exploreMK.addEventListener('click', () => {
-            moduleContainer.style.display = 'block';
-        });
-
-        exploreSTR.addEventListener('click', () => {
-            moduleContainer.style.display = 'block';
-        });
-
-        exploreC.addEventListener('click', () => {
-            moduleContainer.style.display = 'block';
-        });
-
-        exploreAG.addEventListener('click', () => {
-            moduleContainer.style.display = 'block';
-        });
-
-        exploreL.addEventListener('click', () => {
-            moduleContainer.style.display = 'block';
+        document.querySelectorAll('.exploreST-button, .exploreA-button, .exploreT-button, .exploreTN-button, .exploreM-button, .exploreSN-button, .exploreB-button, .exploreMK-button, .exploreSTR-button, .exploreC-button, .exploreL-button, .exploreAG-button').forEach(button => {
+            button.addEventListener('click', function () {
+                moduleContainer.style.display = 'block';
+            });
         });
 
         let activeButton = null;
@@ -1589,6 +1675,7 @@ h3 {
                 hideAdditionalContainers();
             }
         }
+
         function hideAdditionalContainers() {
             document.querySelectorAll('.exploreST, .exploreA, .exploreT, .exploreTN, .exploreM, .exploreSN, .exploreB, .exploreMK, .exploreSTR, .exploreC, .exploreL, .exploreAG').forEach(container => {
                 if (container.previousElementSibling !== activeButton) {
@@ -1600,20 +1687,20 @@ h3 {
             var additionalContainer = document.getElementById("exploreST");
             additionalContainer.style.display = "none";
         }
-        
-        document.querySelector('.district3ST-button').addEventListener('click', function() {
+
+        document.querySelector('.district3ST-button').addEventListener('click', function () {
             var additionalContainer = document.getElementById("exploreST");
             additionalContainer.style.display = "block";
             this.classList.toggle('container');
-            
+
         });
 
         function hideAdditionalContainerA() {
             var additionalContainer = document.getElementById("exploreA");
             additionalContainer.style.display = "none";
         }
-        
-        document.querySelector('.district3A-button').addEventListener('click', function() {
+
+        document.querySelector('.district3A-button').addEventListener('click', function () {
             var additionalContainer = document.getElementById("exploreA");
             additionalContainer.style.display = "block";
             this.classList.toggle('container');
@@ -1622,8 +1709,8 @@ h3 {
             var additionalContainer = document.getElementById("exploreT");
             additionalContainer.style.display = "none";
         }
-        
-        document.querySelector('.district3T-button').addEventListener('click', function() {
+
+        document.querySelector('.district3T-button').addEventListener('click', function () {
             var additionalContainer = document.getElementById("exploreT");
             additionalContainer.style.display = "block";
             this.classList.toggle('container');
@@ -1632,103 +1719,103 @@ h3 {
             var additionalContainer = document.getElementById("exploreTN");
             additionalContainer.style.display = "none";
         }
-        
-        document.querySelector('.district3TN-button').addEventListener('click', function() {
+
+        document.querySelector('.district3TN-button').addEventListener('click', function () {
             var additionalContainer = document.getElementById("exploreTN");
             additionalContainer.style.display = "block";
             this.classList.toggle('container');
-            
+
         });
         function hideAdditionalContainerM() {
             var additionalContainer = document.getElementById("exploreM");
             additionalContainer.style.display = "none";
         }
-        
-        document.querySelector('.district3M-button').addEventListener('click', function() {
+
+        document.querySelector('.district3M-button').addEventListener('click', function () {
             var additionalContainer = document.getElementById("exploreM");
             additionalContainer.style.display = "block";
             this.classList.toggle('container');
-            
+
         });
         function hideAdditionalContainerSN() {
             var additionalContainer = document.getElementById("exploreSN");
             additionalContainer.style.display = "none";
         }
-        
-        document.querySelector('.district3SN-button').addEventListener('click', function() {
+
+        document.querySelector('.district3SN-button').addEventListener('click', function () {
             var additionalContainer = document.getElementById("exploreSN");
             additionalContainer.style.display = "block";
             this.classList.toggle('container');
-            
+
         });
         function hideAdditionalContainerB() {
             var additionalContainer = document.getElementById("exploreB");
             additionalContainer.style.display = "none";
         }
-        
-        document.querySelector('.district3B-button').addEventListener('click', function() {
+
+        document.querySelector('.district3B-button').addEventListener('click', function () {
             var additionalContainer = document.getElementById("exploreB");
             additionalContainer.style.display = "block";
             this.classList.toggle('container');
-            
+
         });
         function hideAdditionalContainerMK() {
             var additionalContainer = document.getElementById("exploreMK");
             additionalContainer.style.display = "none";
         }
-        
-        document.querySelector('.district3MK-button').addEventListener('click', function() {
+
+        document.querySelector('.district3MK-button').addEventListener('click', function () {
             var additionalContainer = document.getElementById("exploreMK");
             additionalContainer.style.display = "block";
             this.classList.toggle('container');
-            
+
         });
         function hideAdditionalContainerSTR() {
             var additionalContainer = document.getElementById("exploreSTR");
             additionalContainer.style.display = "none";
         }
-        
-        document.querySelector('.district3STR-button').addEventListener('click', function() {
+
+        document.querySelector('.district3STR-button').addEventListener('click', function () {
             var additionalContainer = document.getElementById("exploreSTR");
             additionalContainer.style.display = "block";
             this.classList.toggle('container');
-            
+
         });
         function hideAdditionalContainerC() {
             var additionalContainer = document.getElementById("exploreC");
             additionalContainer.style.display = "none";
         }
-        
-        document.querySelector('.district3C-button').addEventListener('click', function() {
+
+        document.querySelector('.district3C-button').addEventListener('click', function () {
             var additionalContainer = document.getElementById("exploreC");
             additionalContainer.style.display = "block";
             this.classList.toggle('container');
-            
+
         });
         function hideAdditionalContainerAG() {
             var additionalContainer = document.getElementById("exploreAG");
             additionalContainer.style.display = "none";
         }
-        
-        document.querySelector('.district3AG-button').addEventListener('click', function() {
+
+        document.querySelector('.district3AG-button').addEventListener('click', function () {
             var additionalContainer = document.getElementById("exploreAG");
             additionalContainer.style.display = "block";
             this.classList.toggle('container');
-            
+
         });
         function hideAdditionalContainerL() {
             var additionalContainer = document.getElementById("exploreL");
             additionalContainer.style.display = "none";
         }
-        
-        document.querySelector('.district3L-button').addEventListener('click', function() {
+
+        document.querySelector('.district3L-button').addEventListener('click', function () {
             var additionalContainer = document.getElementById("exploreL");
             additionalContainer.style.display = "block";
             this.classList.toggle('container');
         });
 
-            // Function to load the module content based on the current municipality
-            function loadModule(moduleType) {
+        // Function to load the module content based on the current municipality
+        function loadModule(moduleType) {
             if (!currentMunicipality) {
                 console.error('Municipality not set');
                 return;
@@ -1738,30 +1825,30 @@ h3 {
         document.addEventListener('DOMContentLoaded', () => {
 
             let currentMunicipality = '';
-        
+
             // Function to update the municipality based on user interaction
             const updateMunicipalityAndLoadModule = (municipalityName, moduleType = 'module_tourist') => {
                 currentMunicipality = municipalityName;
                 console.log("Selected Municipality:", currentMunicipality);
                 loadModule(moduleType);
             };
-        
+
             // Attach click event listeners to each "Explore" button
             document.querySelectorAll('.exploreST-button, .exploreA-button, .exploreT-button, .exploreTN-button, .exploreM-button, .exploreSN-button, .exploreB-button, .exploreMK-button, .exploreSTR-button, .exploreC-button, .exploreAG-button, .exploreL-button').forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function () {
                     // Extracting the municipality name from the after the <p> element
                     const municipalityName = this.previousElementSibling.textContent.split("Welcome to")[1]?.trim();
                     updateMunicipalityAndLoadModule(municipalityName);
                 });
             });
-        
+
             // Function to load the module content based on the current municipality
             function loadModule(moduleType) {
                 if (!currentMunicipality) {
                     console.error('Municipality not set');
                     return;
                 }
-        
+
                 document.querySelectorAll('.mheader button').forEach(btn => {
                     if (btn.getAttribute('data-module') === moduleType) {
                         btn.classList.add('mactive-button');
@@ -1773,16 +1860,16 @@ h3 {
                         btn.style.color = '#18395E';
                     }
                 });
-        
+
                 var kioskId = window.location.pathname.split('/')[2]; // URL format is '/kiosk_login/{kiosk_id}/'
-        
+
                 //URL for the module using the current municipality
-                const moduleUrl = `/kiosk_login/${ kioskId }/${moduleType}/${currentMunicipality}/`;
+                const moduleUrl = `/kiosk_login/${kioskId}/${moduleType}/${currentMunicipality}/`;
                 document.getElementById('moduleFrame').src = moduleUrl;
             }
-        
+
             document.querySelectorAll('.mheader button').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     const moduleType = this.getAttribute('data-module');
                     if (currentMunicipality) {
                         loadModule(moduleType);
@@ -1791,35 +1878,36 @@ h3 {
                     }
                 });
             });
-            document.getElementById('moduleFrame').onload = function() {
+            document.getElementById('moduleFrame').onload = function () {
                 console.log("Module frame loaded");
-                
+
                 const takeQuizButton = document.createElement('a');
                 const moduleType = document.querySelector('.mheader button.mactive-button').getAttribute('data-module');
                 const municipality = currentMunicipality;
-                
+
                 var kioskId = window.location.pathname.split('/')[2]; // URL format is '/kiosk_login/{kiosk_id}/'
-            
+
                 console.log("Module type:", moduleType);
                 console.log("Municipality:", municipality);
                 console.log("KioskID:", kioskId);
-            
+
                 takeQuizButton.href = `/quiz/?module_type=${moduleType}&municipality=${municipality}&kiosk_id=${kioskId}`;
                 takeQuizButton.classList.add('quiz-button');
                 takeQuizButton.textContent = 'TAKE QUIZ';
-            
+
                 console.log("Quiz button created:", takeQuizButton);
-            
+
                 // Append the take_quiz button to the module content inside the moduleFrame
                 const moduleContent = document.getElementById('moduleFrame').contentDocument.body;
                 console.log("Module content:", moduleContent);
                 moduleContent.appendChild(takeQuizButton);
-            
+
                 console.log("Quiz button appended to module content");
             };
         });
-        
-        
+
+
     </script>
 </body>
+
 </html>

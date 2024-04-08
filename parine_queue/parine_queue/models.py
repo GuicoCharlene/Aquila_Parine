@@ -102,6 +102,7 @@ class VisitorProgress(models.Model):
     Municipality = models.CharField(max_length=100)
     ModuleType = models.CharField(max_length=100)
     Status = models.CharField(max_length=100)
+    DateCompleted = models.DateField(null=True, blank=True)  # Changed to DateField
     class Meta:
         db_table = 'visitorprogress'
         

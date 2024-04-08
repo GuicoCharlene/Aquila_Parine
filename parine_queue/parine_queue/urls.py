@@ -4,7 +4,7 @@ from django.urls import path
 from . import views
 from .views import login, homepage, queue, queue_list, adminpage, selectdistrict, update_queue_capacity, kiosk_logout, kiosk_login, get_queue_data, admin_district_1, history, take_quiz, results_view
 from .views import admin_district_2, admin_district_3, admin_district_4, admin_district_5, admin_district_6, selectmunicipality1, selectmunicipality2, selectmunicipality3, selectmunicipality4, selectmunicipality5, selectmunicipality6, selectmodule, module_tourist, module_food, module_craft, quiz
-from .views import admin_module_tourist, admin_module_food, admin_module_craft, save_module_changes, done_quiz, delete_module, add_module
+from .views import admin_module_tourist, admin_module_food, admin_module_craft, save_module_changes, done_quiz, delete_module, add_module, no_data
 from .views import admin_module_tourist, admin_module_food, admin_module_craft, save_module_changes, done_quiz, delete_module,add_module, admin_quiz_tourist, admin_quiz_food, admin_quiz_craft, save_quiz_changes,  delete_quiz,add_quiz
 
 urlpatterns = [
@@ -58,6 +58,7 @@ urlpatterns = [
     path('adminpage/quiz_craft/<str:municipality>/', admin_quiz_craft, name='admin_module_craft'),
 
     path('done_quiz/', done_quiz, name='done_quiz'),
+    path('no_data/', no_data, name='no_data'),
     
     path('delete_module/', delete_module, name='delete_module'),  
     path('add_module/', add_module, name='add_module'),  

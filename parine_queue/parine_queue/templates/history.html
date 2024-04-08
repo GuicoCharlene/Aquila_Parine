@@ -178,9 +178,11 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Date<span class="sort-icon" onclick="sortRows()" title="Latest to Oldest">▼</span></th>
+                        <th>Date<span class="sort-icon date-sort-icon fas fa-sort-down" onclick="sortRows('date')"
+                                title="Latest to Oldest"></span></th>
                         <th>Visitors</th>
-                        <th>Total Visitors</th>
+                        <th>Total Visitors<span class="sort-icon total-sort-icon fas fa-sort-down"
+                                onclick="sortRowsByTotalCount()" title="Highest to Lowest"></span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -205,17 +207,25 @@
         <p>PARINE SA BATANGAS</p>
     </footer>
     <script>
-        var sortDescending = true;
+        var dateSortDescending = true;
+        var totalSortDescending = true;
 
-        function sortRows() {
+        function sortRows(column) {
             var rows = Array.from(document.querySelectorAll('tbody tr'));
             rows.sort(function (a, b) {
-                var dateA = new Date(a.querySelector('td:first-child').textContent);
-                var dateB = new Date(b.querySelector('td:first-child').textContent);
-                if (sortDescending) {
-                    return dateB - dateA;
+                var valueA, valueB;
+                if (column === 'date') {
+                    valueA = new Date(a.querySelector('td:first-child').textContent);
+                    valueB = new Date(b.querySelector('td:first-child').textContent);
+                } else if (column === 'total') {
+                    valueA = parseInt(a.querySelector('td:nth-child(3)').textContent);
+                    valueB = parseInt(b.querySelector('td:nth-child(3)').textContent);
+                }
+
+                if (column === 'date' && dateSortDescending || column === 'total' && totalSortDescending) {
+                    return valueB - valueA;
                 } else {
-                    return dateA - dateB;
+                    return valueA - valueB;
                 }
             });
 
@@ -224,14 +234,44 @@
                 tbody.appendChild(row);
             });
 
-            sortDescending = !sortDescending;
+            if (column === 'date') {
+                dateSortDescending = !dateSortDescending;
+                var sortIcon = document.querySelector('.date-sort-icon');
+            } else if (column === 'total') {
+                totalSortDescending = !totalSortDescending;
+                var sortIcon = document.querySelector('.total-sort-icon');
+            }
 
-            var sortIcon = document.querySelector('.sort-icon');
-            sortIcon.textContent = sortDescending ? "▼" : "▲";
-            sortIcon.title = sortDescending ? "Latest to Oldest" : "Oldest to Latest";
+            sortIcon.classList.toggle('fa-sort-down');
+            sortIcon.classList.toggle('fa-sort-up');
+            sortIcon.title = dateSortDescending ? "Latest to Oldest" : "Oldest to Latest";
+        }
+
+        function sortRowsByTotalCount() {
+            var rows = Array.from(document.querySelectorAll('tbody tr'));
+            rows.sort(function (a, b) {
+                var totalCountA = parseInt(a.querySelector('td:nth-child(3)').textContent);
+                var totalCountB = parseInt(b.querySelector('td:nth-child(3)').textContent);
+                if (totalSortDescending) {
+                    return totalCountB - totalCountA;
+                } else {
+                    return totalCountA - totalCountB;
+                }
+            });
+
+            var tbody = document.querySelector('tbody');
+            rows.forEach(function (row) {
+                tbody.appendChild(row);
+            });
+
+            totalSortDescending = !totalSortDescending;
+
+            var sortIcon = document.querySelector('.total-sort-icon');
+            sortIcon.classList.toggle('fa-sort-down');
+            sortIcon.classList.toggle('fa-sort-up');
+            sortIcon.title = totalSortDescending ? "Highest to Lowest" : "Lowest to Highest";
         }
     </script>
-
     <script>
         function filterRows() {
             var filterType = document.getElementById('filter-dropdown').value;

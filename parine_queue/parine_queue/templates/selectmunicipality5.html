@@ -1,522 +1,503 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Parine sa Batangas</title>
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        height: 100%;
-        background-color: #15375D;
-        overflow: hidden;
-    }
-    .modulecontainer{
-        display: none;
-        position: absolute;
-        top: 6.8359375vw;
-        left: 0;
-        width: 100%;
-        height: calc(100% - 6.8359375vw);
-        background-color: #15375D; 
-        z-index: 100;
-    }
-    #backToMainButton {
-        position: absolute;
-        top: -78px; 
-        left: 1.953125vw; 
-        font-family: 'Gotham', sans-serif;
-        font-size: 1.3020833333333333vw;
-        font-weight: bold;
-        background-color: #06C9EF;
-        color: #FFFFFF;
-        padding: 0.6510416666666666vw 1.3020833333333333vw;
-        border: 0.1953125vw solid #FFFFFF;
-        border-radius: 1.953125vw;
-        cursor: pointer;
-        z-index: 2;
-        transition: transform 0.2s; /* Add a transition for the transform property */
-    }
-    
-    #backToMainButton:active {
-        transform: scale(0.5); /* Scale down the button when clicked */
-    }
-    .top-panel {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 6.8359375vw;
-        background-color: #15375D; 
-        z-index: 1; 
-    }
-    #imageButtonContainer {
-        position: fixed;
-        top: 1.3020833333333333vw; 
-        right: 1.953125vw; 
-        z-index: 1000; 
-      }
-      
-      #imageButton {
-        width: 4.557291666666667vw; 
-        height: auto; 
-        cursor: pointer; 
-        transition: transform 0.2s; /* Add a transition for the transform property */
-    }
-    
-    #imageButton:active {
-        transform: scale(0.9);
-    }
-      #rightPanel {
-        display: none;
-        position: fixed;
-        top: 0;
-        right: 0;
-        width:  19.53125vw;
-        height: 100vh;
-        background-color: #f4f4f4;
-        z-index: 999;
-        padding: 1.3020833333333333vw;
-        box-sizing: border-box;
-        border-top-left-radius: 0.9765625vw; /* Radius for top-left corner */
-        border-bottom-left-radius: 0.9765625vw;
-    }
-    #usertopPanel {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 19.53125vw;
-        height: 6.8359375vw;
-        background-color: #06C9EF;
-        z-index: 1;
-        display: flex;
-        align-items: center;
-        overflow: hidden; /* Ensure the text is clipped if it's too long */
-    }
-    
-    .username {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-        max-width: 10.416666666666666vw; 
-        font-size: 1.8229166666666667vw; 
-        margin: 0; 
-        padding: 0; 
-        font-family: Arial, sans-serif;
-        font-weight: bold;
-        color: #333; 
-        top: 2.6041666666666665vw;
-        right: 7.161458333333333vw;
-        position: absolute;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parine sa Batangas</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100%;
+            background-color: #15375D;
+            overflow: hidden;
+        }
 
-    #backButton {
-        position: absolute;
-        top: 0.390625vw;
-        left:  0.2604166666666667vw;
-        margin-bottom: 0.6510416666666666vw;
-        width: 3.2552083333333335vw;
-        cursor: pointer;
-        border: none;
-        border-radius: 0.3255208333333333vw;
-        color: white;
-        padding: 0.3255208333333333vw 0.6510416666666666vw;
-        text-align: center;
-        z-index: 100;
-        transition: transform 0.2s; /* Add a transition for the transform property */
-    }
-    
-    #backButton:active {
-        transform: scale(0.9);
-    }
+        .modulecontainer {
+            display: none;
+            position: absolute;
+            top: 6.8359375vw;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 6.8359375vw);
+            background-color: #15375D;
+            z-index: 100;
+        }
 
-    #selectdistrict-button {
-        position: absolute;
-        bottom: 13.020833333333334vw; 
-        left: 4.427083333333333vw;
-        font-family: 'Gotham', sans-serif; 
-        font-size: 1.3020833333333333vw;
-        font-weight: bold;
-        background-color: #06C9EF;
-        color: #FFFFFF;
-        padding: 0.6510416666666666vw 1.3020833333333333vw;
-        border: 0.1953125vw solid #FFFFFF;
-        border-radius: 1.953125vw;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s;
-        z-index: 100;
-        transition: transform 0.2s; /* Add a transition for the transform property */
-    }
-    
-    #selectdistrict-button:active {
-        transform: scale(0.9); /* Scale down the button when clicked */
-    }
+        #backToMainButton {
+            position: absolute;
+            top: -78px;
+            left: 1.953125vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.3020833333333333vw;
+            font-weight: bold;
+            background-color: #06C9EF;
+            color: #FFFFFF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 0.1953125vw solid #FFFFFF;
+            border-radius: 1.953125vw;
+            cursor: pointer;
+            z-index: 2;
+            transition: transform 0.2s;
+            /* Add a transition for the transform property */
+        }
 
-    #logout-button {
-        position: absolute;
-        bottom: 6.510416666666667vw; 
-        left: 6.510416666666667vw;
-        font-family: 'Gotham', sans-serif; 
-        font-size: 1.3020833333333333vw;
-        font-weight: bold;
-        background-color: #06C9EF;
-        color: #FFFFFF;
-        padding: 0.6510416666666666vw 1.3020833333333333vw;
-        border: 0.1953125vw solid #FFFFFF;
-        border-radius: 1.953125vw;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s;
-        z-index: 100;
-        transition: transform 0.2s; /* Add a transition for the transform property */
-    }
-    
-    #logout-button:active {
-        transform: scale(0.9); /* Scale down the button when clicked */
-    }
+        #backToMainButton:active {
+            transform: scale(0.5);
+            /* Scale down the button when clicked */
+        }
 
-    #logout-button {
-        position: absolute;
-        bottom: 6.510416666666667vw; 
-        left: 6.510416666666667vw;
-        font-family: 'Gotham', sans-serif; 
-        font-size: 1.3020833333333333vw;
-        font-weight: bold;
-        background-color: #06C9EF;
-        color: #FFFFFF;
-        padding: 0.6510416666666666vw 1.3020833333333333vw;
-        border: 0.1953125vw solid #FFFFFF;
-        border-radius: 1.953125vw;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s;
-        z-index: 100;
-        transition: transform 0.2s; /* Add a transition for the transform property */
-    }
-    
-    #logout-button:active {
-        transform: scale(0.9); /* Scale down the button when clicked */
-    }
+        .top-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6.8359375vw;
+            background-color: #15375D;
+            z-index: 1;
+        }
 
-    .title {
-        position: absolute;
-        top: 2.4088541666666665vw;
-        left: 32.552083333333336vw;
-        font-family: 'Fira Sans', sans-serif;
-        font-size: 3.2552083333333335vw;
-        font-weight: bold;
-        text-align: center;
-        color: #FDF6EA;
-        z-index: 2;
-    }
+        #imageButtonContainer {
+            position: fixed;
+            top: 1.3020833333333333vw;
+            right: 1.953125vw;
+            z-index: 1000;
+        }
 
-    .barrier
-    {
-        position: absolute;
-        top: 2.4088541666666665vw;
-        left: 51.822916666666664vw;
-        transform: translateX(-50%);
-        font-family: 'Fira Sans', sans-serif;
-        font-size: 3.2552083333333335vw;
-        font-weight: bold;
-        text-align: center;
-        color: #FAED23;
-        z-index: 2;
-    }
-    
-    .district
-    {
-        position: absolute;
-        top: 2.4088541666666665vw;
-        left: 53.157552083333336vw;
-        font-family: 'Fira Sans', sans-serif;
-        font-size: 3.2552083333333335vw;
-        font-weight: bold;
-        text-align: center;
-        color: #06C9EF;
-        z-index: 2;
-    }
-    
+        #imageButton {
+            width: 4.557291666666667vw;
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
 
-    .district5 {
-        position: absolute;
-        left: 5.208333333333333vw;
-        top: -16.927083333333332vw;
-        width: 84.63541666666667vw;
-    }
-    .square {
-        position: absolute;
-        top: 21.809895833333332vw;
-        left: 25.065104166666668vw;
-        transform: translate(-50%, -50%);
-        text-align: center;
-  
-        color: #010355;
-        border: 1px solid #1db4ff;
-        border-radius: 10px;
-  
-        width: 32.552083333333336vw; 
-        height: 16.276041666666668vw;
-        background: #ffffff;
-      }
+        #imageButton:active {
+            transform: scale(0.9);
+        }
 
-      .header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.4322916666666667vw;
-        text-align: left;
-        font-family: 'DM Serif Display', serif;
-        display: flex;
-        color: #15375D;
-        margin-top:  1.6276041666666667vw;
-      }
-      .header img {
-        width: 13.020833333333334vw; 
-        height: auto;
-        margin-right: 0.6510416666666666vw; 
-        margin-top: 0px;
-        margin-left: 0px;
-    }
-    
-    
-    .district5-button {
-        position: absolute;
-        top: 17.96875vw; 
-        left: 49.088541666666664vw; 
-        padding: -13.020833333333334vw;
-        border: 0.1953125vw solid transparent; 
-        transition: transform 0.3s, border-color 0.3s; 
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        text-decoration: none; 
-        color: #FFF; 
-        transform-origin: center;
-        pointer-events: none; 
-    }
-    
-    .district5-button img {
-        width: 11.263020833333334vw;
+        #rightPanel {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 19.53125vw;
+            height: 100vh;
+            background-color: #f4f4f4;
+            z-index: 999;
+            padding: 1.3020833333333333vw;
+            box-sizing: border-box;
+            border-top-left-radius: 2.9765625vw;
+            border-bottom-left-radius: 2.9765625vw;
+            /* Border only on the left side */
+            border-left: 0.0000625vw solid #0f172a;
+        }
 
-    }
+        #usertopPanel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 19.50125vw;
+            height: 6.8359375vw;
+            background-color: #06C9EF;
+            border-top-left-radius: 2.9765625vw;
+            /* Border only on the left side */
+            border-left: 0.0000625vw solid #0f172a;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
 
-    .explore-button {
-        position: absolute;
-        top:  23.4375vw; 
-        left: 18.229166666666668vw; 
-        font-family: 'Gotham', sans-serif; 
-        font-size: 1.953125vw;
-        font-weight: bold;
-        background-color: #FFFFFF;
-        color: #06C9EF;
-        padding: 0.6510416666666666vw 1.3020833333333333vw;
-        border: 0.1953125vw solid #0097B2;
-        border-radius: 1.953125vw;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s;
-        z-index: 2;
-    }
-    
-    .explore-button:hover {
-        background-color: #06C9EF;
-        color: #FFFFFF;
-    }
-    /*-----------------------------------------------MODULE*-------------------------------------------------*/
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-    
+        .username {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 10.416666666666666vw;
+            font-size: 1.5229166666666667vw;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            color: #0f172a;
+            top: 2.6041666666666665vw;
+            right: 7.161458333333333vw;
+            position: absolute;
+        }
 
-    .mheader {
-        width: 100%;
-        text-align: center;
-        padding: 10px 0;
-        background: #fff;
-    }
 
-    .mheader button {
-        padding: 5px 10px;
-        margin: 0 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        background: #18395E;
-        color: #fff;
-        font-size: 20px;
-    }
-    
-    .mcontainer {
-        position: absolute;
-        top: 22.447916666666668vw;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100vw;
-        height: 39.84375vw;
-        background: #18395E;
-        box-shadow: 0 30px 50px #dbdbdb;
-    }
-    
-    .mbackground-slide {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-    }
-    
-    .mbackground-slide .item {
-        width: 100%;
-        height: 100%;
-        background-position: center;
-        background-size: cover;
-        transition: background-image 0.5s ease-in-out;
-    }
-    
-    .mslide {
-        position: relative;
-        z-index: 1;
-    }
-    
-    .mslide .item {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        display: none;
-        background-position: center;
-        background-size: cover;
-    }
-    
-    .mslide .item.active {
-        display: block;
-    }
-    
-    .mcontent {
-        position: absolute;
-        top: 50%;
-        left: 100px;
-        width: 300px;
-        text-align: left;
-        color: #15375D;
-        transform: translate(0, -50%);
-        font-family: system-ui;
-        display: none;
-        overflow: hidden; /* Hide overflowing blur effect */
-    }
-    
-    .mcontent.active {
-        display: block;
-    }
-    
 
-    .mcontent .name {
-        font-size: 40px;
-        text-transform: uppercase;
-        font-weight: bold;
-        opacity: 0;
-        background: rgba(255, 255, 255, 0.8);
-        animation: animateName 0.5s ease-in-out 0.5s forwards; /* Changed animation name and delay */
-    }
-    
-    .mcontent .des {
-        opacity: 0;
-        background: rgba(255, 255, 255, 0.8);
-        animation: animateDes 0.5s ease-in-out 1s forwards; /* Changed animation name and delay */
-    }
-    
-    /* Keyframes for animations */
-    @keyframes animateName {
-        from {
+        #selectdistrict-button {
+            position: absolute;
+            bottom: 13.020833333333334vw;
+            left: 4.427083333333333vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.3020833333333333vw;
+            font-weight: bold;
+            background-color: #06C9EF;
+            color: #FFFFFF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 0.0000125vw solid #0f172a;
+            border-radius: 1.953125vw;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 100;
+            transition: transform 0.2s;
+        }
+
+        #selectdistrict-button:hover {
+            background-color: #08a1c0;
+        }
+
+        #logout-button:hover {
+            background-color: #08a1c0;
+        }
+
+        #logout-button {
+            position: absolute;
+            bottom: 6.510416666666667vw;
+            left: 6.510416666666667vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.3020833333333333vw;
+            font-weight: bold;
+            background-color: #06C9EF;
+            color: #FFFFFF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 0.0000125vw solid #0f172a;
+            border-radius: 1.953125vw;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 100;
+            transition: transform 0.2s;
+        }
+
+        .title {
+            position: absolute;
+            top: 2.4088541666666665vw;
+            left: 32.552083333333336vw;
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 3.2552083333333335vw;
+            font-weight: bold;
+            text-align: center;
+            color: #FDF6EA;
+            z-index: 2;
+        }
+
+        .barrier {
+            position: absolute;
+            top: 2.4088541666666665vw;
+            left: 51.822916666666664vw;
+            transform: translateX(-50%);
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 3.2552083333333335vw;
+            font-weight: bold;
+            text-align: center;
+            color: #FAED23;
+            z-index: 2;
+        }
+
+        .district {
+            position: absolute;
+            top: 2.4088541666666665vw;
+            left: 53.157552083333336vw;
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 3.2552083333333335vw;
+            font-weight: bold;
+            text-align: center;
+            color: #06C9EF;
+            z-index: 2;
+        }
+
+
+        .district5 {
+            position: absolute;
+            left: 5.208333333333333vw;
+            top: -16.927083333333332vw;
+            width: 84.63541666666667vw;
+        }
+
+        .square {
+            position: absolute;
+            top: 21.809895833333332vw;
+            left: 25.065104166666668vw;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            color: #010355;
+            border: 1px solid #1db4ff;
+            border-radius: 10px;
+
+            width: 32.552083333333336vw;
+            height: 16.276041666666668vw;
+            background: #ffffff;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4322916666666667vw;
+            text-align: left;
+            font-family: 'DM Serif Display', serif;
+            display: flex;
+            color: #15375D;
+            margin-top: 1.6276041666666667vw;
+        }
+
+        .header img {
+            width: 13.020833333333334vw;
+            height: auto;
+            margin-right: 0.6510416666666666vw;
+            margin-top: 0px;
+            margin-left: 0px;
+        }
+
+
+        .district5-button {
+            position: absolute;
+            top: 17.96875vw;
+            left: 49.088541666666664vw;
+            padding: -13.020833333333334vw;
+            border: 0.1953125vw solid transparent;
+            transition: transform 0.3s, border-color 0.3s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            text-decoration: none;
+            color: #FFF;
+            transform-origin: center;
+            pointer-events: none;
+        }
+
+        .district5-button img {
+            width: 11.263020833333334vw;
+
+        }
+
+        .explore-button {
+            position: absolute;
+            top: 23.4375vw;
+            left: 18.229166666666668vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.953125vw;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            color: #06C9EF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 0.1953125vw solid #0097B2;
+            border-radius: 1.953125vw;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 2;
+        }
+
+        .explore-button:hover {
+            background-color: #06C9EF;
+            color: #FFFFFF;
+        }
+
+        /*-----------------------------------------------MODULE*-------------------------------------------------*/
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        .mheader {
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            background: #fff;
+        }
+
+        .mheader button {
+            padding: 5px 10px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #18395E;
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .mcontainer {
+            position: absolute;
+            top: 22.447916666666668vw;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 39.84375vw;
+            background: #18395E;
+            box-shadow: 0 30px 50px #dbdbdb;
+        }
+
+        .mbackground-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .mbackground-slide .item {
+            width: 100%;
+            height: 100%;
+            background-position: center;
+            background-size: cover;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        .mslide {
+            position: relative;
+            z-index: 1;
+        }
+
+        .mslide .item {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            background-position: center;
+            background-size: cover;
+        }
+
+        .mslide .item.active {
+            display: block;
+        }
+
+        .mcontent {
+            position: absolute;
+            top: 50%;
+            left: 100px;
+            width: 300px;
+            text-align: left;
+            color: #15375D;
+            transform: translate(0, -50%);
+            font-family: system-ui;
+            display: none;
+            overflow: hidden;
+            /* Hide overflowing blur effect */
+        }
+
+        .mcontent.active {
+            display: block;
+        }
+
+
+        .mcontent .name {
+            font-size: 40px;
+            text-transform: uppercase;
+            font-weight: bold;
             opacity: 0;
-            transform: translate(0, 100px);
+            background: rgba(255, 255, 255, 0.8);
+            animation: animateName 0.5s ease-in-out 0.5s forwards;
+            /* Changed animation name and delay */
         }
-    
-        to {
-            opacity: 1;
-            transform: translate(0);
-        }
-    }
-    
-    @keyframes animateDes {
-        from {
+
+        .mcontent .des {
             opacity: 0;
-            transform: translate(0, 100px);
+            background: rgba(255, 255, 255, 0.8);
+            animation: animateDes 0.5s ease-in-out 1s forwards;
+            /* Changed animation name and delay */
         }
-    
-        to {
-            opacity: 1;
-            transform: translate(0);
+
+        /* Keyframes for animations */
+        @keyframes animateName {
+            from {
+                opacity: 0;
+                transform: translate(0, 100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(0);
+            }
         }
-    }
-    
-    .mheader button {
-        padding: 5px 10px;
-        margin: 0 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        background: #18395E;
-        color: #fff;
-        font-size: 16px;
-        transition: background-color 0.3s, color 0.3s;
-    }
-    
-    .mheader button:hover {
-        background: #fff;
-        color: #18395E;
-    }
-    
-    
-    .mbutton {
-        width: 100%;
-        text-align: center;
-        position: absolute;
-        bottom: 20px;
-    }
-    
-    .mbutton button {
-        width: 40px;
-        height: 35px;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        margin: 0 5px;
-        border: 1px solid #000;
-        transition: 0.3s;
-    }
-    
-    .mactive-button {
-        background: #fff;
-        color: #ffff00;
-    }
-    h3 {
-        font-size: 18px; 
-        margin-top: 60px; 
-        margin-left: 20px;
-        text-align: left; 
-    }
-    #points {
-        position: absolute;
-        top: 15.625vw;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-family: Arial, sans-serif;
-        font-weight: bold;
-        color: #333; 
-        font-size: 2.0833333333333335vw; 
-        width: 17.708333333333332vw;
-        text-align: center;
-    }
-</style>
+
+        @keyframes animateDes {
+            from {
+                opacity: 0;
+                transform: translate(0, 100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(0);
+            }
+        }
+
+        .mheader button {
+            padding: 5px 10px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #18395E;
+            color: #fff;
+            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .mheader button:hover {
+            background: #fff;
+            color: #18395E;
+        }
+
+
+        .mbutton {
+            width: 100%;
+            text-align: center;
+            position: absolute;
+            bottom: 20px;
+        }
+
+        .mbutton button {
+            width: 40px;
+            height: 35px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            margin: 0 5px;
+            border: 1px solid #000;
+            transition: 0.3s;
+        }
+
+        .mactive-button {
+            background: #fff;
+            color: #ffff00;
+        }
+
+        h3 {
+            font-size: 18px;
+            margin-top: 60px;
+            margin-left: 20px;
+            text-align: left;
+        }
+
+        #points {
+            position: absolute;
+            top: 8.625vw;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            color: #333;
+            font-size: 1.0833333333333335vw;
+            width: 17.708333333333332vw;
+            text-align: center;
+        }
+    </style>
 </head>
+
 <body>
     </div>
     {% load static %}
@@ -536,12 +517,11 @@
             <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
         </div>
         <div id="rightPanel">
-            <img id="backButton" src="{% static 'backbutton.png' %}" alt="Back Button" />
-                {% if total_points %}
+            {% if total_points %}
             <div id="points">Points: {{ total_points }} </div>
-                {% else %}
+            {% else %}
             <div id="points">Points: 0 </div>
-                {% endif %}
+            {% endif %}
             <div id="usertopPanel">
                 {% if kiosk_username %}
                 <h3 class="username">{{ kiosk_username }}</h3>
@@ -553,133 +533,139 @@
                 {% csrf_token %}
                 <button id="logout-button" type="submit">Logout</button>
             </form>
-            <button id="selectdistrict-button"  onclick="window.location.href='{% url 'selectdistrict' kiosk_id=kiosk_id %}'">Select District</button>
+            <button id="selectdistrict-button"
+                onclick="window.location.href='{% url 'selectdistrict' kiosk_id=kiosk_id %}'">Select District</button>
         </div>
         <div class="top-panel"></div>
         <span class="title">BATANGAS</span>
         <span class="barrier">|</span>
         <span class="district">District V</span>
-        <img class="district5" src="{% static 'district 5-1.png' %}"  alt="district5">
+        <img class="district5" src="{% static 'district 5-1.png' %}" alt="district5">
         <button id="exploreButton" class="explore-button">EXPLORE</button>
         <div class="district5-button" style="padding: 0; margin: 0;">
             <img src="{% static 'district 5.png' %}" alt="District 5">
 
         </div>
         <div class="square">
-            
-        <div class="header">
-            <img src="{% static 'logo.png' %}" alt="header" style="width: 6.510416666666667vw;">
-            <h2>Welcome to <br> BATANGAS CITY</h2>
-    </div>
-    <script>
-        const imageButton = document.getElementById('imageButton');
-        const rightPanel = document.getElementById('rightPanel');
-        const backButton = document.getElementById('backButton');
-        const exploreButton = document.getElementById('exploreButton');
-        const moduleContainer = document.querySelector('.modulecontainer');
-        const backToMainButton = document.getElementById('backToMainButton');
 
-        imageButton.addEventListener('click', () => {
-            rightPanel.style.display = 'block';
-        });
+            <div class="header">
+                <img src="{% static 'logo.png' %}" alt="header" style="width: 6.510416666666667vw;">
+                <h2>Welcome to <br> BATANGAS CITY</h2>
+            </div>
+            <script>
+                const imageButton = document.getElementById('imageButton');
+                const rightPanel = document.getElementById('rightPanel');
+                const exploreButton = document.getElementById('exploreButton');
+                const moduleContainer = document.querySelector('.modulecontainer');
+                const backToMainButton = document.getElementById('backToMainButton');
 
-        backButton.addEventListener('click', () => {
-            rightPanel.style.display = 'none';
-        });
-        exploreButton.addEventListener('click', () => {
-            moduleContainer.style.display = 'block';
-        });
-
-        backToMainButton.addEventListener('click', () => {
-            moduleContainer.style.display = 'none';
-        });
-
-        //----------------------MODULE SCRIPT
-        document.addEventListener('DOMContentLoaded', () => {
-            let currentMunicipality = 'BATANGAS';
-        
-            // Function to update the municipality based on user interaction
-            const updateMunicipalityAndLoadModule = (municipalityName, moduleType = 'module_tourist') => {
-                currentMunicipality = municipalityName;
-                console.log("Selected Municipality:", currentMunicipality);
-                loadModule(moduleType);
-            };
-        
-            // Attach click event listeners to each "Explore" button
-            document.querySelectorAll('.exploreButton').forEach(button => {
-                button.addEventListener('click', function() {
-                    // Extracting the municipality name from the after the <p> element
-                    const municipalityName = this.previousElementSibling.textContent.split("Welcome to")[1]?.trim();
-                    updateMunicipalityAndLoadModule(municipalityName);
+                imageButton.addEventListener('click', () => {
+                    rightPanel.style.display = 'block';
+                    imageButton.style.display = 'none'; // Hide the image button
                 });
-            });
-        
-            // Function to load the module content based on the current municipality
-            function loadModule(moduleType) {
-                if (!currentMunicipality) {
-                    console.error('Municipality not set');
-                    return;
-                }
-        
-                // Update button styles as needed
-                document.querySelectorAll('.mheader button').forEach(btn => {
-                    if (btn.getAttribute('data-module') === moduleType) {
-                        btn.classList.add('mactive-button');
-                        btn.style.background = '#18395E';
-                        btn.style.color = '#fff';
-                    } else {
-                        btn.classList.remove('mactive-button');
-                        btn.style.background = '#fff';
-                        btn.style.color = '#18395E';
+
+                document.addEventListener('click', (event) => {
+                    // Check if the click target is outside the rightPanel
+                    if (!rightPanel.contains(event.target) && event.target !== imageButton) {
+                        rightPanel.style.display = 'none';
+                        imageButton.style.display = 'block'; // Show the image button again
                     }
                 });
-        
-                var kioskId = window.location.pathname.split('/')[2]; // URL format is '/kiosk_login/{kiosk_id}/'
-        
-                //URL for the module using the current municipality
-                const moduleUrl = `/kiosk_login/${ kioskId }/${moduleType}/${currentMunicipality}/`;
-                document.getElementById('moduleFrame').src = moduleUrl;
-            }
-        
-            document.querySelectorAll('.mheader button').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const moduleType = this.getAttribute('data-module');
-                    if (currentMunicipality) {
+                exploreButton.addEventListener('click', () => {
+                    moduleContainer.style.display = 'block';
+                });
+
+                backToMainButton.addEventListener('click', () => {
+                    moduleContainer.style.display = 'none';
+                });
+
+                //----------------------MODULE SCRIPT
+                document.addEventListener('DOMContentLoaded', () => {
+                    let currentMunicipality = 'BATANGAS';
+
+                    // Function to update the municipality based on user interaction
+                    const updateMunicipalityAndLoadModule = (municipalityName, moduleType = 'module_tourist') => {
+                        currentMunicipality = municipalityName;
+                        console.log("Selected Municipality:", currentMunicipality);
                         loadModule(moduleType);
-                    } else {
-                        console.error('No municipality selected');
+                    };
+
+                    // Attach click event listeners to each "Explore" button
+                    document.querySelectorAll('.exploreButton').forEach(button => {
+                        button.addEventListener('click', function () {
+                            // Extracting the municipality name from the after the <p> element
+                            const municipalityName = this.previousElementSibling.textContent.split("Welcome to")[1]?.trim();
+                            updateMunicipalityAndLoadModule(municipalityName);
+                        });
+                    });
+
+                    // Function to load the module content based on the current municipality
+                    function loadModule(moduleType) {
+                        if (!currentMunicipality) {
+                            console.error('Municipality not set');
+                            return;
+                        }
+
+                        // Update button styles as needed
+                        document.querySelectorAll('.mheader button').forEach(btn => {
+                            if (btn.getAttribute('data-module') === moduleType) {
+                                btn.classList.add('mactive-button');
+                                btn.style.background = '#18395E';
+                                btn.style.color = '#fff';
+                            } else {
+                                btn.classList.remove('mactive-button');
+                                btn.style.background = '#fff';
+                                btn.style.color = '#18395E';
+                            }
+                        });
+
+                        var kioskId = window.location.pathname.split('/')[2]; // URL format is '/kiosk_login/{kiosk_id}/'
+
+                        //URL for the module using the current municipality
+                        const moduleUrl = `/kiosk_login/${kioskId}/${moduleType}/${currentMunicipality}/`;
+                        document.getElementById('moduleFrame').src = moduleUrl;
                     }
+
+                    document.querySelectorAll('.mheader button').forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            const moduleType = this.getAttribute('data-module');
+                            if (currentMunicipality) {
+                                loadModule(moduleType);
+                            } else {
+                                console.error('No municipality selected');
+                            }
+                        });
+                    });
+                    document.getElementById('moduleFrame').onload = function () {
+                        console.log("Module frame loaded");
+
+                        const takeQuizButton = document.createElement('a');
+                        const moduleType = document.querySelector('.mheader button.mactive-button').getAttribute('data-module');
+                        const municipality = currentMunicipality;
+
+                        var kioskId = window.location.pathname.split('/')[2]; // URL format is '/kiosk_login/{kiosk_id}/'
+
+                        console.log("Module type:", moduleType);
+                        console.log("Municipality:", municipality);
+                        console.log("KioskID:", kioskId);
+
+                        takeQuizButton.href = `/quiz/?module_type=${moduleType}&municipality=${municipality}&kiosk_id=${kioskId}`;
+                        takeQuizButton.classList.add('quiz-button');
+                        takeQuizButton.textContent = 'TAKE QUIZ';
+
+                        console.log("Quiz button created:", takeQuizButton);
+
+                        // Append the take_quiz button to the module content inside the moduleFrame
+                        const moduleContent = document.getElementById('moduleFrame').contentDocument.body;
+                        console.log("Module content:", moduleContent);
+                        moduleContent.appendChild(takeQuizButton);
+
+                        console.log("Quiz button appended to module content");
+                    };
                 });
-            });
-            document.getElementById('moduleFrame').onload = function() {
-                console.log("Module frame loaded");
-                
-                const takeQuizButton = document.createElement('a');
-                const moduleType = document.querySelector('.mheader button.mactive-button').getAttribute('data-module');
-                const municipality = currentMunicipality;
-                
-                var kioskId = window.location.pathname.split('/')[2]; // URL format is '/kiosk_login/{kiosk_id}/'
-            
-                console.log("Module type:", moduleType);
-                console.log("Municipality:", municipality);
-                console.log("KioskID:", kioskId);
-            
-                takeQuizButton.href = `/quiz/?module_type=${moduleType}&municipality=${municipality}&kiosk_id=${kioskId}`;
-                takeQuizButton.classList.add('quiz-button');
-                takeQuizButton.textContent = 'TAKE QUIZ';
-            
-                console.log("Quiz button created:", takeQuizButton);
-            
-                // Append the take_quiz button to the module content inside the moduleFrame
-                const moduleContent = document.getElementById('moduleFrame').contentDocument.body;
-                console.log("Module content:", moduleContent);
-                moduleContent.appendChild(takeQuizButton);
-            
-                console.log("Quiz button appended to module content");
-            };
-        });
-        
-        
-    </script>
+
+
+            </script>
 </body>
+
 </html>

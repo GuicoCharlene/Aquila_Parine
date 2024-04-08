@@ -91,7 +91,7 @@
         font-weight: bold;
         padding: 0 2vw; /* Add horizontal padding */
         opacity: 0;
-        text-align: justify;
+
         background: rgba(255, 255, 255, 0.6);
         animation: animateName 0.5s ease-in-out 0.5s forwards; /* Changed animation name and delay */
     }
@@ -175,46 +175,56 @@
 
     .rightside-container {
         position: fixed;
-        top: 20%;
-        right: 50px;
-        transform: translateY(-50%) translateX(-100%);
+        top: 40%;
+        right: 1%;
+        transform: translateY(-50%);
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        gap: 30px;
-        perspective: 1000px;
-        width: 300px;
+        gap: 5px; 
+        width: 50%;
+        height: 20rem;
+        gap: 1rem;
+        padding: 10px; 
     }
+    
+    .rightside-container img{
+        flex: 1;
+        border-radius: 1rem;
+        backgound-position: center;
+        backend-repeat: no-repeat;
+        background-size: auto 100%;
+        border: 2px solid white;
 
-    .rightside-container img {
-        width: 300px; /* Adjust width as necessary */
+        max-width: 300px;
         height: auto;
+        max-height: 300px;
         cursor: pointer;
-        transition: transform 1s ease, z-index 0.5s ease;
-        transform-style: preserve-3d;
-        border: 1px solid #fff;
-        box-shadow: 2px 2px 10px rgba(0,0,0,1);
-        backface-visibility: hidden;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%) translateZ(0);
+        transition: transform 0.8s ease, flex 0.8s ease; 
+        order: 0;
     }
 
-    .rightside-container img.active {
-        transform: translateX(-50%) translateZ(0) scale(1.5);
-        z-index: 1;
+    .single-image img {
+        margin: 0 auto; 
+        display: block; 
+        border: 2px solid white;
     }
+    
+    .rightside-container img.large {
+        position: fixed;
+        top: 50%;
+        left: 50%; 
+        transform: translate(-50%, -50%) scale(2.5); 
+        z-index: 2; 
+        border: 2px solid white;
+    }
+    
 
-    .rightside-container img.inactive1 {
-        transform: translateX(-150%) translateZ(-100px) scale(0.8) rotateY(-45deg);
-        z-index: 0;
+    .hidden {
+        display: none !important;
     }
-
-    .rightside-container img.inactive2 {
-        transform: translateX(50%) translateZ(-100px) scale(0.8) rotateY(45deg);
-        z-index: 0;
-    }
+    
     
 </style>
 </head>
@@ -224,6 +234,7 @@
             <div class="item"></div>
         </div>
         <div class="slide">
+            {% if modules %}
             {% for module in modules %}
             <div class="item {% if forloop.first %}active{% endif %}" data-district-module-id="{{ module.DistrictModuleID }}" style="background-image: url('{{ module.ModuleContent.url }}');">
                 <div class="content {% if forloop.first %}active{% endif %}">
@@ -233,6 +244,12 @@
                 </div>
             </div>
             {% endfor %}
+        {% else %}
+            <script type="text/javascript">
+                // Redirect to the NO_DATA page if no modules are available
+                window.location.href = "/no_data";
+            </script>
+        {% endif %}
             <div id="overlay" class="overlay" onclick="shrinkImage()"></div>
 
                 <div class="rightside-container">
@@ -263,87 +280,90 @@
         const prevButton = document.querySelector('.prev');
         const nextButton = document.querySelector('.next');
         const rightSideContainer = document.querySelector('.rightside-container');
+        let rotationInterval; // Declare a variable for managing the automatic rotation interval
     
         function updateButtonState() {
             prevButton.disabled = currentSlide === 0;
-            // Next button should not be disabled on the last slide
-            // Since it will be used for 'Take Quiz'
         }
     
         function updateVisibleImages() {
-            const activeModuleID = items[currentSlide].getAttribute('data-district-module-id');
+            const activeModuleID = document.querySelector('.item.active').getAttribute('data-district-module-id');
             const images = document.querySelectorAll('.rightside-container img');
-    
+            let visibleImagesCount = 0;
+        
             images.forEach(img => {
-                img.classList.toggle('hidden', img.getAttribute('data-district-module-id') !== activeModuleID);
+                if(img.getAttribute('data-district-module-id') === activeModuleID) {
+                    img.classList.remove('hidden');
+                    visibleImagesCount++;
+                } else {
+                    img.classList.add('hidden');
+                }
             });
+        
+            if (visibleImagesCount === 1) {
+                rightSideContainer.classList.add('single-image');
+            } else {
+                rightSideContainer.classList.remove('single-image');
+            }
+        
+            rightSideContainer.style.display = visibleImagesCount > 0 ? 'block' : 'none';
+            
+            manageImageRotation(visibleImagesCount);
+        }
     
-            const hasVisibleImages = Array.from(images).some(img => !img.classList.contains('hidden'));
-            rightSideContainer.style.display = hasVisibleImages ? 'block' : 'none';
+        function nextSlide() {
+            if(currentSlide < items.length - 1) {
+                changeSlide(currentSlide + 1);
+            } else {
+                navigateToQuiz();
+            }
+        }
+    
+        function prevSlide() {
+            if(currentSlide > 0) {
+                changeSlide(currentSlide - 1);
+            }
+        }
+    
+        function changeSlide(newSlide) {
+            items[currentSlide].classList.remove('active');
+            contents[currentSlide].classList.remove('active');
+    
+            currentSlide = newSlide;
+    
+            items[currentSlide].classList.add('active');
+            contents[currentSlide].classList.add('active');
+            backgroundSlide.style.backgroundImage = items[currentSlide].style.backgroundImage;
+    
+            updateButtonState();
+            updateVisibleImages();
+            updateNextButtonForLastSlide();
+        }
+    
+        function updateNextButtonForLastSlide() {
+            nextButton.innerHTML = currentSlide === items.length - 1 ? "Quiz" : "<i class='fas fa-arrow-right'></i>";
+            nextButton.onclick = nextSlide;
         }
     
         function navigateToQuiz() {
             window.location.href = "/take_quiz";
         }
     
-        function updateNextButtonForLastSlide() {
-            if(currentSlide === items.length - 1) {
-                nextButton.innerHTML = "Quiz";
-                nextButton.onclick = navigateToQuiz;
-            } else {
-                nextButton.innerHTML = "<i class='fas fa-arrow-right'></i>";
-                nextButton.onclick = nextSlide;
-            }
-        }
-    
-        function nextSlide() {
-            if(currentSlide === items.length - 1) {
-                navigateToQuiz();
-                return;
-            }
-    
-            items[currentSlide].classList.remove('active');
-            contents[currentSlide].classList.remove('active');
-            currentSlide++;
-            
-            if(currentSlide >= items.length) {
-                navigateToQuiz();
-                return;
-            }
-    
-            items[currentSlide].classList.add('active');
-            contents[currentSlide].classList.add('active');
-            backgroundSlide.style.backgroundImage = items[currentSlide].style.backgroundImage;
-            updateButtonState();
-            updateVisibleImages();
-            updateNextButtonForLastSlide();
-        }
-    
-        function prevSlide() {
-            if(currentSlide === 0) {
-                return;
-            }
-    
-            items[currentSlide].classList.remove('active');
-            contents[currentSlide].classList.remove('active');
-            currentSlide--;
-            items[currentSlide].classList.add('active');
-            contents[currentSlide].classList.add('active');
-            backgroundSlide.style.backgroundImage = items[currentSlide].style.backgroundImage;
-            updateButtonState();
-            updateVisibleImages();
-            updateNextButtonForLastSlide();
-        }    
-    
         window.onload = function() {
-            prevButton.disabled = true; // Disable the Previous button initially
             updateButtonState();
             updateVisibleImages();
-            rotateImagesAutomatically();
-            updateNextButtonForLastSlide(); // Set the Next button text for the first slide
+            updateNextButtonForLastSlide();
         };
     
-        function rotateImagesAutomatically() {
+        function manageImageRotation(numberOfVisibleImages) {
+            clearInterval(rotationInterval); // Clear existing interval
+    
+            if (numberOfVisibleImages > 1) {
+                rotateImagesAutomatically(); // Only set up automatic rotation if more than one image is visible
+            }
+        }
+
+                function rotateImagesAutomatically() {
             setInterval(() => {
                 const activeImg = document.querySelector('.rightside-container img.active');
                 const images = Array.from(document.querySelectorAll('.rightside-container img'));
@@ -352,41 +372,64 @@
                 rotateImages(images[nextIndex]);
             }, 2000);
         }
+
         
         function rotateImages(clickedImg) {
-            var images = document.querySelectorAll('.rightside-container img');
-            var index = Array.from(images).indexOf(clickedImg);
-    
-            images.forEach((img, i) => {
-                img.classList.remove('active', 'inactive1', 'inactive2');
-    
-                if (i === index) {
-                    img.classList.add('active');
-                } else if (i === (index + 1) % images.length) {
-                    img.classList.add('inactive1');
-                } else if (i === (index - 1 + images.length) % images.length) {
-                    img.classList.add('inactive2');
-                }
-            });
-        }
-        
-        function enlargeImage(img) {
-            document.getElementById('overlay').style.display = 'block';
-            img.classList.add('large');
+            // Prevent the event from bubbling up to the document level
             event.stopPropagation();
-        }
-        
-        function shrinkImage() {
-            document.getElementById('overlay').style.display = 'none';
-            var enlargedImages = document.querySelectorAll('.large');
-            if(enlargedImages) {
-                enlargedImages.forEach(function(image) {
-                    image.classList.remove('large');
+
+            const images = document.querySelectorAll('.rightside-container img');
+            const overlay = document.getElementById('overlay');
+            
+            if (!clickedImg.classList.contains('large')) {
+                // If the image is not already enlarged, show the overlay
+                overlay.style.display = 'block';
+                
+                // Add .large class to clicked image
+                clickedImg.classList.add('large');
+                
+                // Set the order of the clicked image to 1 to bring it to the center
+                clickedImg.style.order = 1;
+
+                // Loop through all images and adjust their size and order
+                images.forEach(img => {
+                    if (img !== clickedImg) {
+                        img.style.order = 2; // Move other images to the side
+                        img.classList.remove('large');
+                        img.style.flex = '1'; // Reset flex values to default
+                    }
                 });
+
+                // Set flex on the enlarged image to take available space
+                clickedImg.style.flex = '2';
+            } else {
+                shrinkImage(); // If the image is already enlarged, shrink it back down
             }
         }
-    </script>
+
+        function shrinkImage() {
+            // Remove .large class from all images and reset their flex and order properties
+            document.querySelectorAll('.rightside-container img').forEach(img => {
+                img.classList.remove('large');
+                img.style.flex = '1'; // Reset flex values to default
+                img.style.order = 0; // Reset order
+            });
+
+            // Hide the overlay
+            const overlay = document.getElementById('overlay');
+            overlay.style.display = 'none';
+        }
+
     
+        // Event listener to check if the click is outside the .rightside-container
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.rightside-container')) {
+                shrinkImage();
+            }
+        });
+        
+        
+    </script>    
     
 </body>
 </html>
