@@ -175,54 +175,60 @@
 
     .rightside-container {
         position: fixed;
-        top: 50%;
-        right: 1%;
-        transform: translateY(-50%);
+        top: 22%;
+        right: 30%;
+        transform: translateY(-10%);
         display: flex;
-        flex-direction: row;
+
         align-items: center;
         justify-content: center;
-        gap: 5px;
-        width: 50%;
-        height: 50%;
-        gap: 1rem;
-        padding: 10px; 
+        gap: 1px;
+        perspective: 1000px;
     }
-    
+
     .rightside-container img {
-        display: cover;
-        border-radius: 1rem;
-        background-position: center;
-        background-repeat: no-repeat;
-        
-        border: 2px solid white;
-        width: 30%; 
-        height: 70%; 
+        width: 400px;
+        height: 400px;
+        object-fit: cover; /* This will prevent distortion */
         cursor: pointer;
-        transition: transform 0.8s ease, flex 0.8s ease; 
-        order: 0;
+        transition: transform 0.8s ease, z-index 9s ease;
+        
+        border: 1px solid #fff;
+        box-shadow: 2px 2px 80px rgba(0,0,0,0.8);
+        backface-visibility: hidden;
+        position: absolute;
+    }    
+    
+    .rightside-container img.active {
+        transform: translateX(-40%) translateZ(10px) scale(1.6);
+        z-index: 3;
     }
     
-    .single-image img {
-        margin: 0 auto;
-        display: block;
-        border: 2px solid white;
+    .rightside-container img.inactive1{
+        transform: translateX(10%) translateZ(5px) scale(1.3);
     }
-    
-    .rightside-container img.large {
-        position: fixed;
-        top: 45%;
-        left: 50%; 
-        transform: translate(-50%, -50%) scale(2.2); 
-        z-index: 2;
-        border: 2px solid white;
+    .rightside-container img.inactive2{
+        transform: translateX(-90%) translateZ(5px) scale(1.3);
+
     }
-    
+
     .hidden {
         display: none !important;
     }
+
+    .image-pop {
+        animation: popAnimation 2.8s forwards infinite;
+    }
     
-    
+
+    @keyframes popAnimation {
+        0%, 100% {
+            transform: translate(-30%, 0%) scale(1.5);
+        }
+        50% {
+            transform: translate(-30%, 0%) scale(1.7);
+        }
+    }
 </style>
 </head>
 <body>
@@ -231,7 +237,6 @@
             <div class="item"></div>
         </div>
         <div class="slide">
-            {% if modules %}
             {% for module in modules %}
             <div class="item {% if forloop.first %}active{% endif %}" data-district-module-id="{{ module.DistrictModuleID }}" style="background-image: url('{{ module.ModuleContent.url }}');">
                 <div class="content {% if forloop.first %}active{% endif %}">
@@ -241,12 +246,6 @@
                 </div>
             </div>
             {% endfor %}
-        {% else %}
-            <script type="text/javascript">
-                // Redirect to the NO_DATA page if no modules are available
-                window.location.href = "/no_data";
-            </script>
-        {% endif %}
             <div id="overlay" class="overlay" onclick="shrinkImage()"></div>
 
                 <div class="rightside-container">
@@ -277,156 +276,132 @@
         const prevButton = document.querySelector('.prev');
         const nextButton = document.querySelector('.next');
         const rightSideContainer = document.querySelector('.rightside-container');
-        let rotationInterval; // Declare a variable for managing the automatic rotation interval
     
         function updateButtonState() {
             prevButton.disabled = currentSlide === 0;
+            // Next button should not be disabled on the last slide
+            // Since it will be used for 'Take Quiz'
         }
     
         function updateVisibleImages() {
-            const activeModuleID = document.querySelector('.item.active').getAttribute('data-district-module-id');
-            const images = document.querySelectorAll('.rightside-container img');
-            let visibleImagesCount = 0;
-        
-            images.forEach(img => {
-                if(img.getAttribute('data-district-module-id') === activeModuleID) {
-                    img.classList.remove('hidden');
-                    visibleImagesCount++;
-                } else {
-                    img.classList.add('hidden');
-                }
-            });
-        
-            if (visibleImagesCount === 1) {
-                rightSideContainer.classList.add('single-image');
-            } else {
-                rightSideContainer.classList.remove('single-image');
+            const activeModuleID = items[currentSlide].getAttribute('data-district-module-id');
+            const images = Array.from(document.querySelectorAll('.rightside-container img'));
+            const relevantImages = images.filter(img => img.getAttribute('data-district-module-id') === activeModuleID);
+    
+            images.forEach(img => img.classList.add('hidden')); // Initially hide all images
+    
+            if (relevantImages.length === 1) {
+                // If there's only one image, show it with a pop animation
+                const singleImage = relevantImages[0];
+                singleImage.classList.remove('hidden', 'inactive1', 'inactive2');
+                singleImage.classList.add('active', 'image-pop'); // Apply pop animation
+            } else if (relevantImages.length > 1) {
+                // For multiple images, prepare for 3D carousel
+                relevantImages.forEach((img, index) => {
+                    img.classList.remove('hidden', 'active', 'image-pop'); // Remove pop animation and hide all initially
+                    if (index === 0) {
+                        img.classList.add('active'); // Only the first relevant image is active
+                    } else {
+                        img.classList.add(`inactive${index}`);
+                    }
+                });
+                rotateImages(relevantImages[0]); // Start rotation with the first relevant image
             }
-        
-            rightSideContainer.style.display = visibleImagesCount > 0 ? 'block' : 'none';
-            
-            manageImageRotation(visibleImagesCount);
-        }
     
-        function nextSlide() {
-            if(currentSlide < items.length - 1) {
-                changeSlide(currentSlide + 1);
-            } else {
-                navigateToQuiz();
-            }
-        }
-    
-        function prevSlide() {
-            if(currentSlide > 0) {
-                changeSlide(currentSlide - 1);
-            }
-        }
-    
-        function changeSlide(newSlide) {
-            items[currentSlide].classList.remove('active');
-            contents[currentSlide].classList.remove('active');
-    
-            currentSlide = newSlide;
-    
-            items[currentSlide].classList.add('active');
-            contents[currentSlide].classList.add('active');
-            backgroundSlide.style.backgroundImage = items[currentSlide].style.backgroundImage;
-    
-            updateButtonState();
-            updateVisibleImages();
-            updateNextButtonForLastSlide();
-        }
-    
-        function updateNextButtonForLastSlide() {
-            nextButton.innerHTML = currentSlide === items.length - 1 ? "Quiz" : "<i class='fas fa-arrow-right'></i>";
-            nextButton.onclick = nextSlide;
+            const hasVisibleImages = relevantImages.length > 0;
+            rightSideContainer.style.display = hasVisibleImages ? 'block' : 'none';
         }
     
         function navigateToQuiz() {
             window.location.href = "/take_quiz";
         }
     
-        window.onload = function() {
+        function updateNextButtonForLastSlide() {
+            if(currentSlide === items.length - 1) {
+                nextButton.innerHTML = "Quiz";
+                nextButton.onclick = navigateToQuiz;
+            } else {
+                nextButton.innerHTML = "<i class='fas fa-arrow-right'></i>";
+                nextButton.onclick = nextSlide;
+            }
+        }
+    
+        function nextSlide() {
+            if(currentSlide === items.length - 1) {
+                navigateToQuiz();
+                return;
+            }
+    
+            items[currentSlide].classList.remove('active');
+            contents[currentSlide].classList.remove('active');
+            currentSlide++;
+            
+            if(currentSlide >= items.length) {
+                navigateToQuiz();
+                return;
+            }
+    
+            items[currentSlide].classList.add('active');
+            contents[currentSlide].classList.add('active');
+            backgroundSlide.style.backgroundImage = items[currentSlide].style.backgroundImage;
             updateButtonState();
             updateVisibleImages();
             updateNextButtonForLastSlide();
-        };
-    
-        function manageImageRotation(numberOfVisibleImages) {
-            clearInterval(rotationInterval); // Clear existing interval
-    
-            if (numberOfVisibleImages > 1) {
-                rotateImagesAutomatically(); // Only set up automatic rotation if more than one image is visible
-            }
         }
-
-                function rotateImagesAutomatically() {
+    
+        function prevSlide() {
+            if(currentSlide === 0) {
+                return;
+            }
+    
+            items[currentSlide].classList.remove('active');
+            contents[currentSlide].classList.remove('active');
+            currentSlide--;
+            items[currentSlide].classList.add('active');
+            contents[currentSlide].classList.add('active');
+            backgroundSlide.style.backgroundImage = items[currentSlide].style.backgroundImage;
+            updateButtonState();
+            updateVisibleImages();
+            updateNextButtonForLastSlide();
+        }    
+    
+        function rotateImages(clickedImg) {
+            var images = document.querySelectorAll('.rightside-container img:not(.hidden)');
+            var index = Array.from(images).indexOf(clickedImg);
+    
+            images.forEach((img, i) => {
+                img.classList.remove('active', 'inactive1', 'inactive2');
+    
+                if (i === index) {
+                    img.classList.add('active');
+                } else if (i === (index + 1) % images.length) {
+                    img.classList.add('inactive1');
+                } else if (i === (index - 1 + images.length) % images.length) {
+                    img.classList.add('inactive2');
+                }
+            });
+        }
+    
+        function rotateImagesAutomatically() {
             setInterval(() => {
-                const activeImg = document.querySelector('.rightside-container img.active');
-                const images = Array.from(document.querySelectorAll('.rightside-container img'));
+                const activeImg = document.querySelector('.rightside-container img.active:not(.hidden)');
+                const images = Array.from(document.querySelectorAll('.rightside-container img:not(.hidden)'));
                 const index = images.indexOf(activeImg);
                 const nextIndex = (index + 1) % images.length;
-                rotateImages(images[nextIndex]);
+                if(images.length > 1) { // Only rotate if there's more than one image
+                    rotateImages(images[nextIndex]);
+                }
             }, 2000);
         }
-
-        
-        function rotateImages(clickedImg) {
-            // Prevent the event from bubbling up to the document level
-            event.stopPropagation();
-
-            const images = document.querySelectorAll('.rightside-container img');
-            const overlay = document.getElementById('overlay');
-            
-            if (!clickedImg.classList.contains('large')) {
-                // If the image is not already enlarged, show the overlay
-                overlay.style.display = 'block';
-                
-                // Add .large class to clicked image
-                clickedImg.classList.add('large');
-                
-                // Set the order of the clicked image to 1 to bring it to the center
-                clickedImg.style.order = 1;
-
-                // Loop through all images and adjust their size and order
-                images.forEach(img => {
-                    if (img !== clickedImg) {
-                        img.style.order = 2; // Move other images to the side
-                        img.classList.remove('large');
-                        img.style.flex = '1'; // Reset flex values to default
-                    }
-                });
-
-                // Set flex on the enlarged image to take available space
-                clickedImg.style.flex = '2';
-            } else {
-                shrinkImage(); // If the image is already enlarged, shrink it back down
-            }
-        }
-
-        function shrinkImage() {
-            // Remove .large class from all images and reset their flex and order properties
-            document.querySelectorAll('.rightside-container img').forEach(img => {
-                img.classList.remove('large');
-                img.style.flex = '1'; // Reset flex values to default
-                img.style.order = 0; // Reset order
-            });
-
-            // Hide the overlay
-            const overlay = document.getElementById('overlay');
-            overlay.style.display = 'none';
-        }
-
     
-        // Event listener to check if the click is outside the .rightside-container
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.rightside-container')) {
-                shrinkImage();
-            }
-        });
-        
-        
-    </script>    
+        window.onload = function() {
+            updateButtonState();
+            updateVisibleImages();
+            rotateImagesAutomatically();
+            updateNextButtonForLastSlide(); // Set the Next button text for the first slide
+        };
+    </script>
+    
     
 </body>
 </html>
