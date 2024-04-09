@@ -4,7 +4,7 @@ from django.urls import path
 from . import views
 from .views import login, homepage, queue, queue_list, adminpage, selectdistrict, update_queue_capacity, kiosk_logout, kiosk_login, get_queue_data, admin_district_1, history, take_quiz, results_view
 from .views import admin_district_2, admin_district_3, admin_district_4, admin_district_5, admin_district_6, selectmunicipality1, selectmunicipality2, selectmunicipality3, selectmunicipality4, selectmunicipality5, selectmunicipality6, selectmodule, module_tourist, module_food, module_craft, quiz
-from .views import admin_module_tourist, admin_module_food, admin_module_craft, save_module_changes, done_quiz, delete_module, add_module, no_data
+from .views import admin_module_tourist, admin_module_food, admin_module_craft, save_module_changes, done_quiz, delete_module, add_module, no_data, get_municipality_status
 from .views import admin_module_tourist, admin_module_food, admin_module_craft, save_module_changes, done_quiz, delete_module,add_module, admin_quiz_tourist, admin_quiz_food, admin_quiz_craft, save_quiz_changes,  delete_quiz,add_quiz
 
 urlpatterns = [
@@ -66,6 +66,8 @@ urlpatterns = [
     path('delete_quiz/', delete_quiz, name='delete_quiz'),  
     path('add_quiz/', add_quiz, name='add_quiz'),  
     path('save_quiz_changes/', save_quiz_changes, name='save_quiz_changes'),
+    
+    path('get_municipality_status/', get_municipality_status, name='get_municipality_status'),
     
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

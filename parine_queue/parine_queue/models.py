@@ -61,7 +61,7 @@ class DistrictModules(models.Model):
 
     class Meta:
         db_table = 'districtmodule'
-        
+
 class TriviaQuestion(models.Model):
     TriviaQuestionID = models.AutoField(primary_key=True)
     Municipality = models.CharField(max_length=100)

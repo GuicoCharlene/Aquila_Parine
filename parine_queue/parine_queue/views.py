@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models import Case, When, Value, CharField
 from .models import QueueVisitor, QueueEntry, Kiosk, Admin, Queue_Capacity, Visitor_History, DistrictModules, TriviaQuestion, RewardPoints, VisitorProgress
 import random, os
+from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 from datetime import timedelta
 from django.http import HttpResponseRedirect, JsonResponse
@@ -1356,7 +1357,7 @@ def results_view(request):
     # Update the visitor's progress for the same date as today
     update_visitor_progress(visitor_id, module_type, municipality, timezone.now().date())
 
-    total_points_entry = RewardPoints.objects.filter(user_id=visitor_id, create_time__date=timezone.now().date()).aggregate(total_points=Sum('TotalPoints'))
+    total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
     total_points = total_points_entry.get('total_points', 0)
        # Store total points in session
     request.session['total_points'] = total_points
@@ -1365,6 +1366,46 @@ def results_view(request):
         del request.session['game_session']
     
     return render(request, 'results.html', {'total_points': total_points})
+
+@require_http_methods(["POST"])
+@csrf_exempt
+def get_municipality_status(request):
+    selected_municipality = request.POST.get('municipality_name')
+    overall_status, percentage_done = get_module_status_for_municipality(selected_municipality)
+    return JsonResponse({'status': overall_status, 'percentage': percentage_done})
+
+def get_module_status_for_municipality(selected_municipality):
+ 
+    module_types = ['module_tourist', 'module_food', 'module_craft']
+    total_modules = len(module_types)
+
+    total_done = 0
+    for module_type in module_types:
+        # Check if any progress exists for this module type in the given municipality
+        progress_exists = VisitorProgress.objects.filter(
+            Municipality=selected_municipality,
+            ModuleType=module_type,
+            Status='DONE'
+        ).exists()
+
+        # Increment total_done if progress exists
+        if progress_exists:
+            total_done += 1
+        
+    # Calculate the percentage of completion
+    percentage_done = (total_done / total_modules) * 100
+
+    # Set the status based on the percentage of completion
+    if percentage_done == 100:
+        overall_status = 'DONE'
+    elif percentage_done > 0:
+        overall_status = 'IN PROGRESS'
+    else:
+        overall_status = 'NOT STARTED'
+
+    return overall_status, percentage_done
+
+
 def done_quiz(request):
     return render(request, 'done_quiz.html')
 

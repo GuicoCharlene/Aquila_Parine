@@ -106,6 +106,7 @@
         color: #000000;
         animation: animateDes 0.5s ease-in-out 1s forwards;
         box-sizing: border-box;
+        filter: blur(2px);
     }
 
     .content .loc {
@@ -237,16 +238,21 @@
             <div class="item"></div>
         </div>
         <div class="slide">
+            {% if modules %}
             {% for module in modules %}
-            <div class="item {% if forloop.first %}active{% endif %}" data-district-module-id="{{ module.DistrictModuleID }}" style="background-image: url('{{ module.ModuleContent.url }}');">
-                <div class="content {% if forloop.first %}active{% endif %}">
-                    <div class="name">{{ module.ModuleName }}</div>
-                    <div class="loc">Location: {{ module.ModuleLocation }}</div>
-                    <div class="des">{{ module.ModuleFile }}</div>
+                <div class="item {% if forloop.first %}active{% endif %}" data-district-module-id="{{ module.DistrictModuleID }}" style="background-image: url('{{ module.ModuleContent.url }}');">
+                    <div class="content {% if forloop.first %}active{% endif %}">
+                        <div class="name">{{ module.ModuleName }}</div>
+                        <div class="loc">Location: {{ module.ModuleLocation }}</div>
+                        <div class="des">{{ module.ModuleFile }}</div>
+                    </div>
                 </div>
-            </div>
-            {% endfor %}
+                {% endfor %}
+            {% else %}
+                {% include "no_data.html" %}
+            {% endif %}
             <div id="overlay" class="overlay" onclick="shrinkImage()"></div>
+        
 
                 <div class="rightside-container">
                     {% for module in modules %}
