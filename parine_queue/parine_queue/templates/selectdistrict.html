@@ -418,9 +418,12 @@
             <div id="imageButtonContainer">
                 <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
             </div>
-            
+            {% if total_points %}
             <div id="points">Points: {{ total_points }} </div>
-        
+            
+            {% else %}
+            <div id="points">Points: 0 </div>
+            {% endif %}
             
             <div id="districtNames">
                 <button class="district-button" onclick="toggleDistrictList('districtList1')">District 1</button>
