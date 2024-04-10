@@ -211,6 +211,7 @@ def update_queue_capacity(request):
 
 # Views for the select district
 def selectdistrict(request, kiosk_id):
+    all_points = 0
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
@@ -232,8 +233,6 @@ def selectdistrict(request, kiosk_id):
             kiosk.TimeDuration = None
             kiosk.save()
 
-    total_points = 0  # Default value for total points
-
     try:
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
         if kiosk.QueueID:
@@ -252,9 +251,9 @@ def selectdistrict(request, kiosk_id):
         # Fetch total points for the current date
         if logged_in_username:
             visitor_id = queue_entry.user.pk
-            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
-            total_points = total_points_entry.get('total_points', 0)
-
+            all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
+            all_points = all_points_entry.get('all_points', 0)
+            
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk.")
     except QueueEntry.DoesNotExist:
@@ -264,7 +263,7 @@ def selectdistrict(request, kiosk_id):
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
-        'total_points': total_points,
+        'all_points': all_points,
     }
     return render(request, 'selectdistrict.html', context)
 
@@ -305,7 +304,7 @@ def kiosk_login(request, kiosk_id):
     for kiosk in Kiosk.objects.filter(KioskStatus=True).select_related('QueueID'):
         if kiosk.QueueID and kiosk.QueueID.EndTime:
             time_elapsed = current_time - kiosk.QueueID.EndTime
-            if time_elapsed >= timedelta(minutes=1):
+            if time_elapsed >= timedelta(minutes=1): #time limit
                 queue_entry = kiosk.QueueID
                 if queue_entry.QueueStatus == 'IN KIOSK':
                     kiosk.QueueID.delete()
@@ -727,7 +726,7 @@ def admin_quiz_craft(request, municipality):
     return render(request, 'admin_quiz_craft.html', {'questions': questions, 'municipality': municipality})
 
 def selectmunicipality1(request, kiosk_id):
-    total_points = 0  # Default value for total points
+    all_points = 0
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
@@ -768,8 +767,8 @@ def selectmunicipality1(request, kiosk_id):
         # Fetch total points for the current date if a user is logged in
         if logged_in_username:
             visitor_id = queue_entry.user.pk
-            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
-            total_points = total_points_entry.get('total_points', 0)
+            all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
+            all_points = all_points_entry.get('all_points', 0)
             
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk.")
@@ -780,18 +779,18 @@ def selectmunicipality1(request, kiosk_id):
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
-        'total_points': total_points,
+        'all_points': all_points,
     }
 
     return render(request, 'selectmunicipality1.html', context)
 
 
 def selectmunicipality2(request, kiosk_id):
-    total_points = 0
+    all_points = 0
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
-
+    
     # Check and handle kiosks that have exceeded time limits
     for kiosk in Kiosk.objects.filter(KioskStatus=True).select_related('QueueID'):
         if kiosk.QueueID and kiosk.QueueID.EndTime:
@@ -828,8 +827,8 @@ def selectmunicipality2(request, kiosk_id):
         # Fetch total points for the current date if a user is logged in
         if logged_in_username:
             visitor_id = queue_entry.user.pk
-            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
-            total_points = total_points_entry.get('total_points', 0)
+            all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
+            all_points = all_points_entry.get('all_points', 0)
             
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk.")
@@ -840,16 +839,16 @@ def selectmunicipality2(request, kiosk_id):
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
-        'total_points': total_points,
+        'all_points': all_points,
     }
     return render(request, 'selectmunicipality2.html', context)
 
 def selectmunicipality3(request, kiosk_id):
-    total_points = 0
+    all_points = 0
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
-
+    
     # Check and handle kiosks that have exceeded time limits
     for kiosk in Kiosk.objects.filter(KioskStatus=True).select_related('QueueID'):
         if kiosk.QueueID and kiosk.QueueID.EndTime:
@@ -886,8 +885,8 @@ def selectmunicipality3(request, kiosk_id):
         # Fetch total points for the current date if a user is logged in
         if logged_in_username:
             visitor_id = queue_entry.user.pk
-            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
-            total_points = total_points_entry.get('total_points', 0)
+            all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
+            all_points = all_points_entry.get('all_points', 0)
             
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk.")
@@ -898,17 +897,17 @@ def selectmunicipality3(request, kiosk_id):
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
-        'total_points': total_points,
+        'all_points': all_points,
     }
     return render(request, 'selectmunicipality3.html', context)
 
 
 def selectmunicipality4(request, kiosk_id):
-    total_points = 0
+    all_points = 0
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
-
+    
     # Check and handle kiosks that have exceeded time limits
     for kiosk in Kiosk.objects.filter(KioskStatus=True).select_related('QueueID'):
         if kiosk.QueueID and kiosk.QueueID.EndTime:
@@ -945,8 +944,8 @@ def selectmunicipality4(request, kiosk_id):
         # Fetch total points for the current date if a user is logged in
         if logged_in_username:
             visitor_id = queue_entry.user.pk
-            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
-            total_points = total_points_entry.get('total_points', 0)
+            all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
+            all_points = all_points_entry.get('all_points', 0)
             
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk.")
@@ -957,16 +956,16 @@ def selectmunicipality4(request, kiosk_id):
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
-        'total_points': total_points,
+        'all_points': all_points,
     }
     return render(request, 'selectmunicipality4.html', context)
 
 def selectmunicipality5(request, kiosk_id):
-    total_points = 0
+    all_points = 0
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
-
+    
     # Check and handle kiosks that have exceeded time limits
     for kiosk in Kiosk.objects.filter(KioskStatus=True).select_related('QueueID'):
         if kiosk.QueueID and kiosk.QueueID.EndTime:
@@ -1003,8 +1002,8 @@ def selectmunicipality5(request, kiosk_id):
         # Fetch total points for the current date if a user is logged in
         if logged_in_username:
             visitor_id = queue_entry.user.pk
-            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
-            total_points = total_points_entry.get('total_points', 0)
+            all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
+            all_points = all_points_entry.get('all_points', 0)
             
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk.")
@@ -1015,16 +1014,16 @@ def selectmunicipality5(request, kiosk_id):
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
-        'total_points': total_points,
+        'all_points': all_points,
     }
     return render(request, 'selectmunicipality5.html', context)
 
 def selectmunicipality6(request, kiosk_id):
-    total_points = 0
+    all_points = 0
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
-
+    
     # Check and handle kiosks that have exceeded time limits
     for kiosk in Kiosk.objects.filter(KioskStatus=True).select_related('QueueID'):
         if kiosk.QueueID and kiosk.QueueID.EndTime:
@@ -1061,8 +1060,8 @@ def selectmunicipality6(request, kiosk_id):
         # Fetch total points for the current date if a user is logged in
         if logged_in_username:
             visitor_id = queue_entry.user.pk
-            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
-            total_points = total_points_entry.get('total_points', 0)
+            all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
+            all_points = all_points_entry.get('all_points', 0)
             
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk.")
@@ -1073,9 +1072,10 @@ def selectmunicipality6(request, kiosk_id):
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
-        'total_points': total_points,
+        'all_points': all_points,
     }
     return render(request, 'selectmunicipality6.html', context)
+
 #CATEGORIZE THE MUNICIPALITY FOR THE SORTING OF DATA FOR THE MODULE
 def get_district_suffix(municipality):
 
@@ -1280,6 +1280,7 @@ def update_visitor_progress(visitor_id, module_type, municipality, date_complete
     if all(module in completed_modules for module in required_modules):
         # Add 5 extra points to the total points if all required modules are completed
         add_extra_points(visitor_id, municipality)
+
 def add_extra_points(visitor_id, municipality):
     # Check if there's already a reward entry for today
     today = timezone.now().date()
@@ -1348,7 +1349,6 @@ def update_or_create_reward_points(visitor_id, points_to_add, trivia_question_id
         }
         RewardPoints.objects.create(**lookup_criteria, **defaults)
 
-
 def results_view(request):
     visitor_id = request.session.get('game_session', {}).get('visitor_id')
     module_type = request.session.get('game_session', {}).get('module_type', '')
@@ -1357,15 +1357,29 @@ def results_view(request):
     # Update the visitor's progress for the same date as today
     update_visitor_progress(visitor_id, module_type, municipality, timezone.now().date())
 
-    total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
+    # Retrieve total points of the visitor for today for the specified module type and municipality
+    total_points_entry = RewardPoints.objects.filter(user_id=visitor_id, create_time__date=timezone.now().date(), ModuleType=module_type, Municipality=municipality).aggregate(total_points=Sum('TotalPoints'))
     total_points = total_points_entry.get('total_points', 0)
-       # Store total points in session
+    
+    # Store total points earned today in session
     request.session['total_points'] = total_points
+    
+    # Retrieve total points of the visitor overall
+    all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
+    all_points = all_points_entry.get('all_points', 0)
+    
+    # Store total points earned overall in session
+    request.session['all_points'] = all_points
+    
+    # Retrieve total number of questions answered by the visitor for the specified module type and municipality
+    total_questions_count = RewardPoints.objects.filter(user_id=visitor_id, ModuleType=module_type, Municipality=municipality).aggregate(total_questions=Count('TriviaQuestionID'))
+    total_questions = total_questions_count.get('total_questions', 0)
+    
     # Clear the game session after updating visitor progress and before rendering results
     if 'game_session' in request.session:
         del request.session['game_session']
     
-    return render(request, 'results.html', {'total_points': total_points})
+    return render(request, 'results.html', {'total_points': total_points, 'all_points': all_points, 'total_questions': total_questions})
 
 @require_http_methods(["POST"])
 @csrf_exempt
