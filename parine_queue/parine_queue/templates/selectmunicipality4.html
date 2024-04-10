@@ -95,47 +95,71 @@
         }
 
         #usertopPanel {
+
             position: absolute;
             top: 0;
             right: 0;
             width: 19.50125vw;
             height: 6.8359375vw;
-            background-color: #06C9EF;
+            background-color: #15375D;
             border-top-left-radius: 2.9765625vw;
-            /* Border only on the left side */
+
             border-left: 0.0000625vw solid #0f172a;
             z-index: 1;
             display: flex;
             align-items: center;
+            justify-content: center;
             overflow: hidden;
         }
 
         .username {
             text-overflow: ellipsis;
             overflow: hidden;
-            white-space: nowrap;
-            max-width: 10.416666666666666vw;
+            max-width: 11.979166666666666vw;
             font-size: 1.5229166666666667vw;
-            margin: 0;
+            margin-right: 5.729166666666667vw;
+            text-align: right;
             padding: 0;
             font-family: Arial, sans-serif;
             font-weight: bold;
-            color: #0f172a;
-            top: 2.6041666666666665vw;
-            right: 7.161458333333333vw;
+            color: white;
             position: absolute;
         }
 
 
+        #logout-button:hover {
+            background-color: #215794;
+        }
 
-        #selectdistrict-button {
+        #logout-button {
             position: absolute;
-            bottom: 13.020833333333334vw;
-            left: 4.427083333333333vw;
+            bottom: 2.510416666666667vw;
+            left: 50%;
+            transform: translateX(-50%);
             font-family: 'Gotham', sans-serif;
             font-size: 1.3020833333333333vw;
             font-weight: bold;
-            background-color: #06C9EF;
+            background-color: #15375D;
+            color: #FFFFFF;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            border: 0.0000125vw solid #0f172a;
+            border-radius: 1.953125vw;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            z-index: 100;
+            transition: transform 0.2s;
+        }
+
+        #selectdistrict-button {
+            position: absolute;
+            width: 11.458333333333334vw;
+            bottom: 6.25vw;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.3020833333333333vw;
+            font-weight: bold;
+            background-color: #15375D;
             color: #FFFFFF;
             padding: 0.6510416666666666vw 1.3020833333333333vw;
             border: 0.0000125vw solid #0f172a;
@@ -147,29 +171,7 @@
         }
 
         #selectdistrict-button:hover {
-            background-color: #08a1c0;
-        }
-
-        #logout-button:hover {
-            background-color: #08a1c0;
-        }
-
-        #logout-button {
-            position: absolute;
-            bottom: 6.510416666666667vw;
-            left: 6.510416666666667vw;
-            font-family: 'Gotham', sans-serif;
-            font-size: 1.3020833333333333vw;
-            font-weight: bold;
-            background-color: #06C9EF;
-            color: #FFFFFF;
-            padding: 0.6510416666666666vw 1.3020833333333333vw;
-            border: 0.0000125vw solid #0f172a;
-            border-radius: 1.953125vw;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-            z-index: 100;
-            transition: transform 0.2s;
+            background-color: #215794;
         }
 
         .title {
@@ -894,13 +896,6 @@
             color: #ffff00;
         }
 
-        h3 {
-            font-size: 18px;
-            margin-top: 60px;
-            margin-left: 20px;
-            text-align: left;
-        }
-
         #points {
             position: absolute;
             top: 8.625vw;
@@ -912,6 +907,94 @@
             font-size: 1.0833333333333335vw;
             width: 17.708333333333332vw;
             text-align: center;
+        }
+        #districtNames {
+            position: absolute;
+            top: 10.625vw;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            color: #333;
+
+            width: 17.708333333333332vw;
+            text-align: center;
+
+        }
+
+        #districtNamesLower {
+            position: absolute;
+            top: 13.025vw;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            color: #333;
+
+            width: 17.708333333333332vw;
+            text-align: center;
+        }
+
+        .district-button {
+            font-family: 'Gotham', sans-serif;
+            font-weight: bold;
+            background-color: #15375D;
+            color: #FFFFFF;
+            font-size: 0.78125vw;
+
+            padding: 0.68993316666666666vw;
+            border: 0.0000125vw solid #0f172a;
+            border-radius: 1.953125vw;
+            cursor: pointer;
+            
+        }
+
+        .district-button:hover {
+            background-color: #1e4d84;
+        }
+
+        .district-list {
+            display: none;
+        }
+
+        .district-list {
+            font-family: 'Gotham', sans-serif;
+            font-size: 2.0416666666666667vw;
+            font-weight: bold;
+            color: #0f172a;
+            padding: 0.6510416666666666vw 1.3020833333333333vw;
+            cursor: pointer;
+            margin-top: 16.666666666666668vw;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .district-list-item {
+            display: block;
+            width: 100%;
+            border: 0.2000125vw solid #0f172a;
+            border-radius: 1.953125vw;
+            font-family: 'Gotham', sans-serif;
+            font-size: 1.0416666666666667vw;
+            font-weight: bold;
+            background-color: #15375D;
+            color: #FFFFFF;
+            border: 0.1953125vw solid #FFFFFF;
+            border-radius: 1.953125vw;
+            cursor: pointer;
+
+        }
+
+        .district-list-item:hover {
+            background-color: #078199;
+        }
+
+        .district-button.selected, .district-list-item.selected {
+            background-color: #08a1c0; /* The color used for hover and selected state */
+        }     
+
+        #municipality-status {
+            display: none;
+            margin-top: 1.0416666666666667vw;
         }
     </style>
 </head>
@@ -935,11 +1018,100 @@
             <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
         </div>
         <div id="rightPanel">
+            <div id="imageButtonContainer">
+                <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
+            </div>
             {% if total_points %}
             <div id="points">Points: {{ total_points }} </div>
+            
             {% else %}
             <div id="points">Points: 0 </div>
             {% endif %}
+            
+            <div id="districtNames">
+                <button class="district-button" onclick="toggleDistrictList('districtList1')">District 1</button>
+                <button class="district-button" onclick="toggleDistrictList('districtList2')">District 2</button>
+                <button class="district-button" onclick="toggleDistrictList('districtList3')">District 3</button>
+            </div>
+
+            <div id="districtNamesLower">
+                <button class="district-button" onclick="toggleDistrictList('districtList4')">District 4</button>
+                <button class="district-button" onclick="toggleDistrictList('districtList5')">District 5</button>
+                <button class="district-button" onclick="toggleDistrictList('districtList6')">District 6</button>
+
+                <h3 id="municipality-status">Progress Status: {{ municipality_status }}</h3>
+
+            </div>
+            <div id="districtList1" class="district-list">
+                <!-- Add items for district 1 -->
+
+                <button class="district-list-item">BALAYAN</button>
+                <button class="district-list-item">CALACA</button>
+                <button class="district-list-item">CALATAGAN</button>
+                <button class="district-list-item">LEMERY</button>
+                <button class="district-list-item">LIAN</button>
+                <button class="district-list-item">NASUGBU</button>
+                <button class="district-list-item">TAAL</button>
+                <button class="district-list-item">TUY</button>
+                <!-- Add more items as needed -->
+            </div>
+
+            <div id="districtList2" class="district-list">
+                <!-- Add items for district 2 -->
+
+                <button class="district-list-item">BAUAN</button>
+                <button class="district-list-item">LOBO</button>
+                <button class="district-list-item">MABINI</button>
+                <button class="district-list-item">SAN LUIS</button>
+                <button class="district-list-item">SAN PASCUAL</button>
+                <button class="district-list-item">TINGLOY</button>
+                <!-- Add more items as needed -->
+            </div>
+
+            <div id="districtList3" class="district-list">
+                <!-- Add items for district 3 -->
+
+                <button class="district-list-item">AGONCILLO</button>
+                <button class="district-list-item">ALITAGTAG</button>
+                <button class="district-list-item">CALATAGAN</button>
+                <button class="district-list-item">BALETE</button>
+                <button class="district-list-item">CUENCA</button>
+                <button class="district-list-item">LAUREL</button>
+                <button class="district-list-item">MALVAR</button>
+                <button class="district-list-item">MATAAS NA KAHOY</button>
+                <button class="district-list-item">SAN NICOLAS</button>
+                <button class="district-list-item">STA. TERESITA</button>
+                <button class="district-list-item">STO. TOMAS</button>
+                <button class="district-list-item">TALISAY</button>
+                <button class="district-list-item">TANAUAN</button>
+                <!-- Add more items as needed -->
+            </div>
+
+            <div id="districtList4" class="district-list">
+                <!-- Add items for district 4 -->
+
+                <button class="district-list-item">IBAAN</button>
+                <button class="district-list-item">PADRE GARCIA</button>
+                <button class="district-list-item">ROSARIO</button>
+                <button class="district-list-item">SAN JOSE</button>
+                <button class="district-list-item">SAN JUAN</button>
+                <button class="district-list-item">TAYSAN</button>
+                <!-- Add more items as needed -->
+            </div>
+
+            <div id="districtList5" class="district-list">
+                <!-- Add items for district 5 -->
+
+                <button class="district-list-item">BATANGAS</button>
+                <!-- Add more items as needed -->
+            </div>
+
+            <div id="districtList6" class="district-list">
+                <!-- Add items for district 6 -->
+
+                <button class="district-list-item">LIPA</button>
+                <!-- Add more items as needed -->
+            </div>
             <div id="usertopPanel">
                 {% if kiosk_username %}
                 <h3 class="username">{{ kiosk_username }}</h3>
@@ -1057,13 +1229,104 @@
             rightPanel.style.display = 'block';
             imageButton.style.display = 'none'; // Hide the image button
         });
-
+    
         document.addEventListener('click', (event) => {
-            // Check if the click target is outside the rightPanel
             if (!rightPanel.contains(event.target) && event.target !== imageButton) {
                 rightPanel.style.display = 'none';
                 imageButton.style.display = 'block'; // Show the image button again
+                document.querySelectorAll('.district-list').forEach(list => list.style.display = 'none');
+                document.getElementById('municipality-status').style.display = 'none';
+                
+                // Deselect any selected district buttons or district list items
+                if (currentSelectedDistrictButton) {
+                    currentSelectedDistrictButton.classList.remove('selected');
+                    currentSelectedDistrictButton = null; // Reset the selected district button
+                }
+                if (currentSelectedButton) {
+                    currentSelectedButton.classList.remove('selected');
+                    currentSelectedButton = null; // Reset the selected district list item
+                }
             }
+        });
+    
+        let currentSelectedButton = null;
+        let currentSelectedDistrictButton = null;
+    
+        function toggleDistrictList(districtId) {
+            const districtList = document.getElementById(districtId);
+            // Hide all district lists
+            document.querySelectorAll('.district-list').forEach(list => {
+                list.style.display = 'none';
+                list.querySelectorAll('.district-list-item').forEach(item => item.classList.remove('selected'));
+            });
+            // Toggle the clicked list's visibility
+            districtList.style.display = districtList.style.display === 'none' ? 'block' : 'none';
+            // Hide the Progress Status and deselect the current selected district list item
+            document.getElementById('municipality-status').style.display = 'none';
+            if (currentSelectedButton) {
+                currentSelectedButton.classList.remove('selected');
+                currentSelectedButton = null;
+            }
+        }
+    
+        function handleButtonClick(buttonElement, districtButton = false) {
+            // Deselect previously selected buttons or items
+            if (districtButton) {
+                if (currentSelectedDistrictButton && currentSelectedDistrictButton !== buttonElement) {
+                    currentSelectedDistrictButton.classList.remove('selected');
+                }
+                currentSelectedDistrictButton = buttonElement;
+                // Reset the selected list item when another district button is clicked
+                if (currentSelectedButton) {
+                    currentSelectedButton.classList.remove('selected');
+                    currentSelectedButton = null;
+                }
+                document.getElementById('municipality-status').style.display = 'none'; // Hide Progress Status on district button click
+            } else {
+                if (currentSelectedButton && currentSelectedButton !== buttonElement) {
+                    currentSelectedButton.classList.remove('selected');
+                }
+                currentSelectedButton = buttonElement;
+                document.getElementById('municipality-status').style.display = 'block';
+                fetchMunicipalityStatus(buttonElement.textContent.trim());
+            }
+            buttonElement.classList.add('selected');
+        }
+    
+        function fetchMunicipalityStatus(municipalityName) {
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            fetch('/get_municipality_status/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: `municipality_name=${encodeURIComponent(municipalityName)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const statusElement = document.getElementById('municipality-status');
+                if (statusElement) {
+                    statusElement.innerHTML = `Progress Status: ${data.status}`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    
+        // Attach event listeners to district names buttons
+        document.querySelectorAll('.district-button').forEach(button => {
+            button.addEventListener('click', function() {
+                handleButtonClick(this, true); // True indicates this is a district name button
+            });
+        });
+
+        // Attach event listeners to district list items
+        document.querySelectorAll('.district-list-item').forEach(item => {
+            item.addEventListener('click', function() {
+                handleButtonClick(this, false); // False indicates this is not a district name button
+            });
         });
 
         backToMainButton.addEventListener('click', () => {

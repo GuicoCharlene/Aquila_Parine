@@ -252,7 +252,7 @@ def selectdistrict(request, kiosk_id):
         # Fetch total points for the current date
         if logged_in_username:
             visitor_id = queue_entry.user.pk
-            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id, create_time__date=timezone.now().date()).aggregate(total_points=Sum('TotalPoints'))
+            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
             total_points = total_points_entry.get('total_points', 0)
 
     except Kiosk.DoesNotExist:
@@ -768,7 +768,7 @@ def selectmunicipality1(request, kiosk_id):
         # Fetch total points for the current date if a user is logged in
         if logged_in_username:
             visitor_id = queue_entry.user.pk
-            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id, create_time__date=timezone.now().date()).aggregate(total_points=Sum('TotalPoints'))
+            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
             total_points = total_points_entry.get('total_points', 0)
             
     except Kiosk.DoesNotExist:
@@ -828,7 +828,7 @@ def selectmunicipality2(request, kiosk_id):
         # Fetch total points for the current date if a user is logged in
         if logged_in_username:
             visitor_id = queue_entry.user.pk
-            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id, create_time__date=timezone.now().date()).aggregate(total_points=Sum('TotalPoints'))
+            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
             total_points = total_points_entry.get('total_points', 0)
             
     except Kiosk.DoesNotExist:
@@ -886,7 +886,7 @@ def selectmunicipality3(request, kiosk_id):
         # Fetch total points for the current date if a user is logged in
         if logged_in_username:
             visitor_id = queue_entry.user.pk
-            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id, create_time__date=timezone.now().date()).aggregate(total_points=Sum('TotalPoints'))
+            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
             total_points = total_points_entry.get('total_points', 0)
             
     except Kiosk.DoesNotExist:
@@ -945,7 +945,7 @@ def selectmunicipality4(request, kiosk_id):
         # Fetch total points for the current date if a user is logged in
         if logged_in_username:
             visitor_id = queue_entry.user.pk
-            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id, create_time__date=timezone.now().date()).aggregate(total_points=Sum('TotalPoints'))
+            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
             total_points = total_points_entry.get('total_points', 0)
             
     except Kiosk.DoesNotExist:
@@ -1003,7 +1003,7 @@ def selectmunicipality5(request, kiosk_id):
         # Fetch total points for the current date if a user is logged in
         if logged_in_username:
             visitor_id = queue_entry.user.pk
-            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id, create_time__date=timezone.now().date()).aggregate(total_points=Sum('TotalPoints'))
+            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
             total_points = total_points_entry.get('total_points', 0)
             
     except Kiosk.DoesNotExist:
@@ -1061,7 +1061,7 @@ def selectmunicipality6(request, kiosk_id):
         # Fetch total points for the current date if a user is logged in
         if logged_in_username:
             visitor_id = queue_entry.user.pk
-            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id, create_time__date=timezone.now().date()).aggregate(total_points=Sum('TotalPoints'))
+            total_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(total_points=Sum('TotalPoints'))
             total_points = total_points_entry.get('total_points', 0)
             
     except Kiosk.DoesNotExist:

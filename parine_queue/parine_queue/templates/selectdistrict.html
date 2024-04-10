@@ -71,10 +71,10 @@
         .username {
             text-overflow: ellipsis;
             overflow: hidden;
-            white-space: nowrap;
-            max-width: 10.416666666666666vw;
+            max-width: 11.979166666666666vw;
             font-size: 1.5229166666666667vw;
-            margin: 0;
+            margin-right: 5.729166666666667vw;
+            text-align: right;
             padding: 0;
             font-family: Arial, sans-serif;
             font-weight: bold;
@@ -303,13 +303,6 @@
             transform: scale(0.9);
         }
 
-        h2 {
-            font-size: 18px;
-            margin-top: 60px;
-            margin-left: 20px;
-            text-align: left;
-        }
-
         #points {
             position: absolute;
             top: 8.625vw;
@@ -356,7 +349,7 @@
             font-weight: bold;
             background-color: #15375D;
             color: #FFFFFF;
-            font-size: 15px;
+            font-size: 0.78125vw;
 
             padding: 0.68993316666666666vw;
             border: 0.0000125vw solid #0f172a;
@@ -380,7 +373,7 @@
             color: #0f172a;
             padding: 0.6510416666666666vw 1.3020833333333333vw;
             cursor: pointer;
-            margin-top: 320px;
+            margin-top: 16.666666666666668vw;
             transition: transform 0.2s, background-color 0.3s;
         }
 
@@ -390,7 +383,7 @@
             border: 0.2000125vw solid #0f172a;
             border-radius: 1.953125vw;
             font-family: 'Gotham', sans-serif;
-            font-size: 20px;
+            font-size: 1.0416666666666667vw;
             font-weight: bold;
             background-color: #15375D;
             color: #FFFFFF;
@@ -425,12 +418,9 @@
             <div id="imageButtonContainer">
                 <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
             </div>
-            {% if total_points %}
-            <div id="points">Points: {{ total_points }} </div>
             
-            {% else %}
-            <div id="points">Points: 0 </div>
-            {% endif %}
+            <div id="points">Points: {{ total_points }} </div>
+        
             
             <div id="districtNames">
                 <button class="district-button" onclick="toggleDistrictList('districtList1')">District 1</button>
