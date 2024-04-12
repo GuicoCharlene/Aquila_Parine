@@ -83,6 +83,7 @@ class RewardPoints(models.Model):
     Municipality = models.CharField(max_length=100)
     ModuleType = models.CharField(max_length=100)
     TriviaQuestionID = models.ForeignKey(TriviaQuestion, on_delete=models.CASCADE, db_column='TriviaQuestionID', null=True, blank=True)
+    KioskID = models.ForeignKey( Kiosk, on_delete=models.CASCADE, db_column='KioskID')
 
     class Meta:
         db_table = 'rewardpoints'

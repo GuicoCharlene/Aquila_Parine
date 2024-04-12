@@ -60,15 +60,19 @@
         h2 {
             color: #15375D;
             font-size: 3em;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
             animation: tada 1s ease-in-out infinite;
         }
-
+        m {
+            color: #15375D;
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
         .question-box {
             background-color: #BFEBF4;
             border-radius: 30px;
             padding: 20px;
-            margin-top: 100px;
+            margin-top: 50px;
             margin-bottom: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-size: 24px;
@@ -217,13 +221,14 @@
             font-size: 1em;
             margin-top: 20px;
         }
+
+        
     </style>
 </head>
 
 <body>
     <div class="game-container">
-        <h2>I SPY WITH MY LITTLE EYE...</h2>
-
+        <m>TRIVIA QUESTION</m>
         <div type="hidden" class="points-container" style="color: white;">
             <span type="hidden" id="points-gained">{{ total_points }}</span>/<span type="hidden" id="total-questions">{{ total_questions }}</span>
         </div>        
@@ -245,6 +250,7 @@
             </div>
             
             <div class="question-container">
+                <h2>I SPY WITH MY LITTLE EYE...</h2>
                 {% if question_content %}
                 <div class="question-box">{{ question_content }}</div>
                 <form method="post"
@@ -266,7 +272,7 @@
                 {% endif %}
 
                 <!-- Timer Display -->
-                <div class="timer" id="timer">Time Left: <span id="timeLeft">60</span> seconds</div>
+                <div class="timer" id="timer">Time Left: <span id="timeLeft">30</span> seconds</div>
                 {% comment %} <button id="next-question-btn" onclick="location.href='?next=true'">Next Question</button>  {% endcomment %}
             </div>
         </div>
@@ -340,7 +346,7 @@
                 });
             });
     
-            var timeLeft = 60;
+            var timeLeft = 30;
             var countdownTimer = setInterval(function() {
                 if (--timeLeft <= 0) {
                     clearInterval(countdownTimer);

@@ -1140,6 +1140,26 @@
             display: none;
             margin-top: 1.0416666666666667vw;
         }
+        .overlay-container {
+            position: absolute;
+            top: 0px;
+            left: 93.22916666666667vw;
+            width: 5.208333333333333vw;
+            height: 6.25vw; 
+            background-color: #15375D; 
+            z-index: 1001;
+            display: none;
+        }
+
+        h2 {
+            font-size: 1px;
+            color: #ffffff;
+        }
+        h3 {
+            font-size: 1px;
+            color: #ffffff;
+        }
+
     </style>
 </head>
 
@@ -1159,6 +1179,7 @@
         </div>
     </div>
     <div class="container">
+        <div id="hide" class="overlay-container"></div>
         <div id="imageButtonContainer">
             <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
         </div>
@@ -1184,7 +1205,19 @@
                 <button class="district-button" onclick="toggleDistrictList('districtList5')">District 5</button>
                 <button class="district-button" onclick="toggleDistrictList('districtList6')">District 6</button>
 
-                <h3 id="municipality-status">Progress Status: {{ municipality_status }}</h3>
+                <div id="municipality-progress" >
+                    {% if municipality_status %}
+                        <ul>
+                            {% for municipality, status in municipality_status %}
+                            <p class="municipality-status" data-municipality="{{ municipality }}" data-done-count="{{ status|length }}">
+                                <h3> Progress Status {{ municipality }}: </h3>
+                            </p>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No data available</p>
+                    {% endif %}
+                </div>
 
             </div>
             <div id="districtList1" class="district-list">
@@ -1383,6 +1416,7 @@
         const exploreButton = document.getElementById('exploreButton');
         const moduleContainer = document.querySelector('.modulecontainer');
         const backToMainButton = document.getElementById('backToMainButton');
+        const hideContainer = document.getElementById('hide');
         //--------EXPLOREBUTTONS
         const exploreN = document.getElementById('exploreN');
         const exploreL = document.getElementById('exploreL');
@@ -1499,6 +1533,7 @@
 
         backToMainButton.addEventListener('click', () => {
             moduleContainer.style.display = 'none';
+            hideContainer.style.display = 'none';
             window.location.reload(); // Reload the page
         });
 
@@ -1506,6 +1541,7 @@
         document.querySelectorAll('.exploreN-button, .exploreL-button, .exploreT-button, .exploreB-button, .exploreCL-button, .exploreC-button, .exploreLM-button, .exploreTL-button').forEach(button => {
             button.addEventListener('click', function () {
                 moduleContainer.style.display = 'block';
+                hideContainer.style.display = 'block';
             });
         });
 

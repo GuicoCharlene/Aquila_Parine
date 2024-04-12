@@ -578,6 +578,16 @@
             display: none;
             margin-top: 1.0416666666666667vw;
         }
+        .overlay-container {
+            position: absolute;
+            top: 0px;
+            left: 93.22916666666667vw;
+            width: 5.208333333333333vw; /* Adjust the width and height as needed */
+            height: 6.25vw; /* Adjust the width and height as needed */
+            background-color: #15375D; 
+            z-index: 1001;/* Initially hide the container */
+            display: none;
+        }
     </style>
 </head>
 
@@ -596,6 +606,7 @@
         </div>
     </div>
     <div class="container">
+        <div id="hide" class="overlay-container"></div>
         <div id="imageButtonContainer">
             <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
         </div>
@@ -730,6 +741,7 @@
                 const exploreButton = document.getElementById('exploreButton');
                 const moduleContainer = document.querySelector('.modulecontainer');
                 const backToMainButton = document.getElementById('backToMainButton');
+                const hideContainer = document.getElementById('hide');
 
                 imageButton.addEventListener('click', () => {
                     rightPanel.style.display = 'block';
@@ -837,10 +849,12 @@
                 
                 exploreButton.addEventListener('click', () => {
                     moduleContainer.style.display = 'block';
+                    hideContainer.style.display = 'block';
                 });
 
                 backToMainButton.addEventListener('click', () => {
                     moduleContainer.style.display = 'none';
+                    hideContainer.style.display = 'none';
                     window.location.reload(); // Reload the page
                 });
 
