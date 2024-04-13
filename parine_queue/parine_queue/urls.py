@@ -43,9 +43,14 @@ urlpatterns = [
     
     # path('selectmodule/', selectmodule, name='selectmodule'),
     path('take_quiz/', take_quiz, name='take_quiz'),
-    path('take_quiz/quiz/', quiz, name='quiz'),
+    path('take_quiz/quiz/<module_type>/<municipality>/<kiosk_id>/', views.quiz, name='quiz'),
     
-    path('quiz/', quiz, name='quiz'),
+    # path('quiz/module_tourist/<str:municipality>/<int:kiosk_id>', quiz, name='quiz'),
+    # path('quiz/module_food/<str:municipality>/<int:kiosk_id>', quiz, name='quiz'),
+    # path('quiz/module_craft/<str:municipality>/<int:kiosk_id>', quiz, name='quiz'),
+    
+    path('quiz/<str:module_type>/<str:municipality>/<int:kiosk_id>/', quiz, name='quiz'),
+    
     path('results/', results_view, name='results'),
     
     path('adminpage/history/', history, name='history'),
@@ -70,5 +75,8 @@ urlpatterns = [
     path('get_municipality_status/', get_municipality_status, name='get_municipality_status'),
     
     
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

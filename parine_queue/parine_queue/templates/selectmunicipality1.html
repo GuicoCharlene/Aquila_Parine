@@ -1150,16 +1150,13 @@
             z-index: 1001;
             display: none;
         }
-
-        h2 {
-            font-size: 1px;
-            color: #ffffff;
-        }
         h3 {
             font-size: 1px;
             color: #ffffff;
         }
-
+        #municipality-progress {
+            margin-top: 1.0416666666666667vw;
+        }
     </style>
 </head>
 
@@ -1214,8 +1211,6 @@
                             </p>
                             {% endfor %}
                         </ul>
-                    {% else %}
-                        <p>No data available</p>
                     {% endif %}
                 </div>
 
@@ -1455,7 +1450,14 @@
         let currentSelectedDistrictButton = null;
     
         function toggleDistrictList(districtId) {
+
             const districtList = document.getElementById(districtId);
+            const isVisible = districtList.style.display === 'block';
+            closeAllDistrictLists(); // Close all and remove selected first
+            if (!isVisible) {
+                districtList.style.display = 'block';
+                document.getElementById(districtId.replace('List', 'Button')).classList.add('selected');
+            }
             // Hide all district lists
             document.querySelectorAll('.district-list').forEach(list => {
                 list.style.display = 'none';
@@ -1472,62 +1474,111 @@
         }
     
         function handleButtonClick(buttonElement, districtButton = false) {
-            // Deselect previously selected buttons or items
             if (districtButton) {
                 if (currentSelectedDistrictButton && currentSelectedDistrictButton !== buttonElement) {
                     currentSelectedDistrictButton.classList.remove('selected');
                 }
                 currentSelectedDistrictButton = buttonElement;
-                // Reset the selected list item when another district button is clicked
-                if (currentSelectedButton) {
-                    currentSelectedButton.classList.remove('selected');
-                    currentSelectedButton = null;
+                buttonElement.classList.add('selected');
+                document.querySelectorAll('.district-list-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                // Hide the Progress Status on district button click
+                if (document.getElementById('municipality-status')) {
+                    document.getElementById('municipality-status').style.display = 'none';
                 }
-                document.getElementById('municipality-status').style.display = 'none'; // Hide Progress Status on district button click
             } else {
                 if (currentSelectedButton && currentSelectedButton !== buttonElement) {
                     currentSelectedButton.classList.remove('selected');
                 }
+                currentSelectedButton = buttonElement;
+                buttonElement.classList.add('selected');
                 currentSelectedButton = buttonElement;
                 document.getElementById('municipality-status').style.display = 'block';
                 fetchMunicipalityStatus(buttonElement.textContent.trim());
             }
             buttonElement.classList.add('selected');
         }
+
+        function closeAllDistrictLists() {
+            document.querySelectorAll('.district-list').forEach(list => {
+                list.style.display = 'none';
+            });
+            document.querySelectorAll('.district-button, .district-list-item').forEach(button => {
+                if (button.classList.contains('selected')) {
+                    button.classList.remove('selected');
+                }
+            });
+            if (document.getElementById('municipality-status')) {
+                document.getElementById('municipality-status').style.display = 'none';
+            }
+        }
     
+        window.visitorId = "{{ visitor_id }}";
+
         function fetchMunicipalityStatus(municipalityName) {
             const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const visitorId = window.visitorId;
+            
             fetch('/get_municipality_status/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'X-CSRFToken': csrftoken,
                 },
-                body: `municipality_name=${encodeURIComponent(municipalityName)}`
+                body: `municipality_name=${encodeURIComponent(municipalityName)}&visitor_id=${encodeURIComponent(visitorId)}`
             })
             .then(response => response.json())
             .then(data => {
-                const statusElement = document.getElementById('municipality-status');
-                if (statusElement) {
-                    statusElement.innerHTML = `Progress Status: ${data.status}`;
-                }
+                updateMunicipalityProgress(data, municipalityName);
             })
             .catch(error => {
                 console.error('Error:', error);
             });
         }
-    
+        
+        function updateMunicipalityProgress(data, municipalityName) {
+            const statusElement = document.getElementById('municipality-progress');
+            if (data && data[municipalityName]) {
+                const doneCount = data[municipalityName].filter(status => status === 'DONE').length;
+                let progressStatus = (doneCount === 3 ? 'DONE' : (doneCount > 0 ? 'IN PROGRESS' : 'NOT STARTED'));
+                statusElement.innerHTML = `<ul><h2>Progress Status: ${progressStatus}</h2></ul>`;
+            } 
+            statusElement.style.display = 'block';
+        }
+
+        function handleDistrictListItemClick(municipalityName) {
+            // Reset the progress status for all municipalities
+            const allMunicipalityStatusElements = document.querySelectorAll('.municipality-status');
+            allMunicipalityStatusElements.forEach(el => {
+                el.style.display = 'none';
+            });
+        
+            // Get the specific status element for the clicked municipality
+            const statusElement = document.querySelector(`.municipality-status[data-municipality="${municipalityName}"]`);
+            if (statusElement) {
+                const doneCount = statusElement.getAttribute('data-done-count');
+                let progressStatus = 'NOT STARTED';
+                if (doneCount >= 2 ) {
+                    progressStatus = 'IN PROGRESS';
+                } else if (doneCount == 3) {
+                    progressStatus = 'DONE';
+                }
+                statusElement.textContent = `Progress Status: ${progressStatus}`;
+                statusElement.style.display = 'block';
+            }
+        }
+        
+        // Example of how you might attach this function to your district list item buttons
+        document.querySelectorAll('.district-list-item').forEach(item => {
+            item.addEventListener('click', function() {
+                handleDistrictListItemClick(this.textContent.trim());
+            });
+        });
         // Attach event listeners to district names buttons
         document.querySelectorAll('.district-button').forEach(button => {
             button.addEventListener('click', function() {
                 handleButtonClick(this, true); // True indicates this is a district name button
-            });
-        });
-
-        // Attach event listeners to district list items
-        document.querySelectorAll('.district-list-item').forEach(item => {
-            item.addEventListener('click', function() {
-                handleButtonClick(this, false); // False indicates this is not a district name button
             });
         });
 
@@ -1728,7 +1779,7 @@
                 console.log("Municipality:", municipality);
                 console.log("KioskID:", kioskId);
 
-                takeQuizButton.href = `/quiz/?module_type=${moduleType}&municipality=${municipality}&kiosk_id=${kioskId}`;
+                takeQuizButton.href = `/quiz/${moduleType}/${municipality}/${kioskId}`;
                 takeQuizButton.classList.add('quiz-button');
                 takeQuizButton.textContent = 'TAKE QUIZ';
 

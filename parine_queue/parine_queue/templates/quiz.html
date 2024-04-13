@@ -237,9 +237,10 @@
             <div class="image-container">
 
                 <!-- Correct answer button -->
-                <button onclick="handleSelection(this, '{{ question_image }}', '{{ question_id }}', true)">
+                <button data-trivia-id="{{ trivia_id }}" data-is-correct="true">
                     <img src="/media/{{ question_image }}" alt="Trivia Image">
-                </button>                             
+                </button>
+                                          
             
                 <!-- Incorrect answer buttons -->
                 {% for trivia_id, image_url in random_images %}
@@ -253,9 +254,8 @@
                 <h2>I SPY WITH MY LITTLE EYE...</h2>
                 {% if question_content %}
                 <div class="question-box">{{ question_content }}</div>
-                <form method="post"
-                    action="{% url 'quiz' %}?module_type={{ module_type }}&municipality={{ municipality }}"
-                    id="guess-form">
+                <form method="post" action="{% url 'quiz' module_type=module_type municipality=municipality kiosk_id=kiosk_id %}" id="guess-form">
+
                     {% csrf_token %}
                     <input type="hidden" name="guess" id="guess-input">
                     <!-- Assuming is_correct is set by JavaScript based on the selection -->
@@ -280,12 +280,13 @@
     </div>
 
     <script>
-        var answeredQuestions = [];
-        var totalQuestions; // Should be initialized based on the total number of questions you have
-    
         document.addEventListener('DOMContentLoaded', function() {
-            totalQuestions = {{ total_questions }}; // Initialize with the actual total questions
-    
+            // Ensure totalQuestions is set to the total number of questions you have
+            var totalQuestions = {{ total_questions }};
+            var correctAnswer = '{{ question_image }}';
+            var countdownTimer;
+            
+            // Function to shuffle the images in the container
             function shuffleArray(array) {
                 for (let i = array.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
@@ -293,16 +294,28 @@
                 }
             }
     
-            var correctAnswer = '{{ question_image }}';
-            var userAnswer = null; 
-            var container = document.querySelector('.image-container');
-            var buttons = container.querySelectorAll('button');
-            var buttonsArray = Array.from(buttons);
-            shuffleArray(buttonsArray); // Shuffle buttons
-            container.innerHTML = ''; // Clear container
-            buttonsArray.forEach(button => container.appendChild(button)); // Re-add buttons
+            // Function to handle the selection of an answer
+            function handleSelection(clickedButton, triviaId, isCorrect) {
+                // Disable all buttons after a choice is made
+                document.querySelectorAll('.image-container button').forEach(function(button) {
+                    button.disabled = true;
+                });
     
-            function submitForm(imageUrl, questionContent, triviaId, isCorrect) {
+                // Set the background color based on the correctness of the answer
+                clickedButton.style.backgroundColor = isCorrect ? 'green' : 'red';
+    
+                // Update points display if the answer is correct
+                if (isCorrect) {
+                    var currentPoints = parseInt(document.getElementById('points-gained').textContent, 10);
+                    document.getElementById('points-gained').textContent = currentPoints + 1;
+                }
+    
+                // Submit the form with the answer
+                submitForm(triviaId, isCorrect);
+            }
+    
+            // Function to submit the form with the answer
+            function submitForm(triviaId, isCorrect) {
                 var guessInput = document.getElementById('guess-input');
                 var isCorrectInput = document.getElementById('is_correct');
                 guessInput.value = triviaId;
@@ -310,73 +323,44 @@
                 var form = document.getElementById('guess-form');
                 form.submit(); // Submit the form to move to the next question or finish the quiz
             }
-            
-            function handleSelection(clickedButton, imageUrl, triviaId, isCorrect) {
-                if (userAnswer !== null) return;
-                buttons.forEach(button => button.disabled = true);
-                var isCorrectBool = imageUrl.endsWith(correctAnswer); // Assuming this determines correctness
-                clickedButton.style.backgroundColor = isCorrectBool ? 'green' : 'red';
-                userAnswer = imageUrl;
-
-                // Update points display if the answer is correct
-                if (isCorrectBool) {
-                    var currentPoints = parseInt(document.getElementById('points-gained').textContent, 10);
-                    document.getElementById('points-gained').textContent = currentPoints + 1;
-                }
-
-                // Assuming submitForm sends the answer to your backend
-                submitForm(imageUrl, '{{ question_content }}', triviaId, isCorrectBool);
-            }
-        
-            function nextQuestion() {
-                if (answeredQuestions.length >= totalQuestions) {
-                    finishQuiz();
-                } else {
-                    location.reload();
-                }
-            }
     
+            // Function to finish the quiz
             function finishQuiz() {
+                clearInterval(countdownTimer);
                 window.location.href = '/results';
             }
     
-            buttons.forEach(button => {
+            // Timer countdown function
+            function startTimer() {
+                var timeLeft = 30; // Set the time for each question
+                countdownTimer = setInterval(function() {
+                    if (--timeLeft <= 0) {
+                        finishQuiz(); // Finish quiz when the timer runs out
+                    }
+                    document.getElementById('timeLeft').textContent = timeLeft;
+                }, 1000);
+            }
+    
+            // Start the timer
+            startTimer();
+    
+            // Shuffle and attach event listeners to the answer buttons
+            var container = document.querySelector('.image-container');
+            var buttons = container.querySelectorAll('button');
+            var buttonsArray = Array.from(buttons);
+            shuffleArray(buttonsArray); // Shuffle buttons
+            container.innerHTML = ''; // Clear container
+    
+            // Re-add buttons and attach click event listeners
+            buttonsArray.forEach(function(button) {
+                container.appendChild(button); // Add the button back to the container
+                // Use dataset attributes to store custom data
+                var triviaId = button.dataset.triviaId;
+                var isCorrect = button.dataset.isCorrect === 'true'; // Convert to boolean
+                
                 button.addEventListener('click', function() {
-                    handleSelection(this, this.children[0].src);
+                    handleSelection(this, triviaId, isCorrect);
                 });
             });
-    
-            var timeLeft = 30;
-            var countdownTimer = setInterval(function() {
-                if (--timeLeft <= 0) {
-                    clearInterval(countdownTimer);
-                    finishQuiz();
-                }
-                document.getElementById('timeLeft').textContent = timeLeft;
-            }, 1000);
-    
-            function handleNextQuestion() {
-                // Implement logic to load the next question here
-                // This might involve making an AJAX request or simply submitting the form to reload the page with the next question
-                document.getElementById('guess-form').submit();
-            }
-
-            function selectAnswer(triviaQuestionID) {
-                // Assuming you have a function triggered upon selecting an answer
-                document.getElementById('guess-input').value = triviaQuestionID;
-            }
-            
-            
-            document.getElementById('correct-answer').addEventListener('click', function() {
-                submitForm('{{ question_image }}', '{{ question_content }}', '{{ question_id }}');
-            });
-
-            document.getElementById('guess-input').value = selectedTriviaQuestionId;
-
-        
         });
     </script>
-
-
-</body>
-</html>

@@ -1,5 +1,5 @@
 from operator import le
-from pyexpat import model
+from django.contrib.sessions.backends.db import SessionStore
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.db import models
@@ -222,7 +222,7 @@ def selectdistrict(request, kiosk_id):
 
     if not logged_in_username:
         messages.error(request, "You must be logged in to access this page.")
-        return redirect('login_page')
+        return redirect('login')
 
     try:
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
@@ -269,7 +269,6 @@ def selectdistrict(request, kiosk_id):
     }
 
     return render(request, 'selectdistrict.html', context)
-
 
 #THIS IS THE VIEW TO GET THE NEEDED DATA TO UPDATE THE TIME
 def get_queue_data(request):
@@ -731,252 +730,350 @@ def admin_quiz_craft(request, municipality):
 
 def selectmunicipality1(request, kiosk_id):
     all_points = 0
-    logged_in_username = request.session.get('logged_in_username')
+    logged_in_username = request.session.get('logged_in_username', None)
     current_time = timezone.now()
     kiosk_username = None
-    
-   
+    visitor_id = None
+    municipality_status = []
+
+    if not logged_in_username:
+        messages.error(request, "You must be logged in to access this page.")
+        return redirect('login')
+
     try:
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
+        
         if kiosk.QueueID:
             kiosk_username = kiosk.QueueID.user.username
-            if not kiosk.QueueID.QueueStatus == 'IN MODULE':
+            if kiosk.QueueID.QueueStatus != 'IN MODULE':
                 kiosk.QueueID.QueueStatus = 'IN MODULE'
                 kiosk.QueueID.save()
-                
-        if logged_in_username:
-            queue_entry = QueueEntry.objects.get(user__username=logged_in_username)
-            if not kiosk.QueueID:
+
+        try:
+            visitor_profile = kiosk.QueueID.user
+            visitor_id = visitor_profile.VisitorID
+        except QueueVisitor.DoesNotExist:
+            messages.error(request, "User profile not found.")
+
+        if logged_in_username and not kiosk.QueueID:
+            try:
+                queue_entry = QueueEntry.objects.get(username=logged_in_username)
                 kiosk.QueueID = queue_entry
                 kiosk.KioskStatus = True
                 kiosk.TimeDuration = current_time
                 kiosk.save()
-                
-        if kiosk.QueueID:  # Ensure we use the correct queue_entry
-            visitor_id = kiosk.QueueID.user.pk
+            except QueueEntry.DoesNotExist:
+                messages.error(request, "No queue entry found for the logged-in user.")
+
+        if visitor_id:
             all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
             all_points = all_points_entry.get('all_points', 0)
+            progress_entries = VisitorProgress.objects.filter(VisitorID__VisitorID=visitor_id)
+            municipality_status = [(entry.Municipality, entry.Status) for entry in progress_entries]
 
     except Kiosk.DoesNotExist:
-        messages.error(request, "Invalid Kiosk.")
-    except QueueEntry.DoesNotExist:
-        messages.error(request, "No user assigned to this kiosk.")
+        messages.error(request, "Invalid Kiosk ID.")
+        return redirect('home_page')
 
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
         'all_points': all_points,
+        'visitor_id': visitor_id,
+        'municipality_status': municipality_status,
     }
 
     return render(request, 'selectmunicipality1.html', context)
 
-
 def selectmunicipality2(request, kiosk_id):
     all_points = 0
-    logged_in_username = request.session.get('logged_in_username')
+    logged_in_username = request.session.get('logged_in_username', None)
     current_time = timezone.now()
     kiosk_username = None
-    
+    visitor_id = None
+    municipality_status = []
+
+    if not logged_in_username:
+        messages.error(request, "You must be logged in to access this page.")
+        return redirect('login')
 
     try:
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
+        
         if kiosk.QueueID:
             kiosk_username = kiosk.QueueID.user.username
-            if not kiosk.QueueID.QueueStatus == 'IN MODULE':
+            if kiosk.QueueID.QueueStatus != 'IN MODULE':
                 kiosk.QueueID.QueueStatus = 'IN MODULE'
                 kiosk.QueueID.save()
-                
-        if logged_in_username:
-            queue_entry = QueueEntry.objects.get(user__username=logged_in_username)
-            if not kiosk.QueueID:
+
+        try:
+            visitor_profile = kiosk.QueueID.user
+            visitor_id = visitor_profile.VisitorID
+        except QueueVisitor.DoesNotExist:
+            messages.error(request, "User profile not found.")
+
+        if logged_in_username and not kiosk.QueueID:
+            try:
+                queue_entry = QueueEntry.objects.get(username=logged_in_username)
                 kiosk.QueueID = queue_entry
                 kiosk.KioskStatus = True
                 kiosk.TimeDuration = current_time
                 kiosk.save()
-                
-       
-        if kiosk.QueueID:  # Ensure we use the correct queue_entry
-            visitor_id = kiosk.QueueID.user.pk
+            except QueueEntry.DoesNotExist:
+                messages.error(request, "No queue entry found for the logged-in user.")
+
+        if visitor_id:
             all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
             all_points = all_points_entry.get('all_points', 0)
-            
+            progress_entries = VisitorProgress.objects.filter(VisitorID__VisitorID=visitor_id)
+            municipality_status = [(entry.Municipality, entry.Status) for entry in progress_entries]
+
     except Kiosk.DoesNotExist:
-        messages.error(request, "Invalid Kiosk.")
-    except QueueEntry.DoesNotExist:
-        messages.error(request, "No user assigned to this kiosk.")
+        messages.error(request, "Invalid Kiosk ID.")
+        return redirect('home_page')
 
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
         'all_points': all_points,
+        'visitor_id': visitor_id,
+        'municipality_status': municipality_status,
     }
+
     return render(request, 'selectmunicipality2.html', context)
 
 def selectmunicipality3(request, kiosk_id):
     all_points = 0
-    logged_in_username = request.session.get('logged_in_username')
+    logged_in_username = request.session.get('logged_in_username', None)
     current_time = timezone.now()
     kiosk_username = None
+    visitor_id = None
+    municipality_status = []
+
+    if not logged_in_username:
+        messages.error(request, "You must be logged in to access this page.")
+        return redirect('login')
 
     try:
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
+        
         if kiosk.QueueID:
             kiosk_username = kiosk.QueueID.user.username
-            if not kiosk.QueueID.QueueStatus == 'IN MODULE':
+            if kiosk.QueueID.QueueStatus != 'IN MODULE':
                 kiosk.QueueID.QueueStatus = 'IN MODULE'
                 kiosk.QueueID.save()
-                
-        if logged_in_username:
-            queue_entry = QueueEntry.objects.get(user__username=logged_in_username)
-            if not kiosk.QueueID:
+
+        try:
+            visitor_profile = kiosk.QueueID.user
+            visitor_id = visitor_profile.VisitorID
+        except QueueVisitor.DoesNotExist:
+            messages.error(request, "User profile not found.")
+
+        if logged_in_username and not kiosk.QueueID:
+            try:
+                queue_entry = QueueEntry.objects.get(username=logged_in_username)
                 kiosk.QueueID = queue_entry
                 kiosk.KioskStatus = True
                 kiosk.TimeDuration = current_time
                 kiosk.save()
-                
-        
-        if kiosk.QueueID:  # Ensure we use the correct queue_entry
-            visitor_id = kiosk.QueueID.user.pk
+            except QueueEntry.DoesNotExist:
+                messages.error(request, "No queue entry found for the logged-in user.")
+
+        if visitor_id:
             all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
             all_points = all_points_entry.get('all_points', 0)
-            
+            progress_entries = VisitorProgress.objects.filter(VisitorID__VisitorID=visitor_id)
+            municipality_status = [(entry.Municipality, entry.Status) for entry in progress_entries]
+
     except Kiosk.DoesNotExist:
-        messages.error(request, "Invalid Kiosk.")
-    except QueueEntry.DoesNotExist:
-        messages.error(request, "No user assigned to this kiosk.")
+        messages.error(request, "Invalid Kiosk ID.")
+        return redirect('home_page')
 
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
         'all_points': all_points,
+        'visitor_id': visitor_id,
+        'municipality_status': municipality_status,
     }
-    return render(request, 'selectmunicipality3.html', context)
 
+    return render(request, 'selectmunicipality3.html', context)
 
 def selectmunicipality4(request, kiosk_id):
     all_points = 0
-    logged_in_username = request.session.get('logged_in_username')
+    logged_in_username = request.session.get('logged_in_username', None)
     current_time = timezone.now()
     kiosk_username = None
-    
+    visitor_id = None
+    municipality_status = []
+
+    if not logged_in_username:
+        messages.error(request, "You must be logged in to access this page.")
+        return redirect('login')
+
     try:
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
+        
         if kiosk.QueueID:
             kiosk_username = kiosk.QueueID.user.username
-            if not kiosk.QueueID.QueueStatus == 'IN MODULE':
+            if kiosk.QueueID.QueueStatus != 'IN MODULE':
                 kiosk.QueueID.QueueStatus = 'IN MODULE'
                 kiosk.QueueID.save()
-                
-        if logged_in_username:
-            queue_entry = QueueEntry.objects.get(user__username=logged_in_username)
-            if not kiosk.QueueID:
+
+        try:
+            visitor_profile = kiosk.QueueID.user
+            visitor_id = visitor_profile.VisitorID
+        except QueueVisitor.DoesNotExist:
+            messages.error(request, "User profile not found.")
+
+        if logged_in_username and not kiosk.QueueID:
+            try:
+                queue_entry = QueueEntry.objects.get(username=logged_in_username)
                 kiosk.QueueID = queue_entry
                 kiosk.KioskStatus = True
                 kiosk.TimeDuration = current_time
                 kiosk.save()
-                
-        if kiosk.QueueID:  # Ensure we use the correct queue_entry
-            visitor_id = kiosk.QueueID.user.pk
+            except QueueEntry.DoesNotExist:
+                messages.error(request, "No queue entry found for the logged-in user.")
+
+        if visitor_id:
             all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
             all_points = all_points_entry.get('all_points', 0)
+            progress_entries = VisitorProgress.objects.filter(VisitorID__VisitorID=visitor_id)
+            municipality_status = [(entry.Municipality, entry.Status) for entry in progress_entries]
 
     except Kiosk.DoesNotExist:
-        messages.error(request, "Invalid Kiosk.")
-    except QueueEntry.DoesNotExist:
-        messages.error(request, "No user assigned to this kiosk.")
+        messages.error(request, "Invalid Kiosk ID.")
+        return redirect('home_page')
 
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
         'all_points': all_points,
+        'visitor_id': visitor_id,
+        'municipality_status': municipality_status,
     }
+
     return render(request, 'selectmunicipality4.html', context)
 
 def selectmunicipality5(request, kiosk_id):
     all_points = 0
-    logged_in_username = request.session.get('logged_in_username')
+    logged_in_username = request.session.get('logged_in_username', None)
     current_time = timezone.now()
     kiosk_username = None
-    
-  
+    visitor_id = None
+    municipality_status = []
+
+    if not logged_in_username:
+        messages.error(request, "You must be logged in to access this page.")
+        return redirect('login')
 
     try:
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
+        
         if kiosk.QueueID:
             kiosk_username = kiosk.QueueID.user.username
-            if not kiosk.QueueID.QueueStatus == 'IN MODULE':
+            if kiosk.QueueID.QueueStatus != 'IN MODULE':
                 kiosk.QueueID.QueueStatus = 'IN MODULE'
                 kiosk.QueueID.save()
-                
-        if logged_in_username:
-            queue_entry = QueueEntry.objects.get(user__username=logged_in_username)
-            if not kiosk.QueueID:
+
+        try:
+            visitor_profile = kiosk.QueueID.user
+            visitor_id = visitor_profile.VisitorID
+        except QueueVisitor.DoesNotExist:
+            messages.error(request, "User profile not found.")
+
+        if logged_in_username and not kiosk.QueueID:
+            try:
+                queue_entry = QueueEntry.objects.get(username=logged_in_username)
                 kiosk.QueueID = queue_entry
                 kiosk.KioskStatus = True
                 kiosk.TimeDuration = current_time
                 kiosk.save()
-                   
-        if kiosk.QueueID:  # Ensure we use the correct queue_entry
-            visitor_id = kiosk.QueueID.user.pk
+            except QueueEntry.DoesNotExist:
+                messages.error(request, "No queue entry found for the logged-in user.")
+
+        if visitor_id:
             all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
             all_points = all_points_entry.get('all_points', 0)
-            
+            progress_entries = VisitorProgress.objects.filter(VisitorID__VisitorID=visitor_id)
+            municipality_status = [(entry.Municipality, entry.Status) for entry in progress_entries]
+
     except Kiosk.DoesNotExist:
-        messages.error(request, "Invalid Kiosk.")
-    except QueueEntry.DoesNotExist:
-        messages.error(request, "No user assigned to this kiosk.")
+        messages.error(request, "Invalid Kiosk ID.")
+        return redirect('home_page')
 
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
         'all_points': all_points,
+        'visitor_id': visitor_id,
+        'municipality_status': municipality_status,
     }
+
     return render(request, 'selectmunicipality5.html', context)
 
 def selectmunicipality6(request, kiosk_id):
     all_points = 0
-    logged_in_username = request.session.get('logged_in_username')
+    logged_in_username = request.session.get('logged_in_username', None)
     current_time = timezone.now()
     kiosk_username = None
-    
+    visitor_id = None
+    municipality_status = []
+
+    if not logged_in_username:
+        messages.error(request, "You must be logged in to access this page.")
+        return redirect('login')
+
     try:
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
+        
         if kiosk.QueueID:
             kiosk_username = kiosk.QueueID.user.username
-            if not kiosk.QueueID.QueueStatus == 'IN MODULE':
+            if kiosk.QueueID.QueueStatus != 'IN MODULE':
                 kiosk.QueueID.QueueStatus = 'IN MODULE'
                 kiosk.QueueID.save()
-                
-        if logged_in_username:
-            queue_entry = QueueEntry.objects.get(user__username=logged_in_username)
-            if not kiosk.QueueID:
+
+        try:
+            visitor_profile = kiosk.QueueID.user
+            visitor_id = visitor_profile.VisitorID
+        except QueueVisitor.DoesNotExist:
+            messages.error(request, "User profile not found.")
+
+        if logged_in_username and not kiosk.QueueID:
+            try:
+                queue_entry = QueueEntry.objects.get(username=logged_in_username)
                 kiosk.QueueID = queue_entry
                 kiosk.KioskStatus = True
                 kiosk.TimeDuration = current_time
                 kiosk.save()
-                
-       
-        if kiosk.QueueID:  # Ensure we use the correct queue_entry
-            visitor_id = kiosk.QueueID.user.pk
+            except QueueEntry.DoesNotExist:
+                messages.error(request, "No queue entry found for the logged-in user.")
+
+        if visitor_id:
             all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
             all_points = all_points_entry.get('all_points', 0)
+            progress_entries = VisitorProgress.objects.filter(VisitorID__VisitorID=visitor_id)
+            municipality_status = [(entry.Municipality, entry.Status) for entry in progress_entries]
 
     except Kiosk.DoesNotExist:
-        messages.error(request, "Invalid Kiosk.")
-    except QueueEntry.DoesNotExist:
-        messages.error(request, "No user assigned to this kiosk.")
+        messages.error(request, "Invalid Kiosk ID.")
+        return redirect('home_page')
 
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
         'logged_in_username': logged_in_username,
         'all_points': all_points,
+        'visitor_id': visitor_id,
+        'municipality_status': municipality_status,
     }
+
     return render(request, 'selectmunicipality6.html', context)
 
 #CATEGORIZE THE MUNICIPALITY FOR THE SORTING OF DATA FOR THE MODULE
@@ -1044,120 +1141,137 @@ def take_quiz(request):
 logger = logging.getLogger(__name__)
 
 def fetch_quiz_questions(module_type, municipality, visitor_id):
-
-    answered_questions = RewardPoints.objects.filter(
-        user_id=visitor_id, 
+    recently_answered_questions = RewardPoints.objects.filter(
+        user_id=visitor_id,
         TriviaQuestionID__isnull=False,
         create_time__gte=timezone.now() - timedelta(days=1)
     ).values_list('TriviaQuestionID', flat=True)
 
-    questions = TriviaQuestion.objects.exclude(TriviaQuestionID__in=answered_questions) \
-                                      .filter(ModuleType=module_type, Municipality__iexact=municipality) \
-                                      .order_by('ModuleType', 'Municipality')
+    logger.debug("Excluding recently answered question IDs: %s", list(recently_answered_questions))
+
+    questions = TriviaQuestion.objects.exclude(
+        TriviaQuestionID__in=recently_answered_questions
+    ).filter(
+        ModuleType=module_type, 
+        Municipality__iexact=municipality
+    ).order_by('ModuleType', 'Municipality')
+
+    logger.debug("SQL Query: %s", str(questions.query))
+    logger.debug("Fetched questions count: %d", questions.count())
 
     return questions
 
-def quiz(request):
-    
-    questions = None
+# Main quiz view function
+def quiz(request, module_type, municipality, kiosk_id):
+    logger.debug(f"Handling quiz for {module_type} in {municipality} at kiosk {kiosk_id}")
 
-    if 'game_session' not in request.session or 'kiosk_id' not in request.session:
-        module_type = request.GET.get('module_type', '')
-        municipality = request.GET.get('municipality', '')
-        kiosk_id = request.GET.get('kiosk_id', '').strip()
+    try:
+        kiosk = Kiosk.objects.get(KioskID=kiosk_id)
+        visitor_id = kiosk.QueueID.user.pk
+    except Kiosk.DoesNotExist:
+        logger.error("Kiosk with ID %s not found.", kiosk_id)
+        return HttpResponse("Kiosk not found.", status=404)
+    except Exception as e:
+        logger.error("An error occurred: %s", str(e))
+        return HttpResponse("An internal error occurred.", status=500)
 
-        if not kiosk_id.isdigit():
-            return HttpResponse("Invalid or missing Kiosk ID.", status=400)
+    session_key = f'game_session_{kiosk_id}_{module_type}_{municipality}'
+    if session_key not in request.session:
+        logger.debug("Initializing new quiz session.")
+        return initialize_quiz_session(request, module_type, municipality, kiosk_id, visitor_id, session_key)
 
-        try:
-            kiosk = Kiosk.objects.get(KioskID=kiosk_id)
-            visitor_id = kiosk.QueueID.user.pk
-            request.session['kiosk_id'] = kiosk_id  # Save the kiosk_id in the session
+    logger.debug("Processing ongoing quiz session.")
+    return handle_quiz_process(request, session_key, module_type, municipality, kiosk_id)
 
-            visitor_progress = VisitorProgress.objects.filter(
-                VisitorID_id=visitor_id,
-                Municipality__iexact=municipality,
-                ModuleType=module_type,
-                Status='DONE',
-                DateCompleted=timezone.now().date()
-            ).exists()
+# Process the submitted answer and update the session
+def process_submitted_answer(request, session_key):
+    game_session = request.session.get(session_key, {})
+    current_question_index = game_session.get('current_question_index', 0)
+    selected_questions = game_session.get('selected_questions', [])
 
-            if visitor_progress:
-                return redirect('done_quiz')
-
-            questions = fetch_quiz_questions(module_type, municipality, visitor_id)
-
-            if not questions.exists():
-                return render(request, 'quiz.html', {'message': 'No questions available.'})
-
-            selected_question_ids = list(questions.values_list('TriviaQuestionID', flat=True))
-
-            # Initialize the game session specific to the visitor
-            request.session['game_session'] = {
-                'selected_questions': selected_question_ids,
-                'answered_questions': [],
-                'reward_points': 0,
-                'visitor_id': visitor_id,
-                'current_question_index': 0,
-                'total_questions': len(selected_question_ids),
-                'module_type': module_type,
-                'municipality': municipality,
-            }
-            return redirect('quiz')
-
-        except Kiosk.DoesNotExist:
-            return HttpResponse("Kiosk not found.", status=404)
-    else:
-        game_session = request.session['game_session']
-        visitor_id = game_session['visitor_id']
-        module_type = game_session['module_type']
-        municipality = game_session['municipality']
-
-        if questions is None:
-            questions = fetch_quiz_questions(module_type, municipality, visitor_id)
-
-        if request.method == 'POST':
-            # Process submitted answers and potentially update game session data
-            process_submitted_answer(request, game_session, questions)
-            
-        # Either display the next question or finish the quiz based on the current state
-        return display_next_question_or_finish_quiz(request)
-    
-def process_submitted_answer(request, game_session, questions):
-    current_question_index = game_session['current_question_index']
-    if current_question_index < len(game_session['selected_questions']):
-        current_question_id = game_session['selected_questions'][current_question_index]
+    if current_question_index < len(selected_questions):
+        current_question_id = selected_questions[current_question_index]
         is_correct = request.POST.get('is_correct', 'false') == 'true'
         points_for_current_question = 1 if is_correct else 0
 
         update_or_create_reward_points(
-            game_session['visitor_id'],
+            game_session.get('visitor_id'),
+            game_session.get('kiosk_id'),
             points_for_current_question,
             current_question_id,
-            game_session['module_type'],
-            game_session['municipality']
+            game_session.get('module_type'),
+            game_session.get('municipality')
         )
 
         game_session['current_question_index'] += 1
-        game_session['answered_questions'].append(current_question_id)
+        game_session.setdefault('answered_questions', []).append(current_question_id)  # Ensure the list exists
+        request.session[session_key] = game_session
         request.session.modified = True
-
-def display_next_question_or_finish_quiz(request):
-    game_session = request.session['game_session']
-    if game_session['current_question_index'] >= len(game_session['selected_questions']):
-        # Quiz completion logic here, such as redirecting to a results page
-        return redirect('results')
+        request.session.save()
+        logger.debug("Answer processed. Session saved with current question index: %s", game_session['current_question_index'])
     else:
-        # Logic to display the next question
-        current_question_id = game_session['selected_questions'][game_session['current_question_index']]
-        current_question = TriviaQuestion.objects.get(TriviaQuestionID=current_question_id)
-        return render(request, 'quiz.html', {
-            'question_content': current_question.QuestionContent,
-            'question_image': current_question.Images,
-            'random_images': list(TriviaQuestion.objects.exclude(TriviaQuestionID=current_question.TriviaQuestionID).order_by('?')[:3].values_list('TriviaQuestionID', 'Images')),
-            'reward_points': game_session['reward_points'],
-            'total_questions': game_session['total_questions']
-        })
+        logger.debug("All questions answered, redirecting to results.")
+        return redirect('results')
+
+    return display_next_question_or_finish_quiz(request, session_key, game_session['module_type'], game_session['municipality'], game_session['kiosk_id'])
+
+def initialize_quiz_session(request, module_type, municipality, kiosk_id, visitor_id, session_key):
+    questions = fetch_quiz_questions(module_type, municipality, visitor_id)
+    if not questions.exists():
+        logger.debug("No questions available for the quiz.")
+        return render(request, 'quiz.html', {'message': 'No questions available at this time.'})
+
+    selected_question_ids = list(questions.values_list('TriviaQuestionID', flat=True))
+    game_session = {
+        'selected_questions': selected_question_ids,
+        'current_question_index': 0,
+        'answered_questions': [],  # This should initialize the list
+        'visitor_id': visitor_id,
+        'total_questions': len(selected_question_ids),
+        'module_type': module_type,
+        'municipality': municipality,
+        'kiosk_id': kiosk_id,
+        'reward_points': 0  # Initialize reward points
+    }
+    request.session[session_key] = game_session
+    request.session.modified = True
+
+    logger.debug("Quiz session initialized with game session: %s", game_session)
+
+    return display_next_question_or_finish_quiz(request, session_key, module_type, municipality, kiosk_id)
+
+def handle_quiz_process(request, session_key, module_type, municipality, kiosk_id):
+    if request.method == 'POST':
+        return process_submitted_answer(request, session_key)
+    else:
+        return display_next_question_or_finish_quiz(request, session_key, module_type, municipality, kiosk_id)
+
+# Display the next question or finish the quiz
+def display_next_question_or_finish_quiz(request, session_key, module_type, municipality, kiosk_id):
+    game_session = request.session.get(session_key)
+    if not game_session:
+        logger.error("Session expired or invalid.")
+        return HttpResponse("Session expired or invalid.", status=400)
+
+    if game_session['current_question_index'] >= len(game_session['selected_questions']):
+        logger.debug("All questions have been answered. Redirecting to results.")
+        return redirect('results')
+
+    current_question_id = game_session['selected_questions'][game_session['current_question_index']]
+    current_question = TriviaQuestion.objects.get(TriviaQuestionID=current_question_id)
+    logger.debug("Displaying question ID: %s", current_question_id)
+
+    return render(request, 'quiz.html', {
+        'question_content': current_question.QuestionContent,
+        'question_image': current_question.Images,
+        'random_images': list(TriviaQuestion.objects.exclude(TriviaQuestionID=current_question.TriviaQuestionID).order_by('?')[:3].values_list('TriviaQuestionID', 'Images')),
+        'reward_points': game_session.get('reward_points', 0),
+        'total_questions': len(game_session['selected_questions']),
+        'module_type': module_type,
+        'municipality': municipality,
+        'kiosk_id': kiosk_id,
+    })
+
 def update_visitor_progress(visitor_id, module_type, municipality, date_completed):
     # Check if there's already a progress for the given date
     visitor_progress_exists = VisitorProgress.objects.filter(
@@ -1233,64 +1347,57 @@ def add_extra_points(visitor_id, municipality):
             reward_entry.update_time = timezone.now()
             reward_entry.save()
 
-def update_or_create_reward_points(visitor_id, points_to_add, trivia_question_id, module_type, municipality):
-    # Lookup criteria for existing entry
+@transaction.atomic
+def update_or_create_reward_points(visitor_id, kiosk_id, points_to_add, trivia_question_id, module_type, municipality):
+    
+    # Lock the row to ensure this transaction is isolated
     lookup_criteria = {
-        'user_id': visitor_id, 
+        'user_id': visitor_id,
+        'KioskID_id': kiosk_id,
         'TriviaQuestionID_id': trivia_question_id,
         'ModuleType': module_type, 
         'Municipality': municipality
     }
-    # Retrieve existing entry if any
-    existing_entry = RewardPoints.objects.filter(**lookup_criteria).first()
+    reward_point = RewardPoints.objects.select_for_update().filter(**lookup_criteria).first()
 
-    # Check if the existing entry is for the same date
-    if existing_entry and existing_entry.create_time.date() == timezone.now().date():
-        # Update existing entry
-        existing_entry.TotalPoints += points_to_add
-        existing_entry.update_time = timezone.now()
-        existing_entry.save()
+    if reward_point and reward_point.create_time.date() == timezone.now().date():
+        # If entry exists and is from today, update it
+        reward_point.TotalPoints += points_to_add
+        reward_point.update_time = timezone.now()
+        reward_point.save()
     else:
-        # Create new entry
-        defaults = {
-            'TotalPoints': points_to_add, 
-            'create_time': timezone.now(), 
-            'update_time': timezone.now()
-        }
-        RewardPoints.objects.create(**lookup_criteria, **defaults)
+        # If no entry or not from today, create new
+        RewardPoints.objects.create(
+            **lookup_criteria,
+            TotalPoints=points_to_add,
+            create_time=timezone.now(),
+            update_time=timezone.now()
+        )
 
 def results_view(request):
-    visitor_id = request.session.get('game_session', {}).get('visitor_id')
-    module_type = request.session.get('game_session', {}).get('module_type', '')
-    municipality = request.session.get('game_session', {}).get('municipality', '')
-    
-    # Update the visitor's progress for the same date as today
-    update_visitor_progress(visitor_id, module_type, municipality, timezone.now().date())
+    game_session_key = 'game_session'
+    game_session = request.session.get(game_session_key, {})
 
-    # Retrieve total points of the visitor for today for the specified module type and municipality
-    total_points_entry = RewardPoints.objects.filter(user_id=visitor_id, create_time__date=timezone.now().date(), ModuleType=module_type, Municipality=municipality).aggregate(total_points=Sum('TotalPoints'))
-    total_points = total_points_entry.get('total_points', 0)
-    
-    # Store total points earned today in session
-    request.session['total_points'] = total_points
-    
-    # Retrieve total points of the visitor overall
-    all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
-    all_points = all_points_entry.get('all_points', 0)
-    
-    # Store total points earned overall in session
-    request.session['all_points'] = all_points
-    
-    # Retrieve total number of questions answered by the visitor for the specified module type and municipality
-    total_questions_count = RewardPoints.objects.filter(user_id=visitor_id, ModuleType=module_type, Municipality=municipality).aggregate(total_questions=Count('TriviaQuestionID'))
-    total_questions = total_questions_count.get('total_questions', 0)
-    
-    # Clear the game session after updating visitor progress and before rendering results
-    if 'game_session' in request.session:
-        del request.session['game_session']
-    
-    return render(request, 'results.html', {'total_points': total_points, 'all_points': all_points, 'total_questions': total_questions})
+    visitor_id = game_session.get('visitor_id')
+    module_type = game_session.get('module_type')
+    municipality = game_session.get('municipality')
 
+    total_points_today = RewardPoints.objects.filter(
+        user_id=visitor_id,
+        create_time__date=timezone.now().date(),
+        ModuleType=module_type,
+        Municipality=municipality
+    ).aggregate(total_points=Sum('TotalPoints'))['total_points'] or 0
+
+    print("Total Points Today: ", total_points_today)  # Debugging statement
+
+    if game_session_key in request.session:
+        del request.session[game_session_key]
+
+    return render(request, 'results.html', {
+        'total_points_today': total_points_today
+    })
+    
 @require_http_methods(["POST"])
 @csrf_exempt
 def get_municipality_status(request):
