@@ -1374,7 +1374,7 @@ def update_or_create_reward_points(visitor_id, kiosk_id, points_to_add, trivia_q
     # Lock the row to ensure this transaction is isolated
     lookup_criteria = {
         'user_id': visitor_id,
-        'KioskID': kiosk,  # Assign the Kiosk instance
+        'KioskID': kiosk,  
         'TriviaQuestionID_id': trivia_question_id,
         'ModuleType': module_type,
         'Municipality': municipality
