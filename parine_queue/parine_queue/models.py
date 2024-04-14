@@ -76,14 +76,14 @@ class TriviaQuestion(models.Model):
         
 class RewardPoints(models.Model):
     RewardPointsID = models.AutoField(primary_key=True)
-    TotalPoints =  models.IntegerField(default=0)
+    TotalPoints = models.IntegerField(default=0)
     create_time = models.DateTimeField(null=True, blank=True)
     update_time = models.DateTimeField(null=True, blank=True)
     user = models.ForeignKey(QueueVisitor, on_delete=models.CASCADE, db_column='VisitorID(RP)')
     Municipality = models.CharField(max_length=100)
     ModuleType = models.CharField(max_length=100)
     TriviaQuestionID = models.ForeignKey(TriviaQuestion, on_delete=models.CASCADE, db_column='TriviaQuestionID', null=True, blank=True)
-    KioskID = models.ForeignKey(Kiosk, on_delete=models.CASCADE, db_column='KioskID', null=True, blank=True)
+    KioskID = models.ForeignKey(Kiosk, on_delete=models.SET_NULL, db_column='KioskID', null=True, blank=True)
 
     class Meta:
         db_table = 'rewardpoints'

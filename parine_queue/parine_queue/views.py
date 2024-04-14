@@ -1363,13 +1363,20 @@ def add_extra_points(visitor_id, municipality):
 
 @transaction.atomic
 def update_or_create_reward_points(visitor_id, kiosk_id, points_to_add, trivia_question_id, module_type, municipality):
-    
+    # Retrieve the Kiosk instance using kiosk_id
+    try:
+        kiosk = Kiosk.objects.get(KioskID=kiosk_id)
+    except Kiosk.DoesNotExist:
+        # Handle the case where the kiosk does not exist
+        logger.error("No Kiosk found with ID: {}".format(kiosk_id))
+        return
+
     # Lock the row to ensure this transaction is isolated
     lookup_criteria = {
         'user_id': visitor_id,
-        'KioskID_id': kiosk_id,
+        'KioskID': kiosk,  # Assign the Kiosk instance
         'TriviaQuestionID_id': trivia_question_id,
-        'ModuleType': module_type, 
+        'ModuleType': module_type,
         'Municipality': municipality
     }
     reward_point = RewardPoints.objects.select_for_update().filter(**lookup_criteria).first()
@@ -1387,6 +1394,7 @@ def update_or_create_reward_points(visitor_id, kiosk_id, points_to_add, trivia_q
             create_time=timezone.now(),
             update_time=timezone.now()
         )
+
 
 def results_view(request, session_key):
     game_session = request.session.get(session_key, {})
