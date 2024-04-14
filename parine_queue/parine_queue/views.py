@@ -1,6 +1,7 @@
 from operator import le
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib import messages
+from django.utils.timezone import now
 from django.shortcuts import render, redirect
 from django.db import models
 from django.db.models import Case, When, Value, CharField
@@ -9,6 +10,7 @@ import random, os
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 from datetime import timedelta
+from datetime import datetime, timedelta
 from django.http import HttpResponseRedirect, JsonResponse
 from .models import QueueEntry, Kiosk
 from django.views.decorators.csrf import csrf_exempt
@@ -1168,6 +1170,18 @@ def quiz(request, module_type, municipality, kiosk_id):
     try:
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
         visitor_id = kiosk.QueueID.user.pk
+        
+        visitor_progress = VisitorProgress.objects.filter(
+                VisitorID_id=visitor_id,
+                Municipality__iexact=municipality,
+                ModuleType=module_type,
+                Status='DONE',
+                DateCompleted=timezone.now().date()
+            ).exists()
+
+        if visitor_progress:
+            return redirect('done_quiz')
+            
     except Kiosk.DoesNotExist:
         logger.error("Kiosk with ID %s not found.", kiosk_id)
         return HttpResponse("Kiosk not found.", status=404)
@@ -1211,7 +1225,7 @@ def process_submitted_answer(request, session_key):
         logger.debug("Answer processed. Session saved with current question index: %s", game_session['current_question_index'])
     else:
         logger.debug("All questions answered, redirecting to results.")
-        return redirect('results')
+        return redirect('results', session_key=session_key)
 
     return display_next_question_or_finish_quiz(request, session_key, game_session['module_type'], game_session['municipality'], game_session['kiosk_id'])
 
@@ -1255,7 +1269,7 @@ def display_next_question_or_finish_quiz(request, session_key, module_type, muni
 
     if game_session['current_question_index'] >= len(game_session['selected_questions']):
         logger.debug("All questions have been answered. Redirecting to results.")
-        return redirect('results')
+        return redirect('results', session_key=session_key)
 
     current_question_id = game_session['selected_questions'][game_session['current_question_index']]
     current_question = TriviaQuestion.objects.get(TriviaQuestionID=current_question_id)
@@ -1374,14 +1388,18 @@ def update_or_create_reward_points(visitor_id, kiosk_id, points_to_add, trivia_q
             update_time=timezone.now()
         )
 
-def results_view(request):
-    game_session_key = 'game_session'
-    game_session = request.session.get(game_session_key, {})
+def results_view(request, session_key):
+    game_session = request.session.get(session_key, {})
+
+    if not game_session:
+        return render(request, 'no_data.html', status=404)
 
     visitor_id = game_session.get('visitor_id')
     module_type = game_session.get('module_type')
     municipality = game_session.get('municipality')
+    kiosk_id = game_session.get('kiosk_id')
 
+    # Calculate total points accumulated today by the visitor
     total_points_today = RewardPoints.objects.filter(
         user_id=visitor_id,
         create_time__date=timezone.now().date(),
@@ -1389,14 +1407,23 @@ def results_view(request):
         Municipality=municipality
     ).aggregate(total_points=Sum('TotalPoints'))['total_points'] or 0
 
-    print("Total Points Today: ", total_points_today)  # Debugging statement
+    # Optionally, here you might update visitor progress if not done yet
+    update_visitor_progress(visitor_id, module_type, municipality, timezone.now().date())
 
-    if game_session_key in request.session:
-        del request.session[game_session_key]
+    # Clean up the session after displaying results
+    if session_key in request.session:
+        del request.session[session_key]  # Removing game-specific session data
+        request.session['last_completed_time'] = timezone.now().isoformat()  # Save last completion time in ISO format
+        request.session.modified = True
 
+    # Render the results page with the context
     return render(request, 'results.html', {
-        'total_points_today': total_points_today
+        'total_points_today': total_points_today,
+        'module_type': module_type,
+        'municipality': municipality,
+        'kiosk_id': kiosk_id
     })
+
     
 @require_http_methods(["POST"])
 @csrf_exempt

@@ -413,7 +413,6 @@
             
         }
         #municipality-progress, default-progress-status {
-            margin-right: 2.0833333333333335vw;
         }
         
     </style>
@@ -426,9 +425,6 @@
             <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
         </div>
         <div id="rightPanel">
-            <div id="imageButtonContainer">
-                <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
-            </div>
             {% if all_points %}
             <div id="points">Points: {{ all_points }} </div>
             
@@ -571,18 +567,20 @@
     <script>
         const imageButton = document.getElementById('imageButton');
         const rightPanel = document.getElementById('rightPanel');
-        
+        const municipalityProgress = document.getElementById('municipality-progress');
+
         imageButton.addEventListener('click', () => {
-            rightPanel.style.display = 'block';
-            imageButton.style.display = 'none'; // Hide the image button
+            if (rightPanel.style.display === 'block') {
+                rightPanel.style.display = 'none';
+            } else {
+                rightPanel.style.display = 'block';
+            }
         });
-        
+    
         document.addEventListener('click', (event) => {
-            const rightPanel = document.getElementById('rightPanel');
-            const municipalityProgress = document.getElementById('municipality-progress');
             if (!rightPanel.contains(event.target) && event.target !== imageButton) {
                 rightPanel.style.display = 'none';
-                imageButton.style.display = 'block'; // Show the image button again
+                imageButton.style.display = 'block';
                 
                 // Hide the municipality progress
                 if (municipalityProgress) {

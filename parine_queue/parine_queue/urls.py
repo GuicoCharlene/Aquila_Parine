@@ -52,6 +52,7 @@ urlpatterns = [
     path('quiz/<str:module_type>/<str:municipality>/<int:kiosk_id>/', quiz, name='quiz'),
     
     path('results/', results_view, name='results'),
+    path('results/<str:session_key>/', results_view, name='results'),
     
     path('adminpage/history/', history, name='history'),
     path('adminpage/module_tourist/<str:municipality>/', admin_module_tourist, name='admin_module_tourist'),

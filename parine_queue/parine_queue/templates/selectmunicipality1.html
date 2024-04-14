@@ -1154,7 +1154,7 @@
             font-size: 1px;
             color: #ffffff;
         }
-        #municipality-progress {
+        #municipality-progress, default-progress-status {
             margin-top: 1.0416666666666667vw;
         }
     </style>
@@ -1181,9 +1181,6 @@
             <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
         </div>
         <div id="rightPanel">
-            <div id="imageButtonContainer">
-                <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
-            </div>
             {% if all_points %}
             <div id="points">Points: {{ all_points }} </div>
             
@@ -1202,17 +1199,20 @@
                 <button class="district-button" onclick="toggleDistrictList('districtList5')">District 5</button>
                 <button class="district-button" onclick="toggleDistrictList('districtList6')">District 6</button>
 
-                <div id="municipality-progress" >
+                <div id="municipality-progress" style="display: none;">
+                    <p id="default-progress-status">
+                        Progress Status: NOT STARTED
+                    </p>
                     {% if municipality_status %}
                         <ul>
                             {% for municipality, status in municipality_status %}
                             <p class="municipality-status" data-municipality="{{ municipality }}" data-done-count="{{ status|length }}">
-                                <h3> Progress Status {{ municipality }}: </h3>
+                                <!-- Your municipality status display code here -->
                             </p>
                             {% endfor %}
                         </ul>
                     {% endif %}
-                </div>
+                </div>  
 
             </div>
             <div id="districtList1" class="district-list">
@@ -1412,6 +1412,7 @@
         const moduleContainer = document.querySelector('.modulecontainer');
         const backToMainButton = document.getElementById('backToMainButton');
         const hideContainer = document.getElementById('hide');
+        const municipalityProgress = document.getElementById('municipality-progress');
         //--------EXPLOREBUTTONS
         const exploreN = document.getElementById('exploreN');
         const exploreL = document.getElementById('exploreL');
@@ -1423,45 +1424,57 @@
         const exploreTL = document.getElementById('exploreTL');
     
         imageButton.addEventListener('click', () => {
-            rightPanel.style.display = 'block';
-            imageButton.style.display = 'none'; // Hide the image button
+            if (rightPanel.style.display === 'block') {
+                rightPanel.style.display = 'none';
+            } else {
+                rightPanel.style.display = 'block';
+            }
         });
     
         document.addEventListener('click', (event) => {
             if (!rightPanel.contains(event.target) && event.target !== imageButton) {
                 rightPanel.style.display = 'none';
-                imageButton.style.display = 'block'; // Show the image button again
-                document.querySelectorAll('.district-list').forEach(list => list.style.display = 'none');
-                document.getElementById('municipality-status').style.display = 'none';
+                imageButton.style.display = 'block';
                 
-                // Deselect any selected district buttons or district list items
-                if (currentSelectedDistrictButton) {
-                    currentSelectedDistrictButton.classList.remove('selected');
-                    currentSelectedDistrictButton = null; // Reset the selected district button
+                // Hide the municipality progress
+                if (municipalityProgress) {
+                    municipalityProgress.style.display = 'none';
                 }
-                if (currentSelectedButton) {
-                    currentSelectedButton.classList.remove('selected');
-                    currentSelectedButton = null; // Reset the selected district list item
+                
+                // Reset selected and hovered states
+                document.querySelectorAll('.district-list-item, .district-button').forEach(item => {
+                    item.classList.remove('selected');
+                    item.classList.remove('hovered');
+                });
+                
+                // Hide all district lists
+                document.querySelectorAll('.district-list').forEach(list => {
+                    list.style.display = 'none';
+                });
+            } else {
+                // Show municipality progress if a district list item was clicked
+                if (event.target.classList.contains('district-list-item')) {
+                    if (municipalityProgress) {
+                        municipalityProgress.style.display = 'block';
+                    }
                 }
             }
         });
+        
     
         let currentSelectedButton = null;
         let currentSelectedDistrictButton = null;
-    
-        function toggleDistrictList(districtId) {
 
+        function toggleDistrictList(districtId) {
             const districtList = document.getElementById(districtId);
             const isVisible = districtList.style.display === 'block';
             closeAllDistrictLists(); // Close all and remove selected first
             if (!isVisible) {
                 districtList.style.display = 'block';
-                document.getElementById(districtId.replace('List', 'Button')).classList.add('selected');
             }
             // Hide all district lists
             document.querySelectorAll('.district-list').forEach(list => {
                 list.style.display = 'none';
-                list.querySelectorAll('.district-list-item').forEach(item => item.classList.remove('selected'));
             });
             // Toggle the clicked list's visibility
             districtList.style.display = districtList.style.display === 'none' ? 'block' : 'none';
@@ -1475,10 +1488,10 @@
     
         function handleButtonClick(buttonElement, districtButton = false) {
             if (districtButton) {
-                if (currentSelectedDistrictButton && currentSelectedDistrictButton !== buttonElement) {
-                    currentSelectedDistrictButton.classList.remove('selected');
+                if (currentSelectedButton && currentSelectedButton !== buttonElement) {
+                    currentSelectedButton.classList.remove('selected');
                 }
-                currentSelectedDistrictButton = buttonElement;
+                currentSelectedButton = buttonElement;
                 buttonElement.classList.add('selected');
                 document.querySelectorAll('.district-list-item').forEach(item => {
                     item.classList.remove('selected');
@@ -1519,7 +1532,7 @@
         function fetchMunicipalityStatus(municipalityName) {
             const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
             const visitorId = window.visitorId;
-            
+        
             fetch('/get_municipality_status/', {
                 method: 'POST',
                 headers: {
@@ -1534,19 +1547,42 @@
             })
             .catch(error => {
                 console.error('Error:', error);
+                // Handle error by setting progress status to "NOT STARTED"
+                updateMunicipalityProgress(null, municipalityName);
             });
         }
         
         function updateMunicipalityProgress(data, municipalityName) {
             const statusElement = document.getElementById('municipality-progress');
-            if (data && data[municipalityName]) {
+        
+            // Check if the element exists
+            if (!statusElement) {
+                console.error('Municipality progress element not found');
+                return; // Exit the function if the element is not found
+            }
+        
+            if (!data || !data[municipalityName] || !Array.isArray(data[municipalityName])) {
+                // If no data is available or if the municipality does not exist, set progress status to "NOT STARTED"
+                statusElement.innerHTML = `<ul><h2>Progress Status: NOT STARTED</h2></ul>`;
+            } else {
+                // Count how many 'DONE' statuses exist
                 const doneCount = data[municipalityName].filter(status => status === 'DONE').length;
-                let progressStatus = (doneCount === 3 ? 'DONE' : (doneCount > 0 ? 'IN PROGRESS' : 'NOT STARTED'));
+        
+                let progressStatus = 'NOT STARTED'; // Default status
+                if (doneCount === 3) {
+                    progressStatus = 'DONE';
+                } else if (doneCount > 0) {
+                    progressStatus = 'IN PROGRESS';
+                }
+        
+                // Update the innerHTML with the new status
                 statusElement.innerHTML = `<ul><h2>Progress Status: ${progressStatus}</h2></ul>`;
-            } 
+            }
+        
+            // Display the element
             statusElement.style.display = 'block';
-        }
-
+        }  
+        
         function handleDistrictListItemClick(municipalityName) {
             // Reset the progress status for all municipalities
             const allMunicipalityStatusElements = document.querySelectorAll('.municipality-status');
@@ -1554,31 +1590,55 @@
                 el.style.display = 'none';
             });
         
+            // Hide the default progress status
+            document.getElementById('default-progress-status').style.display = 'none';
+        
             // Get the specific status element for the clicked municipality
             const statusElement = document.querySelector(`.municipality-status[data-municipality="${municipalityName}"]`);
             if (statusElement) {
                 const doneCount = statusElement.getAttribute('data-done-count');
                 let progressStatus = 'NOT STARTED';
-                if (doneCount >= 2 ) {
+                if (doneCount >= 2) {
                     progressStatus = 'IN PROGRESS';
                 } else if (doneCount == 3) {
                     progressStatus = 'DONE';
                 }
                 statusElement.textContent = `Progress Status: ${progressStatus}`;
                 statusElement.style.display = 'block';
+            } else {
+                // If the municipality does not exist, show the default progress status
+                document.getElementById('default-progress-status').style.display = 'block';
             }
         }
+               
         
-        // Example of how you might attach this function to your district list item buttons
         document.querySelectorAll('.district-list-item').forEach(item => {
             item.addEventListener('click', function() {
+                // Remove selected state from all district list items
+                document.querySelectorAll('.district-list-item.selected').forEach(selectedItem => {
+                    selectedItem.classList.remove('selected');
+                });
+                // Add selected state to the clicked item
+                this.classList.add('selected');
+        
+                // Handle click on district list item: Show municipality progress and update it
                 handleDistrictListItemClick(this.textContent.trim());
+        
+                // Show municipality progress
+                if (municipalityProgress) {
+                    municipalityProgress.style.display = 'block';
+                }
             });
         });
-        // Attach event listeners to district names buttons
+        
         document.querySelectorAll('.district-button').forEach(button => {
             button.addEventListener('click', function() {
-                handleButtonClick(this, true); // True indicates this is a district name button
+                handleButtonClick(this, true);
+        
+                const municipalityProgress = document.getElementById('municipality-progress');
+                if (municipalityProgress) {
+                    municipalityProgress.style.display = 'none';
+                }
             });
         });
 
