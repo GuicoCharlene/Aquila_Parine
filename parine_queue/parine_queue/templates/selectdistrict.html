@@ -720,7 +720,7 @@
         
                 let progressStatus = 'NOT STARTED'; // Default status
                 if (doneCount === 3) {
-                    progressStatus = 'DONE';
+                    progressStatus = 'COMPLETED';
                 } else if (doneCount > 0) {
                     progressStatus = 'IN PROGRESS';
                 }
@@ -751,7 +751,7 @@
                 if (doneCount >= 2) {
                     progressStatus = 'IN PROGRESS';
                 } else if (doneCount == 3) {
-                    progressStatus = 'DONE';
+                    progressStatus = 'COMPLETED';
                 }
                 statusElement.textContent = `Progress Status: ${progressStatus}`;
                 statusElement.style.display = 'block';

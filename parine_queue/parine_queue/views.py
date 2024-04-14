@@ -352,12 +352,12 @@ def kiosk_login(request, kiosk_id):
                         defaults={'TriviaQuestionID_id': trivia_question_id}
                     
                     )
-                    
+            history(request) 
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk.")
     except QueueEntry.DoesNotExist:
         messages.error(request, "No user assigned to this kiosk.")
-
+    
     context = {
         'kiosk_id': kiosk_id,
         'kiosk_username': kiosk_username,
@@ -365,6 +365,7 @@ def kiosk_login(request, kiosk_id):
     }
 
     return render(request, f'kiosk{kiosk_id}_login.html', context)
+
 
 #Views for logout in kiosk
 @transaction.atomic
@@ -450,7 +451,6 @@ def history(request):
     context = {'grouped_data': grouped_data}
 
     return render(request, 'history.html', context)
-
 
 def admin_district_1(request):
   # Fetch modules for District 1
@@ -1471,7 +1471,7 @@ def get_module_status_for_municipality(selected_municipality, visitor_id):
 
     # Determine the overall status based on the completion status of all module types
     if module_status_count['DONE'] == total_modules:
-        overall_status = 'DONE'
+        overall_status = 'COMPLETED'
     elif module_status_count['DONE'] > 0:
         overall_status = 'IN PROGRESS'
     else:
