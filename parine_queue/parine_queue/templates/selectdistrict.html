@@ -47,6 +47,26 @@
             border-top-left-radius: 1.9765625vw;
             border-bottom-left-radius: 1.9765625vw;
             border-left: 0.0000625vw solid #0f172a;
+            animation-duration: 0.21s;
+            animation-timing-function: ease-in-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(100%);
+            }
         }
 
         #usertopPanel {
@@ -169,6 +189,7 @@
             border-radius: 1.953125vw;
             cursor: pointer;
             transition: transform 0.2s;
+            animation: heartbeat 1s infinite;
         }
 
         .district1-button:active {
@@ -193,6 +214,7 @@
             border-radius: 1.953125vw;
             cursor: pointer;
             transition: transform 0.2s;
+            animation: heartbeat 1s infinite;
         }
 
         .district3-button:active {
@@ -217,7 +239,7 @@
             border-radius: 1.953125vw;
             cursor: pointer;
             transition: transform 0.2s;
-            /* Add a transition for the transform property */
+            animation: heartbeat 1s infinite;
         }
 
         .district2-button:active {
@@ -242,7 +264,7 @@
             border-radius: 1.953125vw;
             cursor: pointer;
             transition: transform 0.2s;
-            /* Add a transition for the transform property */
+            animation: heartbeat 1s infinite;
         }
 
         .district5-button:active {
@@ -267,7 +289,7 @@
             border-radius: 1.953125vw;
             cursor: pointer;
             transition: transform 0.2s;
-            /* Add a transition for the transform property */
+            animation: heartbeat 1s infinite;
         }
 
         .district4-button:active {
@@ -292,6 +314,7 @@
             border-radius: 1.953125vw;
             cursor: pointer;
             transition: transform 0.2s;
+            animation: heartbeat 1s infinite;
         }
 
         .district6-button:hover {
@@ -317,7 +340,7 @@
 
         #districtNames {
             position: absolute;
-            top: 10.625vw;
+            top: 10.208333333333334vw;
             left: 50%;
             transform: translateX(-50%);
             font-family: Arial, sans-serif;
@@ -418,6 +441,21 @@
         #default-progress-status {
             margin-left: 2.0833333333333335vw;
         }
+
+        /* Heartbeat animation */
+        @keyframes heartbeat {
+          0% {
+            transform: scale(1);
+          }
+    
+          50% {
+            transform: scale(1.05);
+          }
+    
+          100% {
+            transform: scale(1);
+          }
+        }
         
     </style>
 </head>
@@ -446,6 +484,7 @@
                 <button class="district-button" onclick="toggleDistrictList('districtList4')">District 4</button>
                 <button class="district-button" onclick="toggleDistrictList('districtList5')">District 5</button>
                 <button class="district-button" onclick="toggleDistrictList('districtList6')">District 6</button>
+            
 
                 <div id="municipality-progress" style="display: none;">
                     <p id="default-progress-status">
@@ -573,19 +612,61 @@
         const rightPanel = document.getElementById('rightPanel');
         const municipalityProgress = document.getElementById('municipality-progress');
 
+        let isPanelVisible = false;
+        let isAnimating = false;
+        
         imageButton.addEventListener('click', () => {
-            if (rightPanel.style.display === 'block') {
-                rightPanel.style.display = 'none';
-            } else {
-                rightPanel.style.display = 'block';
+            if (!isAnimating) {
+                if (isPanelVisible) {
+                    rightPanel.style.animationName = 'slideOut';
+                    isPanelVisible = false;
+                    isAnimating = true;
+                    setTimeout(() => {
+                        rightPanel.style.display = 'none';
+                        isAnimating = false;
+                    }, 200); // Wait for animation to complete
+                    // Hide the municipality progress
+                    if (municipalityProgress) {
+                        municipalityProgress.style.display = 'none';
+                    }
+                    
+                    // Reset selected and hovered states
+                    document.querySelectorAll('.district-list-item, .district-button').forEach(item => {
+                        item.classList.remove('selected');
+                        item.classList.remove('hovered');
+                    });
+                    
+                    // Hide all district lists
+                    document.querySelectorAll('.district-list').forEach(list => {
+                        list.style.display = 'none';
+                    });
+                } else {
+                    rightPanel.style.display = 'block';
+                    rightPanel.style.animationName = 'slideIn';
+                    isPanelVisible = true;
+                    isAnimating = true;
+                    // Show municipality progress if a district list item was clicked
+                    if (event.target.classList.contains('district-list-item')) {
+                        if (municipalityProgress) {
+                            municipalityProgress.style.display = 'block';
+                        }
+                    }
+                    setTimeout(() => {
+                        isAnimating = false;
+                    }, 200); // Wait for animation to complete
+                }
             }
         });
-    
+        
         document.addEventListener('click', (event) => {
-            if (!rightPanel.contains(event.target) && event.target !== imageButton) {
-                rightPanel.style.display = 'none';
-                imageButton.style.display = 'block';
-                
+            if (!isAnimating && isPanelVisible && !rightPanel.contains(event.target) && event.target !== imageButton) {
+                rightPanel.style.animationName = 'slideOut';
+                isPanelVisible = false;
+                isAnimating = true;
+                setTimeout(() => {
+                    rightPanel.style.display = 'none';
+                    isAnimating = false;
+                }, 200); // Wait for animation to complete
                 // Hide the municipality progress
                 if (municipalityProgress) {
                     municipalityProgress.style.display = 'none';

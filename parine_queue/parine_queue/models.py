@@ -43,6 +43,7 @@ class Admin(models.Model):
 class Queue_Capacity(models.Model):
     queue_capacity_id = models.IntegerField(primary_key=True)
     limit = models.IntegerField()
+    AdminID = models.ForeignKey('Admin', on_delete=models.CASCADE, db_column='AdminID')
     class Meta:
         db_table = 'queue_capacity'
         
@@ -51,6 +52,7 @@ class DistrictModules(models.Model):
     Municipality = models.CharField(max_length=100)
     ModuleName = models.CharField(max_length=100)
     ModuleLocation = models.CharField(max_length=100)
+    ModuleContact = models.CharField(max_length=100)
     ModuleContent = models.FileField(upload_to='module_content/')
     FirstImage = models.FileField(upload_to='module_content/')
     SecondImage = models.FileField(upload_to='module_content/')
@@ -90,7 +92,7 @@ class RewardPoints(models.Model):
         
 class Visitor_History(models.Model):
     historyid = models.AutoField(primary_key=True)
-    date = models.DateField(null=True, blank=True)  # Changed to DateField
+    date = models.DateField(null=True, blank=True)
     user = models.CharField(max_length=255, unique=True)
     userid = models.ForeignKey(QueueVisitor, on_delete=models.CASCADE, db_column='VisitorID(Q)')
     Admin = models.ForeignKey( Admin, on_delete=models.CASCADE, db_column='AdminID(VH)')
@@ -103,7 +105,8 @@ class VisitorProgress(models.Model):
     Municipality = models.CharField(max_length=100)
     ModuleType = models.CharField(max_length=100)
     Status = models.CharField(max_length=100)
-    DateCompleted = models.DateField(null=True, blank=True)  # Changed to DateField
+    DateCompleted = models.DateField(null=True, blank=True) 
+    TriviaQuestionID = models.ForeignKey(TriviaQuestion, on_delete=models.CASCADE, db_column='TriviaQuestionID', null=True, blank=True)
     class Meta:
         db_table = 'visitorprogress'
         

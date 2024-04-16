@@ -122,6 +122,20 @@
         /* Ensure the width accounts for padding */
         box-sizing: border-box;
     }
+
+    .content .con {
+ 
+        margin-top: 1vw;
+        padding: 1vw; 
+        opacity: 0;
+        font-size: 20px; 
+        font-weight: bold;
+        text-align: justify;
+        background: rgba(255, 255, 255, 0.6);
+        animation: animateDes 0.5s ease-in-out 1s forwards;
+        /* Ensure the width accounts for padding */
+        box-sizing: border-box;
+    }
     
     /* Keyframes for animations */
     @keyframes animateName {
@@ -244,7 +258,9 @@
                     <div class="content {% if forloop.first %}active{% endif %}">
                         <div class="name">{{ module.ModuleName }}</div>
                         <div class="loc">Location: {{ module.ModuleLocation }}</div>
+                        
                         <div class="des">{{ module.ModuleFile }}</div>
+                        <div class="con">Contact Details: {{ module.ModuleContact }}</div>
                     </div>
                 </div>
                 {% endfor %}
@@ -397,14 +413,14 @@
                 if(images.length > 1) { // Only rotate if there's more than one image
                     rotateImages(images[nextIndex]);
                 }
-            }, 2000);
+            }, 4000);
         }
     
         window.onload = function() {
             updateButtonState();
             updateVisibleImages();
             rotateImagesAutomatically();
-            updateNextButtonForLastSlide(); // Set the Next button text for the first slide
+            updateNextButtonForLastSlide(); 
         };
     </script>
     

@@ -89,8 +89,28 @@
             box-sizing: border-box;
             border-top-left-radius: 2.9765625vw;
             border-bottom-left-radius: 2.9765625vw;
-            /* Border only on the left side */
             border-left: 0.0000625vw solid #0f172a;
+            animation-duration: 0.21s;
+            animation-timing-function: ease-in;
+            animation-timing-function: ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(100%);
+            }
         }
 
         #usertopPanel {
@@ -1054,7 +1074,7 @@
         }
         #districtNames {
             position: absolute;
-            top: 10.625vw;
+            top: 10.208333333333334vw;
             left: 50%;
             transform: translateX(-50%);
             font-family: Arial, sans-serif;
@@ -1422,20 +1442,62 @@
         const exploreC = document.getElementById('exploreC');
         const exploreLM = document.getElementById('exploreLM');
         const exploreTL = document.getElementById('exploreTL');
-    
+
+        let isPanelVisible = false;
+        let isAnimating = false;
+        
         imageButton.addEventListener('click', () => {
-            if (rightPanel.style.display === 'block') {
-                rightPanel.style.display = 'none';
-            } else {
-                rightPanel.style.display = 'block';
+            if (!isAnimating) {
+                if (isPanelVisible) {
+                    rightPanel.style.animationName = 'slideOut';
+                    isPanelVisible = false;
+                    isAnimating = true;
+                    setTimeout(() => {
+                        rightPanel.style.display = 'none';
+                        isAnimating = false;
+                    }, 200); // Wait for animation to complete
+                    // Hide the municipality progress
+                    if (municipalityProgress) {
+                        municipalityProgress.style.display = 'none';
+                    }
+                    
+                    // Reset selected and hovered states
+                    document.querySelectorAll('.district-list-item, .district-button').forEach(item => {
+                        item.classList.remove('selected');
+                        item.classList.remove('hovered');
+                    });
+                    
+                    // Hide all district lists
+                    document.querySelectorAll('.district-list').forEach(list => {
+                        list.style.display = 'none';
+                    });
+                } else {
+                    rightPanel.style.display = 'block';
+                    rightPanel.style.animationName = 'slideIn';
+                    isPanelVisible = true;
+                    isAnimating = true;
+                    // Show municipality progress if a district list item was clicked
+                    if (event.target.classList.contains('district-list-item')) {
+                        if (municipalityProgress) {
+                            municipalityProgress.style.display = 'block';
+                        }
+                    }
+                    setTimeout(() => {
+                        isAnimating = false;
+                    }, 200); // Wait for animation to complete
+                }
             }
         });
-    
+        
         document.addEventListener('click', (event) => {
-            if (!rightPanel.contains(event.target) && event.target !== imageButton) {
-                rightPanel.style.display = 'none';
-                imageButton.style.display = 'block';
-                
+            if (!isAnimating && isPanelVisible && !rightPanel.contains(event.target) && event.target !== imageButton) {
+                rightPanel.style.animationName = 'slideOut';
+                isPanelVisible = false;
+                isAnimating = true;
+                setTimeout(() => {
+                    rightPanel.style.display = 'none';
+                    isAnimating = false;
+                }, 200); // Wait for animation to complete
                 // Hide the municipality progress
                 if (municipalityProgress) {
                     municipalityProgress.style.display = 'none';
@@ -1460,7 +1522,6 @@
                 }
             }
         });
-        
     
         let currentSelectedButton = null;
         let currentSelectedDistrictButton = null;

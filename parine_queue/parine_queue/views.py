@@ -493,7 +493,6 @@ def get_district_modules(suffix):
     modules = DistrictModules.objects.filter(DistrictModuleID__endswith=suffix)
     return modules
 
-
 def add_module(request):
     if request.method == 'POST':
         module_name = request.POST.get('new_module_name')
@@ -504,7 +503,9 @@ def add_module(request):
         module_third = request.FILES.get('new_third_image')
         municipality = request.POST.get('municipality_name')
         module_location = request.POST.get('new_module_location')
+        module_contact = request.POST.get('new_module_contact')
         moduletype = request.POST.get('moduletype_suffix')
+   
 
         # Get the district suffix for the municipality
         district_suffix = get_district_suffix(municipality)
@@ -526,7 +527,7 @@ def add_module(request):
             district_module_id = f'{moduletype}{str(numeric_part).zfill(3)}{district_suffix}'  # Ensure numeric part is padded with zeros
 
             # Save the module to the database with the generated DistrictModuleID
-            new_module = DistrictModules(DistrictModuleID=district_module_id, Municipality=municipality, ModuleName=module_name,ModuleLocation=module_location, FirstImage = module_first, SecondImage= module_second,ThirdImage=module_third,ModuleContent=module_image, ModuleFile=module_file)
+            new_module = DistrictModules(DistrictModuleID=district_module_id, Municipality=municipality, ModuleName=module_name,ModuleContact=module_contact,ModuleLocation=module_location, FirstImage = module_first, SecondImage= module_second,ThirdImage=module_third,ModuleContent=module_image, ModuleFile=module_file)
 
             if module_image:  # Check if module_image is not None
                 new_module.ModuleContent = os.path.basename(module_image.name)  # Save only the filename
@@ -558,6 +559,7 @@ def add_module(request):
             new_module.save()
 
     return redirect(request.META.get('HTTP_REFERER', 'admin_dashboard'))
+
 def delete_module(request):
     if request.method == 'POST':
         module_id = request.POST.get('module_id')    
@@ -584,6 +586,7 @@ def save_module_changes(request):
         new_module_second = request.FILES.get('second_image')
         new_module_third = request.FILES.get('third_image')
         new_module_location = request.POST.get('new_module_location')
+        new_module_contact = request.POST.get('new_module_contact')
         try:
             module = DistrictModules.objects.get(DistrictModuleID=module_id)
             if module.ModuleName == new_module_name and module.ModuleFile == new_module_file == new_module_location:
@@ -601,6 +604,10 @@ def save_module_changes(request):
                     module.ModuleLocation = new_module_location
                 else:
                     module.ModuleLocation = "None"  # Set to "None" if the field is empty
+                if new_module_contact is not None and new_module_contact != "":
+                    module.ModuleContact = new_module_contact
+                else:
+                    module.ModuleContact = "None"  # Set to "None" if the field is empty    
                 if new_module_image:
                     # Save the uploaded image to the media directory
                     image_path = os.path.join(settings.MEDIA_ROOT, new_module_image.name)
@@ -1086,8 +1093,8 @@ def get_district_suffix(municipality):
         'D2': ['SAN LUIS', 'BAUAN', 'SAN PASCUAL', 'MABINI', 'TINGLOY', 'LOBO'],
         'D3': ['STO.TOMAS', 'AGONCILLO', 'TALISAY', 'TANAUAN', 'MALVAR', 'SAN NICOLAS', 'BALETE', 'MATAAS NA KAHOY', 'STA. TERESITA', 'CUENCA', 'ALITAGTAG', 'LAUREL'],
         'D4': ['SAN JOSE', 'IBAAN', 'ROSARIO', 'TAYSAN', 'PADRE GARCIA', 'SAN JUAN'],
-        'D5': ['BATANGAS'], 
-        'D6': ['LIPA'],  
+        'D5': ['BATANGAS CITY'], 
+        'D6': ['LIPA CITY'],  
     }
     for suffix, municipalities in suffix_to_municipalities.items():
         if municipality.upper() in municipalities:

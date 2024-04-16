@@ -93,7 +93,7 @@
         .add-container textarea {
             width: 100%;
             /* Full width */
-            height: 180px;
+            height: 150px;
             resize: none;
             /* Allows vertical resize, none to disable resize */
         }
@@ -111,6 +111,7 @@
             transform: translate(-50%, -50%);
             display: flex;
             flex-direction: column;
+            margin-top: 30px;
             /* Stack child elements vertically */
             align-items: stretch;
             /* Stretch child elements to container width */
@@ -374,6 +375,9 @@
                     <label for="new_module_location">Module Location:</label>
                     <input type="text" id="new_module_location" name="new_module_location"
                         value="{{ module.ModuleLocation }}"><br>
+                    <label for="new_module_contact">Module Contact:</label>
+                    <input type="text" id="new_module_contact" name="new_module_contact"
+                        value="{{ module.ModuleContact }}"><br>
                     <label for="new_module_file">Module File:</label>
                     {% if module.ModuleFile %}
                     <textarea id="new_module_file" name="new_module_file" class="scrollbar"
@@ -410,6 +414,7 @@
             </div>
             <h2>{{ module.ModuleName }}</h2>
             <h3>{{ module.ModuleLocation }}</h3>
+            <h3>{{ module.ModuleContact }}</h3>
             <p class="scrollbar">{{ module.ModuleFile }}</p>
         </div>
         {% endfor %}
@@ -431,6 +436,8 @@
             <input type="text" id="new_module_name" name="new_module_name" required><br>
             <label for="new_module_location">Module Location:</label>
             <input type="text" id="new_module_location" name="new_module_location" required><br>
+            <label for="new_module_contact">Module Contact:</label>
+            <input type="text" id="new_module_contact" name="new_module_contact"><br>
             <label for="new_module_file">Module File:</label>
             <textarea id="new_module_file" name="new_module_file" class="scrollbar" rows="10"></textarea><br>
             <button type="submit">Add Module</button>
@@ -519,6 +526,7 @@
                     // Fill edit container with current module data
                     editContainer.querySelector('#new_module_name').value = moduleName;
                     editContainer.querySelector('#new_module_location').value = moduleLocation;
+                    editContainer.querySelector('#new_module_contact').value = moduleContact;
                     editContainer.querySelector('#new_module_image').value = moduleImage;
                     editContainer.querySelector('#new_module_file').value = moduleFile;
                 });
