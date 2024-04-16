@@ -178,10 +178,10 @@
             font-family: 'Gotham', sans-serif;
             font-size: 1.3020833333333333vw;
             font-weight: bold;
-            background-color: #15375D;
+            background-color: #06C9EF;
             color: #FFFFFF;
             padding: 0.6510416666666666vw 1.3020833333333333vw;
-            border: 0.0000125vw solid #0f172a;
+            border: 0.0000125vw;
             border-radius: 1.953125vw;
             cursor: pointer;
             transition: background-color 0.3s, color 0.3s;
@@ -190,7 +190,7 @@
         }
 
         #selectdistrict-button:hover {
-            background-color: #215794;
+            background-color: #08a1c0;
         }
 
         .title {
@@ -539,19 +539,24 @@
         .district-button {
             font-family: 'Gotham', sans-serif;
             font-weight: bold;
-            background-color: #15375D;
-            color: #FFFFFF;
+            color: whitesmoke; 
             font-size: 0.78125vw;
-
             padding: 0.68993316666666666vw;
-            border: 0.0000125vw solid #0f172a;
+            border: 0.0000125vw;
             border-radius: 1.953125vw;
             cursor: pointer;
-            
+            transition: background-color 0.3s, color 0.3s;
         }
 
+        .district-button.district1 { background-color: #058DC5; }
+        .district-button.district2 { background-color: #10A3E0; }
+        .district-button.district3 { background-color: #30C3FF; }
+        .district-button.district4 { background-color: #007EF4; }
+        .district-button.districtfive { background-color: #065AAD; }
+        .district-button.district6 { background-color: #0040FF; }
+        
         .district-button:hover {
-            background-color: #1e4d84;
+            background-color: #069952;
         }
 
         .district-list {
@@ -582,16 +587,22 @@
             border: 0.1953125vw solid #FFFFFF;
             border-radius: 1.953125vw;
             cursor: pointer;
-
         }
+        .district-list-item.district1 { background-color: #058DC5; }
+        .district-list-item.district2 { background-color: #10A3E0; }
+        .district-list-item.district3 { background-color: #30C3FF; }
+        .district-list-item.district4 { background-color: #007EF4; }
+        .district-list-item.districtfive { background-color: #065AAD; }
+        .district-list-item.district6 { background-color: #0040FF; }
 
         .district-list-item:hover {
-            background-color: #078199;
+            background-color: #069952;
         }
 
         .district-button.selected, .district-list-item.selected {
-            background-color: #08a1c0; /* The color used for hover and selected state */
-        }     
+            background-color: #069952;
+            color: whitesmoke;
+        }      
 
         #municipality-status {
             display: none;
@@ -645,15 +656,15 @@
             {% endif %}
             
             <div id="districtNames">
-                <button class="district-button" onclick="toggleDistrictList('districtList1')">District 1</button>
-                <button class="district-button" onclick="toggleDistrictList('districtList2')">District 2</button>
-                <button class="district-button" onclick="toggleDistrictList('districtList3')">District 3</button>
+                <button class="district-button district1" onclick="toggleDistrictList('districtList1')">District 1</button>
+                <button class="district-button district2" onclick="toggleDistrictList('districtList2')">District 2</button>
+                <button class="district-button district3" onclick="toggleDistrictList('districtList3')">District 3</button>
             </div>
-
+            
             <div id="districtNamesLower">
-                <button class="district-button" onclick="toggleDistrictList('districtList4')">District 4</button>
-                <button class="district-button" onclick="toggleDistrictList('districtList5')">District 5</button>
-                <button class="district-button" onclick="toggleDistrictList('districtList6')">District 6</button>
+                <button class="district-button district4" onclick="toggleDistrictList('districtList4')">District 4</button>
+                <button class="district-button districtfive" onclick="toggleDistrictList('districtList5')">District 5</button>
+                <button class="district-button district6" onclick="toggleDistrictList('districtList6')">District 6</button>
 
                 <div id="municipality-progress" style="display: none;">
                     <p id="default-progress-status">
@@ -674,71 +685,71 @@
             <div id="districtList1" class="district-list">
                 <!-- Add items for district 1 -->
 
-                <button class="district-list-item">BALAYAN</button>
-                <button class="district-list-item">CALACA</button>
-                <button class="district-list-item">CALATAGAN</button>
-                <button class="district-list-item">LEMERY</button>
-                <button class="district-list-item">LIAN</button>
-                <button class="district-list-item">NASUGBU</button>
-                <button class="district-list-item">TAAL</button>
-                <button class="district-list-item">TUY</button>
+                <button class="district-list-item district1">BALAYAN</button>
+                <button class="district-list-item district1">CALACA</button>
+                <button class="district-list-item district1">CALATAGAN</button>
+                <button class="district-list-item district1">LEMERY</button>
+                <button class="district-list-item district1">LIAN</button>
+                <button class="district-list-item district1">NASUGBU</button>
+                <button class="district-list-item district1">TAAL</button>
+                <button class="district-list-item district1">TUY</button>
                 <!-- Add more items as needed -->
             </div>
 
             <div id="districtList2" class="district-list">
                 <!-- Add items for district 2 -->
 
-                <button class="district-list-item">BAUAN</button>
-                <button class="district-list-item">LOBO</button>
-                <button class="district-list-item">MABINI</button>
-                <button class="district-list-item">SAN LUIS</button>
-                <button class="district-list-item">SAN PASCUAL</button>
-                <button class="district-list-item">TINGLOY</button>
+                <button class="district-list-item district2">BAUAN</button>
+                <button class="district-list-item district2">LOBO</button>
+                <button class="district-list-item district2">MABINI</button>
+                <button class="district-list-item district2">SAN LUIS</button>
+                <button class="district-list-item district2">SAN PASCUAL</button>
+                <button class="district-list-item district2">TINGLOY</button>
                 <!-- Add more items as needed -->
             </div>
 
             <div id="districtList3" class="district-list">
                 <!-- Add items for district 3 -->
 
-                <button class="district-list-item">AGONCILLO</button>
-                <button class="district-list-item">ALITAGTAG</button>
-                <button class="district-list-item">CALATAGAN</button>
-                <button class="district-list-item">BALETE</button>
-                <button class="district-list-item">CUENCA</button>
-                <button class="district-list-item">LAUREL</button>
-                <button class="district-list-item">MALVAR</button>
-                <button class="district-list-item">MATAAS NA KAHOY</button>
-                <button class="district-list-item">SAN NICOLAS</button>
-                <button class="district-list-item">STA. TERESITA</button>
-                <button class="district-list-item">STO. TOMAS</button>
-                <button class="district-list-item">TALISAY</button>
-                <button class="district-list-item">TANAUAN</button>
+                <button class="district-list-item district3">AGONCILLO</button>
+                <button class="district-list-item district3">ALITAGTAG</button>
+                <button class="district-list-item district3">CALATAGAN</button>
+                <button class="district-list-item district3">BALETE</button>
+                <button class="district-list-item district3">CUENCA</button>
+                <button class="district-list-item district3">LAUREL</button>
+                <button class="district-list-item district3">MALVAR</button>
+                <button class="district-list-item district3">MATAAS NA KAHOY</button>
+                <button class="district-list-item district3">SAN NICOLAS</button>
+                <button class="district-list-item district3">STA. TERESITA</button>
+                <button class="district-list-item district3">STO. TOMAS</button>
+                <button class="district-list-item district3">TALISAY</button>
+                <button class="district-list-item district3">TANAUAN</button>
                 <!-- Add more items as needed -->
             </div>
 
             <div id="districtList4" class="district-list">
                 <!-- Add items for district 4 -->
 
-                <button class="district-list-item">IBAAN</button>
-                <button class="district-list-item">PADRE GARCIA</button>
-                <button class="district-list-item">ROSARIO</button>
-                <button class="district-list-item">SAN JOSE</button>
-                <button class="district-list-item">SAN JUAN</button>
-                <button class="district-list-item">TAYSAN</button>
+                <button class="district-list-item district4">IBAAN</button>
+                <button class="district-list-item district4">PADRE GARCIA</button>
+                <button class="district-list-item district4">ROSARIO</button>
+                <button class="district-list-item district4">SAN JOSE</button>
+                <button class="district-list-item district4">SAN JUAN</button>
+                <button class="district-list-item district4">TAYSAN</button>
                 <!-- Add more items as needed -->
             </div>
 
             <div id="districtList5" class="district-list">
                 <!-- Add items for district 5 -->
 
-                <button class="district-list-item">BATANGAS</button>
+                <button class="district-list-item districtfive">BATANGAS</button>
                 <!-- Add more items as needed -->
             </div>
 
             <div id="districtList6" class="district-list">
                 <!-- Add items for district 6 -->
 
-                <button class="district-list-item">LIPA</button>
+                <button class="district-list-item district6">LIPA</button>
                 <!-- Add more items as needed -->
             </div>
             <div id="usertopPanel">

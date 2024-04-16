@@ -18,7 +18,6 @@ class QueueEntry(models.Model):
     user = models.ForeignKey(QueueVisitor, on_delete=models.CASCADE, db_column='VisitorID(Q)')
     PriorityLevel = models.CharField(max_length=10)
     QueueStatus = models.CharField(max_length=45)
-    QueueLimit = models.CharField(max_length=45)
     StartTime = models.DateTimeField(null=True, blank=True)
     EndTime = models.DateTimeField(null=True, blank=True)
     

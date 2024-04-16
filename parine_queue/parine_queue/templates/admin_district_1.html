@@ -1,0 +1,701 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FDF6EA;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100vw;
+            height: 70vh;
+            overflow-y: auto;
+
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        #home-container {
+            display: inline-block;
+            margin: 10px;
+        }
+
+        #home-link {
+            display: inline-block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .home-icon {
+            font-size: 40px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .home-icon:hover {
+            color: #1aa4c2;
+        }
+
+        #history-container {
+            display: inline-block;
+            margin: 10px;
+        }
+
+        #history-link {
+            display: inline-block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .history-icon {
+            font-size: 35px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .history-icon:hover {
+            color: gray;
+
+        }
+
+        /*NAV FOR CONTENT*/
+        .nav-bar {
+            color: #1E4C79;
+            display: flex;
+            font-size: 25px;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            justify-content: space-evenly;
+            align-items: center;
+            height: 5px;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: border-bottom 0.1s ease;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            border-bottom: 5px solid #15375D;
+            /* Color when hovering or active */
+        }
+
+
+
+
+        header {
+            background-color: #15375D;
+            color: #fff;
+            padding: 15px;
+            text-align: left;
+            font-family: 'Dm Serif Display', serif;
+            width: 100%;
+            z-index: 1;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .municipality-container {
+            white-space: nowrap;
+            position: absolute;
+            font-family: 'Georgia', serif;
+            font-size: 55px;
+            color: #15375D;
+            margin-left: 220px;
+        }
+
+        .logo-container {
+            position: relative;
+            width: 200px;
+            background-color: rgba(21, 55, 93, 0.7);
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .logo-image {
+            width: 130px;
+            max-height: 80px;
+            height: auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+
+
+        /*NAV FOR DISTRICT*/
+        nav {
+            background-color: #15375D;
+            color: #ecf0f1;
+            padding: 15px;
+            text-align: center;
+            width: 200px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            margin-top: 0;
+            box-sizing: border-box;
+        }
+
+        nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            margin: 10px 0;
+        }
+
+        main {
+            padding: 20px;
+            flex: 1;
+            margin-left: 130px;
+            box-sizing: border-box;
+        }
+
+        /* Existing CSS styles */
+        .district-container {
+            height: 90px;
+            width: 170px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .district-image {
+            width: 70px;
+            height: 60px;
+            border: 1px solid #ccc;
+            margin-right: 5px;
+            border-radius: 15px;
+        }
+
+        .district-button {
+            background-color: #15375D;
+            color: #ecf0f1;
+            width: 150px;
+            height: 60px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Dm Serif Display', serif;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .district-button:hover,
+        .district-button:active {
+            background-color: #1E4C79;
+        }
+
+        .district-info-content {
+            position: absolute;
+            left: calc(100% + 14px);
+            width: 150px;
+            height: auto;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            background-color: #15375D;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        .district-info-content.hidden {
+            display: none;
+        }
+
+        .district-info-content ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .district-info-content li {
+            margin-bottom: 5px;
+        }
+
+        .district-info-content li button {
+            width: 100%;
+            background-color: #15375D;
+            color: #ecf0f1;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .district-container:hover .district-info-content {
+            display: block;
+
+        }
+
+        .district-info-content li button:hover {
+            background-color: #1E4C79;
+        }
+
+        .logout-button {
+            margin-left: 5%;
+            margin-top: 20%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 15px;
+            padding: 10px;
+            background-color: #25c8e4;
+            color: rgb(253, 249, 249);
+            border: 2px solid #ffffff;
+            border-radius: 15px;
+            cursor: pointer;
+            width: auto;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .logout-button:hover {
+            background-color: #1aa4c2;
+            color: #ffffff;
+            border-color: #1aa4c2;
+        }
+
+        #action-buttons {
+            position: absolute;
+            top: 140px;
+            right: 190px;
+
+
+        }
+
+        #module-type {
+            padding: 10px 20px;
+            border: 2px solid #1E4C79;
+            border-radius: 5px;
+            background-color: #fff;
+            cursor: pointer;
+            white-space: nowrap;
+            position: absolute;
+            font-family: 'Georgia', serif;
+            font-size: 30px;
+            color: #15375D;
+        }
+
+        #module-type option {
+            background-color: #fff;
+            color: #1E4C79;
+            font-size: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Parine sa Batangas!</h1>
+        <div id="header-icons">
+            <div id="history-container">
+                <a href=" #" id="history-link">
+                    <span class="fas fa-calendar-alt history-icon" title="History"></span>
+                </a>
+            </div>
+            <div id="home-container">
+                <a href="#" id="home-link">
+                    <span class="fas fa-home home-icon" title="Home"></span>
+                </a>
+            </div>
+        </div>
+    </header>
+    <div id="action-buttons">
+        <select id="module-type" onchange="loadModuleType()">
+            <option value="module">Module</option>
+            <option value="quiz">Quiz</option>
+        </select>
+    </div>
+    <div class="logo-container">
+        <img src="{% static 'logo.png' %}" class="logo-image">
+        <div class="municipality-container" id="selected-municipality-display"></div>
+
+    </div>
+
+    <nav>
+
+        <div class="district-container">
+            <img src="{% static 'district 1-1.png' %}" class="district-image">
+            <button class="district-button">DISTRICT 1</button>
+            <div class="district-info-content hidden">
+                <ul>
+                    <li><button class="district1-button">BALAYAN</button></li>
+                    <li><button class="district1-button">CALACA</button></li>
+                    <li><button class="district1-button">CALATAGAN</button></li>
+                    <li><button class="district1-button">LEMERY</button></li>
+                    <li><button class="district1-button">LIAN</button></li>
+                    <li><button class="district1-button">NASUGBU</button></li>
+                    <li><button class="district1-button">TAAL</button></li>
+                    <li><button class="district1-button">TUY</button></li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="district-container">
+            <img src="{% static 'district 2-1.png' %}" class="district-image">
+            <button class="district-button">DISTRICT 2</button>
+            <div class="district-info-content hidden">
+                <ul>
+                    <li><button class="district2-button">BAUAN </button></li>
+                    <li><button class="district2-button">LOBO</button></li>
+                    <li><button class="district2-button">MABINI</button></li>
+                    <li><button class="district2-button">SAN LUIS</button></li>
+                    <li><button class="district2-button">SAN PASCUAL</button></li>
+                    <li><button class="district2-button">TINGLOY</button></li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="district-container">
+            <img src="{% static 'district 3-1.png' %}" class="district-image">
+            <button class="district-button">DISTRICT 3</button>
+            <div class="district-info-content hidden">
+                <ul>
+                    <li><button class="district3-button">AGONCILLO</button></li>
+                    <li><button class="district3-button">ALITAGTAG</button></li>
+                    <li><button class="district3-button">BALETE</button></li>
+                    <li><button class="district3-button">CUENCA</button></li>
+                    <li><button class="district3-button">LAUREL</button></li>
+                    <li><button class="district3-button">MALVAR</button></li>
+                    <li><button class="district3-button">MATAAS NA KAHOY</button></li>
+                    <li><button class="district3-button">SAN NICOLAS</button></li>
+                    <li><button class="district3-button">STA. TERESITA</button></li>
+                    <li><button class="district3-button">STO.TOMAS</button></li>
+                    <li><button class="district3-button">TALISAY</button></li>
+                    <li><button class="district3-button">TANAUAN</button></li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="district-container">
+            <img src="{% static 'district 4-1.png' %}" class="district-image">
+            <button class="district-button ">DISTRICT 4</button>
+            <div class="district-info-content hidden">
+                <ul>
+                    <li><button class="district4-button">IBAAN</button></li>
+                    <li><button class="district4-button">PADRE GARCIA</button></li>
+                    <li><button class="district4-button">ROSARIO</button></li>
+                    <li><button class="district4-button">SAN JOSE</button></li>
+                    <li><button class="district4-button">SAN JUAN</button></li>
+                    <li><button class="district4-button">TAYSAN</button></li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="district-container">
+            <img src="{% static 'district 5-1.png' %}" class="district-image">
+            <button class="district-button">DISTRICT 5</button>
+            <div class="district-info-content hidden">
+                <ul>
+                    <li><button class="district5-button">BATANGAS</button></li>
+
+                </ul>
+            </div>
+
+        </div>
+        <div class="district-container">
+            <img src="{% static 'district 6-1.png' %}" class="district-image">
+            <button class="district-button">DISTRICT 6</button>
+            <div class="district-info-content hidden">
+                <ul>
+                    <li><button class="district6-button">LIPA</button></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <form action="/homepage/" method="get">
+            {% if not submit %}
+            <button class="logout-button">LOGOUT</button>
+            {% endif %}
+        </form>
+
+    </nav>
+
+    <main>
+
+        <div class="nav-bar">
+            <div class="nav-item" data-nav="tourist" onclick="loadModule(this)">Tourist Spot</div>
+            <div class="nav-item" data-nav="food" onclick="loadModule(this)">Food</div>
+            <div class="nav-item" data-nav="craft" onclick="loadModule(this)">Craft</div>
+        </div>
+        <hr style="border-top: 3px solid #15375D; width: 100vw; margin: 23px auto;">
+
+        <div class="container">
+            <iframe id="moduleFrame" width="100%" height="100%" frameborder="0"></iframe>
+            <iframe id="quizFrame" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get all district buttons
+            const districtButtons = document.querySelectorAll('.district-button');
+            // Get all district info containers
+            const districtInfoContainers = document.querySelectorAll('.district-info-content');
+            // Variable to keep track of currently displayed district info
+            let currentDistrictInfo = null;
+
+            // Function to hide all district info containers
+            function hideAllDistrictInfo() {
+                districtInfoContainers.forEach(container => {
+                    container.classList.add('hidden');
+                });
+            }
+
+            // Add click event listener to each district button
+            districtButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const districtInfo = button.nextElementSibling;
+                    if (districtInfo) {
+                        // Hide all district info containers except the one associated with the clicked button
+                        hideAllDistrictInfo();
+                        districtInfo.classList.toggle('hidden');
+                        // Update the currentDistrictInfo variable
+                        currentDistrictInfo = districtInfo;
+                        // Stop event propagation to prevent hiding the district info when clicking the button
+                        event.stopPropagation();
+                    } else {
+                        console.error('District info container not found.');
+                    }
+                });
+            });
+
+            // Add mouseenter event listener to each district button
+            districtButtons.forEach(button => {
+                button.addEventListener('mouseenter', () => {
+                    // If there's a district info currently displayed and it's not associated with the hovered button, hide it
+                    if (currentDistrictInfo && currentDistrictInfo.previousElementSibling !== button) {
+                        currentDistrictInfo.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Add click event listener to the document body
+            document.body.addEventListener('click', () => {
+                // Hide all district info containers when clicking outside
+                hideAllDistrictInfo();
+                // Reset the currentDistrictInfo variable
+                currentDistrictInfo = null;
+            });
+
+            // Prevent hiding the district info when clicking inside the district info container
+            districtInfoContainers.forEach(container => {
+                container.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                });
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const district1Buttons = document.querySelectorAll('.district1-button');
+            const district2Buttons = document.querySelectorAll('.district2-button');
+            const district3Buttons = document.querySelectorAll('.district3-button');
+            const district4Buttons = document.querySelectorAll('.district4-button');
+            const district5Buttons = document.querySelectorAll('.district5-button');
+            const district6Buttons = document.querySelectorAll('.district6-button');
+
+            // Add event listeners to each district button
+            district1Buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    window.location.href = '/adminpage/admin_district_1';
+                });
+            });
+
+            district2Buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    window.location.href = '/adminpage/admin_district_2';
+                });
+            });
+
+            district3Buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    window.location.href = '/adminpage/admin_district_3';
+                });
+            });
+
+            district4Buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    window.location.href = '/adminpage/admin_district_4';
+                });
+            });
+
+            district5Buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    window.location.href = '/adminpage/admin_district_5';
+                });
+            });
+
+            district6Buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    window.location.href = '/adminpage/admin_district_6';
+                });
+            });
+        });
+        document.getElementById("home-link").onclick = function (event) {
+            var clickedHref = event.target.getAttribute("href");
+            if (clickedHref === "adminpage") {
+                // For adminpage link, allow default behavior
+                return true;
+            } else {
+                // For other links, redirect to the adminpage path only
+                window.location.href = "/adminpage";
+                return false;
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get all district buttons
+            const districtButtons = document.querySelectorAll('.district1-button, .district2-button, .district3-button, .district4-button, .district5-button, .district6-button');
+
+            // Function to save district name to sessionStorage
+            function saveDistrictName(districtName) {
+                sessionStorage.setItem('selectedDistrict', districtName);
+            }
+
+            // Add click event listener to each district button
+            districtButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const districtName = button.textContent.trim();
+                    // Save the clicked district name to sessionStorage
+                    saveDistrictName(districtName);
+
+                });
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Retrieve the selected district name from sessionStorage
+            const selectedDistrict = sessionStorage.getItem('selectedDistrict');
+            if (selectedDistrict) {
+                // Display the selected district name
+                document.getElementById('selected-municipality-display').textContent = `${selectedDistrict}`;
+            }
+        });
+
+    </script>
+
+    <script>
+        // Add event listener to the history button
+        document.querySelector('#history-link').addEventListener('click', function () {
+            // Redirect to the history page
+            window.location.href = '/adminpage/history/'; // Update the URL as needed
+        });
+
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Simulate click on the "Tourist Spot" nav item
+            document.querySelector('.nav-item[data-nav="tourist"]').click();
+        });
+
+        function loadModule(button) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Add active class to the clicked button
+            button.classList.add('active');
+
+            // Get the selected type from the dropdown
+            const selectedType = document.getElementById('module-type').value;
+
+            // Hide both frames initially
+            document.getElementById('moduleFrame').style.display = 'none';
+            document.getElementById('quizFrame').style.display = 'none';
+
+            // Determine which frame to show based on the selected type
+            if (selectedType === 'module') {
+                // Show module frame    
+                document.getElementById('moduleFrame').style.display = 'block';
+            } else if (selectedType === 'quiz') {
+                // Show quiz frame
+                document.getElementById('quizFrame').style.display = 'block';
+            }
+
+            // Get the name of the selected municipality from sessionStorage
+            const selectedMunicipality = sessionStorage.getItem('selectedDistrict');
+
+            // Construct the base URL for loading
+            let baseUrl = "/adminpage/";
+
+            // Set the module name based on the data-nav attribute of the clicked button
+            let moduleName;
+            switch (button.getAttribute('data-nav')) {
+                case 'tourist':
+                    moduleName = selectedType === 'module' ? 'module_tourist' : 'quiz_tourist';
+                    break;
+                case 'food':
+                    moduleName = selectedType === 'module' ? 'module_food' : 'quiz_food';
+                    break;
+                case 'craft':
+                    moduleName = selectedType === 'module' ? 'module_craft' : 'quiz_craft';
+                    break;
+                default:
+                    moduleName = selectedType === 'module' ? 'module_tourist' : 'quiz_tourist'; // Default to tourist module if data-nav attribute is not recognized
+                    break;
+            }
+
+            // Construct the URL with the module name and municipality parameter
+            let url;
+            if (selectedMunicipality) {
+                url = `${baseUrl}${moduleName}/${encodeURIComponent(selectedMunicipality)}/`; // Construct the complete URL with the module name and municipality parameter
+            } else {
+                // If no municipality is selected, load the default module for the clicked button type
+                url = `${baseUrl}${moduleName}/`; // URL without municipality parameter
+            }
+
+            // Set the source of the iframe to display the content based on the constructed URL
+            if (selectedType === 'module') {
+                document.getElementById('moduleFrame').src = url;
+            } else if (selectedType === 'quiz') {
+                document.getElementById('quizFrame').src = url;
+            }
+        }
+
+        // Function to load module type
+        function loadModuleType() {
+            // Get the selected module type
+            const selectedModuleType = document.getElementById('module-type').value;
+
+            // If the selected module type is 'quiz', hide the module frame and show the craft frame
+            if (selectedModuleType === 'quiz') {
+                document.getElementById('moduleFrame').style.display = 'none';
+                document.getElementById('quizFrame').style.display = 'block';
+
+                // Trigger a click on the "Tourist Spot" nav item
+                document.querySelector('.nav-item[data-nav="tourist"]').click();
+            }
+            // If the selected module type is 'module', hide the craft frame and show the module frame
+            else if (selectedModuleType === 'module') {
+                document.getElementById('moduleFrame').style.display = 'block';
+                document.getElementById('quizFrame').style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+
+</html>
