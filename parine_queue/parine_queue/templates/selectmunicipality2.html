@@ -95,20 +95,22 @@
             animation-timing-function: ease-in;
             animation-timing-function: ease-out;
         }
-        
+
         @keyframes slideIn {
             from {
                 transform: translateX(100%);
             }
+
             to {
                 transform: translateX(0);
             }
         }
-        
+
         @keyframes slideOut {
             from {
                 transform: translateX(0);
             }
+
             to {
                 transform: translateX(100%);
             }
@@ -924,6 +926,7 @@
             width: 17.708333333333332vw;
             text-align: center;
         }
+
         #districtNames {
             position: absolute;
             top: 10.208333333333334vw;
@@ -954,7 +957,7 @@
         .district-button {
             font-family: 'Gotham', sans-serif;
             font-weight: bold;
-            color: whitesmoke; 
+            color: whitesmoke;
             font-size: 0.78125vw;
             padding: 0.68993316666666666vw;
             border: 0.0000125vw;
@@ -963,13 +966,30 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        .district-button.district1 { background-color: #058DC5; }
-        .district-button.districttwo { background-color: #10A3E0; }
-        .district-button.district3 { background-color: #30C3FF; }
-        .district-button.district4 { background-color: #007EF4; }
-        .district-button.district5 { background-color: #065AAD; }
-        .district-button.district6 { background-color: #0040FF; }
-        
+        .district-button.district1 {
+            background-color: #058DC5;
+        }
+
+        .district-button.districttwo {
+            background-color: #10A3E0;
+        }
+
+        .district-button.district3 {
+            background-color: #30C3FF;
+        }
+
+        .district-button.district4 {
+            background-color: #007EF4;
+        }
+
+        .district-button.district5 {
+            background-color: #065AAD;
+        }
+
+        .district-button.district6 {
+            background-color: #0040FF;
+        }
+
         .district-button:hover {
             background-color: #069952;
         }
@@ -1003,41 +1023,64 @@
             border-radius: 1.953125vw;
             cursor: pointer;
         }
-        .district-list-item.district1 { background-color: #058DC5; }
-        .district-list-item.districttwo { background-color: #10A3E0; }
-        .district-list-item.district3 { background-color: #30C3FF; }
-        .district-list-item.district4 { background-color: #007EF4; }
-        .district-list-item.district5 { background-color: #065AAD; }
-        .district-list-item.district6 { background-color: #0040FF; }
+
+        .district-list-item.district1 {
+            background-color: #058DC5;
+        }
+
+        .district-list-item.districttwo {
+            background-color: #10A3E0;
+        }
+
+        .district-list-item.district3 {
+            background-color: #30C3FF;
+        }
+
+        .district-list-item.district4 {
+            background-color: #007EF4;
+        }
+
+        .district-list-item.district5 {
+            background-color: #065AAD;
+        }
+
+        .district-list-item.district6 {
+            background-color: #0040FF;
+        }
 
         .district-list-item:hover {
             background-color: #069952;
         }
 
-        .district-button.selected, .district-list-item.selected {
+        .district-button.selected,
+        .district-list-item.selected {
             background-color: #069952;
             color: whitesmoke;
-        }       
+        }
 
         #municipality-status {
             display: none;
             margin-top: 1.0416666666666667vw;
         }
+
         .overlay-container {
             position: absolute;
             top: 0px;
             left: 93.22916666666667vw;
             width: 5.208333333333333vw;
-            height: 6.25vw; 
-            background-color: #15375D; 
+            height: 6.25vw;
+            background-color: #15375D;
             z-index: 1001;
             display: none;
         }
+
         h3 {
             font-size: 1px;
             color: #ffffff;
         }
-        #municipality-progress, default-progress-status {
+
+        #municipality-progress,
+        default-progress-status {
             margin-top: 1.0416666666666667vw;
         }
     </style>
@@ -1065,36 +1108,43 @@
         <div id="rightPanel">
             {% if all_points %}
             <div id="points">Points: {{ all_points }} </div>
-            
+
             {% else %}
             <div id="points">Points: 0 </div>
             {% endif %}
-            
+
             <div id="districtNames">
-                <button class="district-button district1" onclick="toggleDistrictList('districtList1')">District 1</button>
-                <button class="district-button districttwo" onclick="toggleDistrictList('districtList2')">District 2</button>
-                <button class="district-button district3" onclick="toggleDistrictList('districtList3')">District 3</button>
+                <button class="district-button district1" onclick="toggleDistrictList('districtList1')">District
+                    1</button>
+                <button class="district-button districttwo" onclick="toggleDistrictList('districtList2')">District
+                    2</button>
+                <button class="district-button district3" onclick="toggleDistrictList('districtList3')">District
+                    3</button>
             </div>
-            
+
             <div id="districtNamesLower">
-                <button class="district-button district4" onclick="toggleDistrictList('districtList4')">District 4</button>
-                <button class="district-button district5" onclick="toggleDistrictList('districtList5')">District 5</button>
-                <button class="district-button district6" onclick="toggleDistrictList('districtList6')">District 6</button>
+                <button class="district-button district4" onclick="toggleDistrictList('districtList4')">District
+                    4</button>
+                <button class="district-button district5" onclick="toggleDistrictList('districtList5')">District
+                    5</button>
+                <button class="district-button district6" onclick="toggleDistrictList('districtList6')">District
+                    6</button>
 
                 <div id="municipality-progress" style="display: none;">
                     <p id="default-progress-status">
                         Progress Status: NOT STARTED
                     </p>
                     {% if municipality_status %}
-                        <ul>
-                            {% for municipality, status in municipality_status %}
-                            <p class="municipality-status" data-municipality="{{ municipality }}" data-done-count="{{ status|length }}">
-                                <!-- Your municipality status display code here -->
-                            </p>
-                            {% endfor %}
-                        </ul>
+                    <ul>
+                        {% for municipality, status in municipality_status %}
+                        <p class="municipality-status" data-municipality="{{ municipality }}"
+                            data-done-count="{{ status|length }}">
+                            <!-- Your municipality status display code here -->
+                        </p>
+                        {% endfor %}
+                    </ul>
                     {% endif %}
-                </div> 
+                </div>
 
             </div>
             <div id="districtList1" class="district-list">
@@ -1157,14 +1207,14 @@
             <div id="districtList5" class="district-list">
                 <!-- Add items for district 5 -->
 
-                <button class="district-list-item district5">BATANGAS</button>
+                <button class="district-list-item district5">BATANGAS CITY</button>
                 <!-- Add more items as needed -->
             </div>
 
             <div id="districtList6" class="district-list">
                 <!-- Add items for district 6 -->
 
-                <button class="district-list-item district6">LIPA</button>
+                <button class="district-list-item district6">LIPA CITY</button>
                 <!-- Add more items as needed -->
             </div>
             <div id="usertopPanel">
@@ -1284,7 +1334,7 @@
 
         let isPanelVisible = false;
         let isAnimating = false;
-        
+
         imageButton.addEventListener('click', () => {
             if (!isAnimating) {
                 if (isPanelVisible) {
@@ -1299,13 +1349,13 @@
                     if (municipalityProgress) {
                         municipalityProgress.style.display = 'none';
                     }
-                    
+
                     // Reset selected and hovered states
                     document.querySelectorAll('.district-list-item, .district-button').forEach(item => {
                         item.classList.remove('selected');
                         item.classList.remove('hovered');
                     });
-                    
+
                     // Hide all district lists
                     document.querySelectorAll('.district-list').forEach(list => {
                         list.style.display = 'none';
@@ -1327,7 +1377,7 @@
                 }
             }
         });
-        
+
         document.addEventListener('click', (event) => {
             if (!isAnimating && isPanelVisible && !rightPanel.contains(event.target) && event.target !== imageButton) {
                 rightPanel.style.animationName = 'slideOut';
@@ -1341,13 +1391,13 @@
                 if (municipalityProgress) {
                     municipalityProgress.style.display = 'none';
                 }
-                
+
                 // Reset selected and hovered states
                 document.querySelectorAll('.district-list-item, .district-button').forEach(item => {
                     item.classList.remove('selected');
                     item.classList.remove('hovered');
                 });
-                
+
                 // Hide all district lists
                 document.querySelectorAll('.district-list').forEach(list => {
                     list.style.display = 'none';
@@ -1361,8 +1411,8 @@
                 }
             }
         });
-        
-    
+
+
         let currentSelectedButton = null;
         let currentSelectedDistrictButton = null;
 
@@ -1386,7 +1436,7 @@
                 currentSelectedButton = null;
             }
         }
-    
+
         function handleButtonClick(buttonElement, districtButton = false) {
             if (districtButton) {
                 if (currentSelectedButton && currentSelectedButton !== buttonElement) {
@@ -1427,13 +1477,13 @@
                 document.getElementById('municipality-status').style.display = 'none';
             }
         }
-    
+
         window.visitorId = "{{ visitor_id }}";
 
         function fetchMunicipalityStatus(municipalityName) {
             const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
             const visitorId = window.visitorId;
-        
+
             fetch('/get_municipality_status/', {
                 method: 'POST',
                 headers: {
@@ -1442,58 +1492,58 @@
                 },
                 body: `municipality_name=${encodeURIComponent(municipalityName)}&visitor_id=${encodeURIComponent(visitorId)}`
             })
-            .then(response => response.json())
-            .then(data => {
-                updateMunicipalityProgress(data, municipalityName);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Handle error by setting progress status to "NOT STARTED"
-                updateMunicipalityProgress(null, municipalityName);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    updateMunicipalityProgress(data, municipalityName);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Handle error by setting progress status to "NOT STARTED"
+                    updateMunicipalityProgress(null, municipalityName);
+                });
         }
-        
+
         function updateMunicipalityProgress(data, municipalityName) {
             const statusElement = document.getElementById('municipality-progress');
-        
+
             // Check if the element exists
             if (!statusElement) {
                 console.error('Municipality progress element not found');
                 return; // Exit the function if the element is not found
             }
-        
+
             if (!data || !data[municipalityName] || !Array.isArray(data[municipalityName])) {
                 // If no data is available or if the municipality does not exist, set progress status to "NOT STARTED"
                 statusElement.innerHTML = `<ul><h2>Progress Status: NOT STARTED</h2></ul>`;
             } else {
                 // Count how many 'DONE' statuses exist
                 const doneCount = data[municipalityName].filter(status => status === 'DONE').length;
-        
+
                 let progressStatus = 'NOT STARTED'; // Default status
                 if (doneCount === 3) {
                     progressStatus = 'COMPLETED';
                 } else if (doneCount > 0) {
                     progressStatus = 'IN PROGRESS';
                 }
-        
+
                 // Update the innerHTML with the new status
                 statusElement.innerHTML = `<ul><h2>Progress Status: ${progressStatus}</h2></ul>`;
             }
-        
+
             // Display the element
             statusElement.style.display = 'block';
-        }  
-        
+        }
+
         function handleDistrictListItemClick(municipalityName) {
             // Reset the progress status for all municipalities
             const allMunicipalityStatusElements = document.querySelectorAll('.municipality-status');
             allMunicipalityStatusElements.forEach(el => {
                 el.style.display = 'none';
             });
-        
+
             // Hide the default progress status
             document.getElementById('default-progress-status').style.display = 'none';
-        
+
             // Get the specific status element for the clicked municipality
             const statusElement = document.querySelector(`.municipality-status[data-municipality="${municipalityName}"]`);
             if (statusElement) {
@@ -1511,38 +1561,38 @@
                 document.getElementById('default-progress-status').style.display = 'block';
             }
         }
-               
-        
+
+
         document.querySelectorAll('.district-list-item').forEach(item => {
-            item.addEventListener('click', function() {
+            item.addEventListener('click', function () {
                 // Remove selected state from all district list items
                 document.querySelectorAll('.district-list-item.selected').forEach(selectedItem => {
                     selectedItem.classList.remove('selected');
                 });
                 // Add selected state to the clicked item
                 this.classList.add('selected');
-        
+
                 // Handle click on district list item: Show municipality progress and update it
                 handleDistrictListItemClick(this.textContent.trim());
-        
+
                 // Show municipality progress
                 if (municipalityProgress) {
                     municipalityProgress.style.display = 'block';
                 }
             });
         });
-        
+
         document.querySelectorAll('.district-button').forEach(button => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
                 handleButtonClick(this, true);
-        
+
                 const municipalityProgress = document.getElementById('municipality-progress');
                 if (municipalityProgress) {
                     municipalityProgress.style.display = 'none';
                 }
             });
         });
-        
+
         backToMainButton.addEventListener('click', () => {
             moduleContainer.style.display = 'none';
             hideContainer.style.display = 'none';
