@@ -254,8 +254,7 @@
         }
 
         .priority_levels_card {
-            height: 25vh;
-            /* You can adjust this height based on your design */
+            height: 28vh;
             order: 3;
             box-shadow: 3px 0 6px rgba(0, 0, 0, 0.1);
             padding: 20px;
@@ -271,17 +270,24 @@
             justify-content: space-around;
             align-items: center;
             overflow: hidden;
-            /* Prevent the card from shrinking when the screen height is reduced */
         }
 
-        .priority-icon {
+        .priority_levels_card div {
+            display: flex;
+            align-items: center;
+
+        }
+
+        .priority_levels_card .priority-icon {
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            display: inline-block;
-            margin-bottom: 5px;
             margin-right: 5px;
-            /* Add margin-right to separate icon and text */
+        }
+
+        .priority_levels_card span {
+            flex: 1;
+
         }
 
         .total-queue-card {

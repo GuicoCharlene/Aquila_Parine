@@ -107,7 +107,7 @@
             padding: 40px 20px;
             border: 1px solid #0f172a;
             top: 50%;
-            left: 50%;
+            left: 47.2%;
             transform: translate(-50%, -50%);
             display: flex;
             flex-direction: column;
@@ -311,6 +311,14 @@
         .add-icon:hover {
             color: lightskyblue;
         }
+
+        .add-icon.active {
+            color: lightskyblue;
+        }
+
+        .add-icon.active {
+            color: lightskyblue;
+        }
     </style>
 </head>
 
@@ -389,7 +397,11 @@
             function hideAddContainer() {
                 document.querySelector('.add-container').classList.add('hidden');
             }
-
+            // Function to toggle active class on add icon
+            function toggleAddIconActive() {
+                const addIcon = document.querySelector('.add-icon');
+                addIcon.classList.toggle('active');
+            }
             // Event listener for the add icon
             document.querySelector('.add-icon').addEventListener('click', function () {
                 // Hide all edit containers
@@ -398,8 +410,19 @@
                 // Hide all delete containers
                 hideAllDeleteContainers();
 
-                // Show the add container
-                document.querySelector('.add-container').classList.remove('hidden');
+                // Check if the add container is currently visible
+                const addContainer = document.querySelector('.add-container');
+                const isVisible = !addContainer.classList.contains('hidden');
+
+                if (isVisible) {
+                    // If the add container is already visible, hide it
+                    hideAddContainer();
+                    document.querySelector('.add-icon').classList.remove('active');
+                } else {
+                    // If the add container is not visible, show it
+                    addContainer.classList.remove('hidden');
+                    toggleAddIconActive();
+                }
             });
 
             // Event listener for clicking outside the add container, edit container, or delete container
@@ -421,6 +444,7 @@
 
                     // Hide all delete containers
                     hideAllDeleteContainers();
+                    document.querySelector('.add-icon').classList.remove('active');
                 }
             });
 
@@ -434,7 +458,7 @@
 
                     // Hide the add container
                     hideAddContainer();
-
+                    document.querySelector('.add-icon').classList.remove('active');
                     // Hide all other edit containers
                     hideAllEditContainers();
 
@@ -461,7 +485,7 @@
 
                     // Hide all edit containers
                     hideAllEditContainers();
-
+                    document.querySelector('.add-icon').classList.remove('active');
                     // Hide the add container
                     hideAddContainer();
 

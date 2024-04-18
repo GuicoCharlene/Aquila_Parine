@@ -81,7 +81,8 @@
         .add-container input[type="file"],
         .add-container textarea,
         .add-container button {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+
             /* Add margin bottom to create space between inputs */
         }
 
@@ -93,7 +94,7 @@
         .add-container textarea {
             width: 100%;
             /* Full width */
-            height: 150px;
+            height: 100px;
             resize: none;
             /* Allows vertical resize, none to disable resize */
         }
@@ -106,8 +107,8 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 40px 20px;
             border: 1px solid #0f172a;
-            top: 50%;
-            left: 50%;
+            top: 40%;
+            left: 47.2%;
             transform: translate(-50%, -50%);
             display: flex;
             flex-direction: column;
@@ -265,8 +266,9 @@
 
         .additional-images {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             margin-top: 10px;
+
         }
 
         .additional-images img {
@@ -275,7 +277,7 @@
             height: 100px;
             /* Or any other fixed height you prefer */
             object-fit: cover;
-            margin-right: 5px;
+            margin-right: 15px;
             /* Half of the subtracted amount */
         }
 
@@ -344,6 +346,10 @@
         }
 
         .add-icon:hover {
+            color: lightskyblue;
+        }
+
+        .add-icon.active {
             color: lightskyblue;
         }
     </style>
@@ -464,7 +470,11 @@
             function hideAddContainer() {
                 document.querySelector('.add-container').classList.add('hidden');
             }
-
+            // Function to toggle active class on add icon
+            function toggleAddIconActive() {
+                const addIcon = document.querySelector('.add-icon');
+                addIcon.classList.toggle('active');
+            }
             // Event listener for the add icon
             document.querySelector('.add-icon').addEventListener('click', function () {
                 // Hide all edit containers
@@ -473,10 +483,20 @@
                 // Hide all delete containers
                 hideAllDeleteContainers();
 
-                // Show the add container
-                document.querySelector('.add-container').classList.remove('hidden');
-            });
+                // Check if the add container is currently visible
+                const addContainer = document.querySelector('.add-container');
+                const isVisible = !addContainer.classList.contains('hidden');
 
+                if (isVisible) {
+                    // If the add container is already visible, hide it
+                    hideAddContainer();
+                    document.querySelector('.add-icon').classList.remove('active');
+                } else {
+                    // If the add container is not visible, show it
+                    addContainer.classList.remove('hidden');
+                    toggleAddIconActive();
+                }
+            });
             // Event listener for clicking outside the add container, edit container, or delete container
             document.addEventListener('click', function (event) {
                 const target = event.target;
@@ -496,6 +516,7 @@
 
                     // Hide all delete containers
                     hideAllDeleteContainers();
+                    document.querySelector('.add-icon').classList.remove('active');
                 }
             });
 
@@ -509,7 +530,7 @@
 
                     // Hide the add container
                     hideAddContainer();
-
+                    document.querySelector('.add-icon').classList.remove('active');
                     // Hide all other edit containers
                     hideAllEditContainers();
 
@@ -542,7 +563,7 @@
 
                     // Hide the add container
                     hideAddContainer();
-
+                    document.querySelector('.add-icon').classList.remove('active');
                     const container = this.parentNode;
                     const deleteContainer = container.querySelector('.delete-container');
 

@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Queue</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
         body {
@@ -28,19 +29,19 @@
             color: #010355;
         }
 
-        .back-icon {
+        #back-icon {
             position: absolute;
-            left: 30px;
-            top: 1px;
+            left: 20px;
             color: #010355;
-            font-family: 'Georgia', serif;
-            transform: translateY(100%);
+            font-size: 50px;
+            margin-left: 10px;
             text-decoration: none;
-            font-size: 40px;
             transition: color 0.3s ease;
+            z-index: 1;
+            /* Ensure it's above other elements */
         }
 
-        .back-icon:hover {
+        #back-icon:hover {
             color: whitesmoke;
             /* Change color on hover */
         }
@@ -258,6 +259,7 @@
             display: inline-block;
             margin-bottom: 5px;
             margin-right: 10px;
+            margin-left: 25px;
         }
 
         .priority_levels_card {
@@ -278,30 +280,30 @@
             border: 1px solid #0f172a;
             border-radius: 20px;
             display: flex;
-            flex-direction: column; 
-            align-items: flex-start; 
+            flex-direction: column;
+            align-items: flex-start;
             padding-left: 40px;
 
         }
 
         .priority_levels_card div {
-            display: flex; 
-            align-items: center; 
+            display: flex;
+            align-items: center;
             margin-bottom: 5px;
         }
 
         .high-priority {
             background-color: #18395E;
         }
-        
+
         .mid-priority {
             background-color: #1ACAEE;
         }
-        
+
         .low-priority {
             background-color: #F5E3B6;
         }
-        
+
         .user-location {
             background-color: green;
         }
@@ -329,11 +331,9 @@
 <body>
     <img src="{% static 'jip.png' %}" class="jip-img" alt="Parine sa Batangas">
     <div class="queue-container">
-        <a href="/homepage/" class="back-icon"> &#9664;|</a>
+        <a href="/homepage/" id="back-icon" class="fas fa-sign-out-alt" title="Return"></a>
         <h2>PARINE SA BATANGAS</h2>
     </div>
-
-
 
     <div class="list-container">
         <p>QUEUE</p>
@@ -370,7 +370,7 @@
             <span>User Location</span>
         </div>
     </div>
-    
+
 
     <div class="content-container">
         <div class="kiosk-wrapper" style="--total-kiosks:{{ total_kiosks }}">
@@ -398,50 +398,50 @@
                 console.error('Invalid start time:', startTime);
                 return;
             }
-        
+
             const startTimestamp = new Date(startTime).getTime();
             console.log('Start Timestamp:', startTimestamp);
 
             //Formula for time
             const intervalId = setInterval(function () {
                 const currentTime = new Date().getTime();
-                const elapsedTime = currentTime - startTimestamp - (8 * 3600 * 1000); 
-                console.log('Elapsed Time:', elapsedTime); 
-                
+                const elapsedTime = currentTime - startTimestamp - (8 * 3600 * 1000);
+                console.log('Elapsed Time:', elapsedTime);
+
                 let totalSeconds = Math.floor(elapsedTime / 1000);
                 let hours = Math.floor(totalSeconds / 3600);
                 totalSeconds %= 3600;
                 let minutes = Math.floor(totalSeconds / 60);
                 const seconds = totalSeconds % 60;
-            
+
                 let displayTime = '';
-            
+
                 // Increment hours if minutes reach 60
                 if (minutes >= 60) {
                     hours += Math.floor(minutes / 60);
                     minutes %= 60;
                 }
-            
+
                 // Add 1 hour if minutes reach 60
                 if (minutes >= 60) {
                     hours++;
                     minutes %= 60;
                 }
-            
+
                 // Display time
                 displayTime += `${(hours < 10 ? '0' : '') + hours} Hrs ${(minutes < 10 ? '0' : '') + minutes} Mins ${seconds < 10 ? '0' : ''}${seconds} Secs`;
-            
+
                 timerElement.textContent = displayTime;
             }, 1000);
             timerElement.setAttribute('data-interval-id', intervalId);
-            
-            
+
+
         }
-            
+
 
         function updateKioskDisplay() {
             $.ajax({
-                url: "/get_queue_data/", 
+                url: "/get_queue_data/",
                 type: "GET",
                 success: function (response) {
                     const kiosksData = response.kiosk_data;
@@ -481,7 +481,7 @@
 
             setTimeout(function () {
                 window.location.reload(true);
-            }, 100); 
+            }, 100);
         }, 10000); 
     </script>
 
