@@ -207,27 +207,22 @@
                 btn.style.color = '#18395E';
             });
     
-
             button.classList.add('active-button');
-            button.style.background = '#18395E'; 
-            button.style.color = '#fff'; 
+            button.style.background = '#18395E';
+            button.style.color = '#fff';
     
             // Set the source of the iframe to the module HTML file URL
-            document.getElementById('moduleFrame').src = "module";
-
-            //THIS IS FOR THE DIFFERENT MODULES 
-            var buttonText = button.textContent.trim(); // Get the text content of the button and remove leading/trailing spaces
-            var firstWord = buttonText.split(" ")[0].toLowerCase(); // Extract the first word and convert to lowercase
-            document.getElementById('moduleFrame').src = "module_" + firstWord;
-
+            var buttonText = button.textContent.trim();
+            var firstWord = buttonText.split(" ")[0].toLowerCase();
+            document.getElementById('moduleFrame').src = "module_" + firstWord + ".html"; // Ensure the correct file extension if needed
         }
     
-        // Automatically start with the first module after page load
         window.onload = function() {
-            loadModule(document.querySelector('.header button'));
+            var defaultButton = document.querySelector('.header button:first-child'); // Select the first button as default
+            loadModule(defaultButton);
         };
-
     </script>
+    
 
 </body>
 </html>
