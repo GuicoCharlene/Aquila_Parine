@@ -29,7 +29,7 @@ urlpatterns = [
     path('get_queue_data/', get_queue_data, name='get_queue_data'),
     
     path('delete_queue_kiosk_data/<int:kioskId>/', views.delete_queue_kiosk_data, name='delete_queue_kiosk_data'),
-    # path('update_queue_status/<int:kiosk_id>/', views.update_queue_status, name='update_queue_status'),
+
     path('kiosk_login/<int:kiosk_id>/selectmunicipality1/', selectmunicipality1, name='selectmunicipality1'),
     path('kiosk_login/<int:kiosk_id>/selectmunicipality2/', selectmunicipality2, name='selectmunicipality2'),
     path('kiosk_login/<int:kiosk_id>/selectmunicipality3/', selectmunicipality3, name='selectmunicipality3'),
@@ -44,10 +44,7 @@ urlpatterns = [
     # path('selectmodule/', selectmodule, name='selectmodule'),
     path('take_quiz/', take_quiz, name='take_quiz'),
     path('take_quiz/quiz/<module_type>/<municipality>/<kiosk_id>/', views.quiz, name='quiz'),
-    
-    # path('quiz/module_tourist/<str:municipality>/<int:kiosk_id>', quiz, name='quiz'),
-    # path('quiz/module_food/<str:municipality>/<int:kiosk_id>', quiz, name='quiz'),
-    # path('quiz/module_craft/<str:municipality>/<int:kiosk_id>', quiz, name='quiz'),
+
     
     path('quiz/<str:module_type>/<str:municipality>/<int:kiosk_id>/', quiz, name='quiz'),
     

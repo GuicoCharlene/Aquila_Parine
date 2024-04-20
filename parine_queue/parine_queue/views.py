@@ -215,6 +215,7 @@ def update_queue_capacity(request):
 
 # Views for the select district
 def selectdistrict(request, kiosk_id):
+    modules = get_modules_by_type_and_municipality
     all_points = 0
     logged_in_username = request.session.get('logged_in_username', None)
     current_time = timezone.now()
@@ -268,6 +269,7 @@ def selectdistrict(request, kiosk_id):
         'all_points': all_points,
         'visitor_id': visitor_id,
         'municipality_status': municipality_status,
+        'modules': modules,
     }
 
     return render(request, 'selectdistrict.html', context)
@@ -1204,7 +1206,6 @@ def quiz(request, module_type, municipality, kiosk_id):
     logger.debug("Processing ongoing quiz session.")
     return handle_quiz_process(request, session_key, module_type, municipality, kiosk_id)
 
-# Process the submitted answer and update the session
 def process_submitted_answer(request, session_key):
     game_session = request.session.get(session_key, {})
     current_question_index = game_session.get('current_question_index', 0)
@@ -1212,7 +1213,19 @@ def process_submitted_answer(request, session_key):
 
     if current_question_index < len(selected_questions):
         current_question_id = selected_questions[current_question_index]
-        is_correct = request.POST.get('is_correct', 'false') == 'true'
+        is_correct = (request.POST.get('is_correct', 'false') == 'true')
+        
+        # Retrieve the guessed question ID or handle timeout
+        trivia_question_id = request.POST.get('guess', 'timeout')
+        
+        # Check if a timeout occurred; if not, use the submitted ID
+        if trivia_question_id == 'timeout':
+            is_correct = False  # No answer provided, count as incorrect
+            trivia_question_id = current_question_id
+        else:
+            # Set the current question ID to the one answered if no timeout
+            trivia_question_id = current_question_id
+
         points_for_current_question = 1 if is_correct else 0
 
         update_or_create_reward_points(
@@ -1225,7 +1238,7 @@ def process_submitted_answer(request, session_key):
         )
 
         game_session['current_question_index'] += 1
-        game_session.setdefault('answered_questions', []).append(current_question_id)  # Ensure the list exists
+        game_session.setdefault('answered_questions', []).append(current_question_id)
         request.session[session_key] = game_session
         request.session.modified = True
         request.session.save()
@@ -1233,8 +1246,9 @@ def process_submitted_answer(request, session_key):
     else:
         logger.debug("All questions answered, redirecting to results.")
         return redirect('results', session_key=session_key)
-
+    
     return display_next_question_or_finish_quiz(request, session_key, game_session['module_type'], game_session['municipality'], game_session['kiosk_id'])
+
 
 def initialize_quiz_session(request, module_type, municipality, kiosk_id, visitor_id, session_key):
     questions = fetch_quiz_questions(module_type, municipality, visitor_id)

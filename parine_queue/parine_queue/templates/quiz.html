@@ -302,20 +302,20 @@
                 document.querySelectorAll('.image-container button').forEach(function(button) {
                     button.disabled = true;
                 });
-    
+
                 // Set the background color based on the correctness of the answer
                 clickedButton.style.backgroundColor = isCorrect ? 'green' : 'red';
-    
+
                 // Update points display if the answer is correct
                 if (isCorrect) {
                     var currentPoints = parseInt(document.getElementById('points-gained').textContent, 10);
                     document.getElementById('points-gained').textContent = currentPoints + 1;
                 }
-    
+
                 // Submit the form with the answer
                 submitForm(triviaId, isCorrect);
             }
-    
+
             // Function to submit the form with the answer
             function submitForm(triviaId, isCorrect) {
                 var guessInput = document.getElementById('guess-input');
@@ -325,7 +325,7 @@
                 var form = document.getElementById('guess-form');
                 form.submit(); // Submit the form to move to the next question or finish the quiz
             }
-    
+
             // Function to finish the quiz
             function finishQuiz() {
                 clearInterval(countdownTimer);
@@ -337,10 +337,17 @@
                 var timeLeft = 30; // Set the time for each question
                 countdownTimer = setInterval(function() {
                     if (--timeLeft <= 0) {
-                        finishQuiz(); // Finish quiz when the timer runs out
+                        clearInterval(countdownTimer); // Stop the timer
+                        handleTimeOut(); // Handle timeout as incorrect answer
                     }
                     document.getElementById('timeLeft').textContent = timeLeft;
                 }, 1000);
+            }
+
+            // Function to handle timeout scenario
+            function handleTimeOut() {
+                // Assume no answer is selected and treat it as wrong
+                submitForm('timeout', false); // Pass 'timeout' or similar as a placeholder triviaId
             }
     
             // Start the timer

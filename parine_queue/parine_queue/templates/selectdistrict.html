@@ -33,6 +33,20 @@
             transform: scale(0.9);
         }
 
+        #imageButton2 {
+            position: fixed;
+            top: 1.0416666666666667vw;
+            right: 13.802083333333334vw;
+            width: 4.557291666666667vw;
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #imageButton2:active {
+            transform: scale(0.9);
+        }
+
         #rightPanel {
             display: none;
             position: fixed;
@@ -76,26 +90,26 @@
             position: absolute;
             top: 0;
             right: 0;
-            width: 19.50125vw;
+            width: 17.50125vw;
             height: 6.8359375vw;
             background-color: #15375D;
             border-top-left-radius: 1.9765625vw;
 
             border-left: 0.0000625vw solid #0f172a;
             z-index: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+
+            padding: 1vw;
         }
 
         .username {
             text-overflow: ellipsis;
             overflow: hidden;
-            max-width: 11.979166666666666vw;
+            right: 0;
+            max-width: 12.760416666666666vw;
             font-size: 1.5229166666666667vw;
-            margin-right: 5.729166666666667vw;
-            text-align: right;
+            left: 55%;
+            transform: translateX(-50%);
+            text-align: left;
             padding: 0;
             font-family: Arial, sans-serif;
             font-weight: bold;
@@ -110,7 +124,7 @@
 
         #logout-button {
             position: absolute;
-            bottom: 2.510416666666667vw;
+            bottom: 1.510416666666667vw;
             left: 50%;
             transform: translateX(-50%);
             font-family: 'Gotham', sans-serif;
@@ -130,14 +144,16 @@
 
         .bubble {
             position: absolute;
-            top: 25.716145833333332vw;
+            top: 25.216145833333332vw;
             left: 11.71875vw;
             text-align: center;
             font-family: 'Libre Baskerville', serif;
-            font-size: 1.8229166666666667vw;
+            font-size: 2.8229166666666667vw;
+            
             z-index: 2;
             color: #15375D;
-            width: 13.020833333333334vw;
+            width: 20.020833333333334vw;
+            animation: sway 1s ease-in-out infinite; 
         }
 
         .welcome {
@@ -170,12 +186,24 @@
             width: 71.61458333333333vw;
         }
 
+        /* Keyframes for sway animation */
+        @keyframes sway {
+            0%, 100% {
+                transform: rotate(-3deg);
+            }
+            50% {
+                transform: rotate(3deg);
+            }
+        }
+        
         .bubblechat {
             position: absolute;
-            top: 22.393229166666666vw;
-            left: 8.5807291666666665vw;
-            width: 19.53125vw;
+            top: 21.393229166666666vw;
+            left: 7.5807291666666665vw;
+            width: 26.53125vw;
+            animation: sway 1s ease-in-out infinite; 
         }
+        
 
         .district1-button {
             position: absolute;
@@ -329,20 +357,21 @@
 
         #points {
             position: absolute;
-            top: 8.625vw;
+            top: 7.625vw;
             left: 50%;
             transform: translate(-50%, -50%);
             font-family: Arial, sans-serif;
             font-weight: bold;
-            color: #333;
+            color: #fdfdfd;
             font-size: 1.0833333333333335vw;
             width: 17.708333333333332vw;
             text-align: center;
         }
 
         #districtNames {
+            display: none;
             position: absolute;
-            top: 10.208333333333334vw;
+            top: 12.208333333333334vw;
             left: 50%;
             transform: translateX(-50%);
             font-family: Arial, sans-serif;
@@ -355,8 +384,9 @@
         }
 
         #districtNamesLower {
+            display: none;
             position: absolute;
-            top: 13.025vw;
+            top: 15.025vw;
             /* Adjust as needed */
             left: 50%;
             transform: translateX(-50%);
@@ -419,7 +449,7 @@
             color: #0f172a;
             padding: 0.6510416666666666vw 1.3020833333333333vw;
             cursor: pointer;
-            margin-top: 16.666666666666668vw;
+            margin-top: 7.666666666666668vw;
             transition: transform 0.2s, background-color 0.3s;
         }
 
@@ -510,6 +540,33 @@
             font-size: 1px;
             color: #ffffff;
         }
+
+        #progressStatusButton{
+            width: 100%;
+            margin-top: 8vw;
+            padding: 0.5vw;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #e9e8dc;
+            cursor: pointer;
+
+        }
+
+        #progressStatusButton:hover {
+            background-color: #f4f999;
+        }
+
+        .no-hover:hover {
+            background-color: inherit !important; /* Prevents the hover color change */
+            cursor: default !important; /* Keeps the cursor as default, not pointer */
+        }
+        
+        .districtNames.no-hover:hover, .district-list-item.no-hover:hover {
+            background-color: inherit !important; /* Keeps the background color unchanged on hover */
+            cursor: default !important; /* Keeps the cursor as default, not pointer */
+        }
+        
+        
     </style>
 </head>
 
@@ -520,12 +577,11 @@
             <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
         </div>
         <div id="rightPanel">
-            {% if all_points %}
-            <div id="points">Points: {{ all_points }} </div>
+            <div id="imageButtonContainer">
+                <img id="imageButton2" src="{% static 'userbutton.png' %}" alt="User Button" />
+            </div>
 
-            {% else %}
-            <div id="points">Points: 0 </div>
-            {% endif %}
+            <button id="progressStatusButton">Progress Status</button>
 
             <div id="districtNames">
                 <button class="district-button district1" onclick="toggleDistrictList('districtList1')">District
@@ -543,7 +599,6 @@
                     5</button>
                 <button class="district-button district6" onclick="toggleDistrictList('districtList6')">District
                     6</button>
-
 
                 <div id="municipality-progress" style="display: none;">
                     <p id="default-progress-status">
@@ -634,13 +689,22 @@
             </div>
 
             <div id="usertopPanel">
-                {% if kiosk_username %}
-                <h3 class="username">{{ kiosk_username }} </h3>
-                {% else %}
-                <h3 class="username">Empty</h3>
-                {% endif %}
-
+                <div class="user-info">
+                    {% if kiosk_username %}
+                    <h3 class="username">{{ kiosk_username }}</h3>
+                    {% else %}
+                    <h3 class="username">Empty</h3>
+                    {% endif %}
+                </div>
+                <div class="points-container">
+                    {% if all_points %}
+                    <div id="points">Total Points: {{ all_points }}</div>
+                    {% else %}
+                    <div id="points">Total Points: 0</div>
+                    {% endif %}
+                </div>
             </div>
+            
 
             <form method="post" action="{% url 'kiosk_logout' kiosk_id=kiosk_id %}">
                 {% csrf_token %}
@@ -649,7 +713,7 @@
             </form>
 
         </div>
-        <div class="bubble">Select a <br> District to start</div>
+        <div class="bubble">Select a <br> District to Start!</div>
         <div class="welcome">Welcome to <br> Parine sa Batangas! <img src="{% static 'logo.png' %}" alt="logo"></div>
         <img class="batangas" src="{% static 'all batangas.png' %}" alt="batangas">
         <img class="bubblechat" src="{% static 'bubblechat.png' %}" alt="bubblechat">
@@ -669,6 +733,7 @@
 
     <script>
         const imageButton = document.getElementById('imageButton');
+        const imageButton2 = document.getElementById('imageButton2');
         const rightPanel = document.getElementById('rightPanel');
         const municipalityProgress = document.getElementById('municipality-progress');
 
@@ -676,6 +741,21 @@
         let isAnimating = false;
 
         imageButton.addEventListener('click', () => {
+            if (!isAnimating) {
+                if (!isPanelVisible) {
+                    rightPanel.style.display = 'block';
+                    rightPanel.style.animationName = 'slideIn';
+                    isPanelVisible = true;
+                    isAnimating = true;
+                    setTimeout(() => {
+                        isAnimating = false;
+                    }, 200); // Wait for animation to complete
+                }
+                imageButton.style.display = 'none';
+            }
+        });
+
+        imageButton2.addEventListener('click', () => {
             if (!isAnimating) {
                 if (isPanelVisible) {
                     rightPanel.style.animationName = 'slideOut';
@@ -700,6 +780,8 @@
                     document.querySelectorAll('.district-list').forEach(list => {
                         list.style.display = 'none';
                     });
+                    imageButton.style.display = 'block';
+
                 } else {
                     rightPanel.style.display = 'block';
                     rightPanel.style.animationName = 'slideIn';
@@ -721,6 +803,7 @@
         document.addEventListener('click', (event) => {
             if (!isAnimating && isPanelVisible && !rightPanel.contains(event.target) && event.target !== imageButton) {
                 rightPanel.style.animationName = 'slideOut';
+                imageButton.style.display = 'block';
                 isPanelVisible = false;
                 isAnimating = true;
                 setTimeout(() => {
@@ -731,17 +814,20 @@
                 if (municipalityProgress) {
                     municipalityProgress.style.display = 'none';
                 }
-
+        
                 // Reset selected and hovered states
                 document.querySelectorAll('.district-list-item, .district-button').forEach(item => {
                     item.classList.remove('selected');
                     item.classList.remove('hovered');
                 });
-
+        
                 // Hide all district lists
                 document.querySelectorAll('.district-list').forEach(list => {
                     list.style.display = 'none';
                 });
+                document.getElementById('progressStatusButton').innerHTML = "Progress Status"; // Reset button text
+                document.getElementById('districtNames').style.display = 'none'; // Hide district names
+                document.getElementById('districtNamesLower').style.display = 'none'; // Hide district names lower
             } else {
                 // Show municipality progress if a district list item was clicked
                 if (event.target.classList.contains('district-list-item')) {
@@ -750,8 +836,17 @@
                     }
                 }
             }
+        
+            // Check if the click was outside of any interactive elements
+            if (!rightPanel.contains(event.target) && !imageButton.contains(event.target) &&
+                !event.target.matches('.district-button, .district-list-item, .district-button *, #progressStatusButton')) {
+                if (document.getElementById('progressStatusButton').innerHTML === "Close") {
+                    document.getElementById('progressStatusButton').innerHTML = "Progress Status"; // Reset button text
+                    document.getElementById('districtNames').style.display = 'none'; // Hide district names
+                    document.getElementById('districtNamesLower').style.display = 'none'; // Hide district names lower
+                }
+            }
         });
-
 
         let currentSelectedButton = null;
         let currentSelectedDistrictButton = null;
@@ -933,6 +1028,44 @@
             });
         });
 
+        document.getElementById('progressStatusButton').addEventListener('click', function() {
+            let districtNames = document.getElementById('districtNames');
+            let districtNamesLower = document.getElementById('districtNamesLower');
+            let districtLists = document.querySelectorAll('.district-list');
+            let districtButtons = document.querySelectorAll('.district-button');
+        
+            // Toggle the display and the no-hover class
+            if (this.innerHTML === "Progress Status") {
+                this.innerHTML = "Close";
+                districtNames.style.display = 'block';
+                districtNamesLower.style.display = 'block';
+                // Remove no-hover class when opening the status
+                districtButtons.forEach(function(button) {
+                    button.classList.remove('no-hover');
+                });
+            } else {
+                this.innerHTML = "Progress Status";
+                districtNames.style.display = 'none';
+                districtNamesLower.style.display = 'none';
+                districtLists.forEach(function(list) {
+                    list.style.display = 'none';
+                });
+                // Add no-hover class to disable hover when closing the panel
+                districtButtons.forEach(function(button) {
+                    button.classList.add('no-hover');
+                });
+            }
+            if (municipalityProgress) {
+                municipalityProgress.style.display = 'none'; // Ensure the progress status is hidden when closing
+            }
+                            // Reset selected and hovered states
+                document.querySelectorAll('.district-list-item, .district-button').forEach(item => {
+                    item.classList.remove('selected');
+                    item.classList.remove('hovered');
+                });
+        });
+        
+        
 
     </script>
 

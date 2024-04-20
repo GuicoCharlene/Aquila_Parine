@@ -207,22 +207,26 @@
                 btn.style.color = '#18395E';
             });
     
+
             button.classList.add('active-button');
-            button.style.background = '#18395E';
-            button.style.color = '#fff';
+            button.style.background = '#18395E'; 
+            button.style.color = '#fff'; 
     
             // Set the source of the iframe to the module HTML file URL
-            var buttonText = button.textContent.trim();
-            var firstWord = buttonText.split(" ")[0].toLowerCase();
-            document.getElementById('moduleFrame').src = "module_" + firstWord + ".html"; // Ensure the correct file extension if needed
+            document.getElementById('moduleFrame').src = "module";
+
+            //THIS IS FOR THE DIFFERENT MODULES 
+            var buttonText = button.textContent.trim(); 
+            var firstWord = buttonText.split(" ")[0].toLowerCase(); 
+            document.getElementById('moduleFrame').src = "module_" + firstWord;
+
         }
     
         window.onload = function() {
-            var defaultButton = document.querySelector('.header button:first-child'); // Select the first button as default
-            loadModule(defaultButton);
+            loadModule(document.querySelector('.header button'));
         };
+
     </script>
-    
 
 </body>
 </html>

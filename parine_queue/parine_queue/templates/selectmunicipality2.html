@@ -77,6 +77,21 @@
             transform: scale(0.9);
         }
 
+        #imageButton2 {
+            position: fixed;
+            top: 1.0416666666666667vw;
+            right: 13.802083333333334vw;
+            width: 4.557291666666667vw;
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #imageButton2:active {
+            transform: scale(0.9);
+        }
+
+
         #rightPanel {
             display: none;
             position: fixed;
@@ -88,12 +103,11 @@
             z-index: 999;
             padding: 1.3020833333333333vw;
             box-sizing: border-box;
-            border-top-left-radius: 2.9765625vw;
-            border-bottom-left-radius: 2.9765625vw;
+            border-top-left-radius: 1.9765625vw;
+            border-bottom-left-radius: 1.9765625vw;
             border-left: 0.0000625vw solid #0f172a;
             animation-duration: 0.21s;
-            animation-timing-function: ease-in;
-            animation-timing-function: ease-out;
+            animation-timing-function: ease-in-out;
         }
 
         @keyframes slideIn {
@@ -122,9 +136,9 @@
             top: 0;
             right: 0;
             width: 19.50125vw;
-            height: 6.8359375vw;
+            height: 8.854166666666666vw;
             background-color: #15375D;
-            border-top-left-radius: 2.9765625vw;
+            border-top-left-radius: 1.9765625vw;
 
             border-left: 0.0000625vw solid #0f172a;
             z-index: 1;
@@ -137,10 +151,13 @@
         .username {
             text-overflow: ellipsis;
             overflow: hidden;
+            right: 0;
             max-width: 11.979166666666666vw;
             font-size: 1.5229166666666667vw;
-            margin-right: 5.729166666666667vw;
-            text-align: right;
+            top:  2.2395833333333335vw;
+            left: 55%;
+            transform: translateX(-50%);
+            text-align: left;
             padding: 0;
             font-family: Arial, sans-serif;
             font-weight: bold;
@@ -916,20 +933,21 @@
 
         #points {
             position: absolute;
-            top: 8.625vw;
+            top: 7.625vw;
             left: 50%;
             transform: translate(-50%, -50%);
             font-family: Arial, sans-serif;
             font-weight: bold;
-            color: #333;
+            color: #fdfdfd;
             font-size: 1.0833333333333335vw;
             width: 17.708333333333332vw;
             text-align: center;
         }
 
         #districtNames {
+            display: none;
             position: absolute;
-            top: 10.208333333333334vw;
+            top: 12.208333333333334vw;
             left: 50%;
             transform: translateX(-50%);
             font-family: Arial, sans-serif;
@@ -942,8 +960,10 @@
         }
 
         #districtNamesLower {
+            display: none;
             position: absolute;
-            top: 13.025vw;
+            top: 15.025vw;
+            /* Adjust as needed */
             left: 50%;
             transform: translateX(-50%);
             font-family: Arial, sans-serif;
@@ -1005,7 +1025,7 @@
             color: #0f172a;
             padding: 0.6510416666666666vw 1.3020833333333333vw;
             cursor: pointer;
-            margin-top: 16.666666666666668vw;
+            margin-top: 7.666666666666668vw;
             transition: transform 0.2s, background-color 0.3s;
         }
 
@@ -1083,6 +1103,31 @@
         default-progress-status {
             margin-top: 1.0416666666666667vw;
         }
+
+        #progressStatusButton{
+            width: 100%;
+            margin-top: 8vw;
+            padding: 0.5vw;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #e9e8dc;
+            cursor: pointer;
+
+        }
+
+        #progressStatusButton:hover {
+            background-color: #f4f999;
+        }
+
+        .no-hover:hover {
+            background-color: inherit !important; /* Prevents the hover color change */
+            cursor: default !important; /* Keeps the cursor as default, not pointer */
+        }
+        
+        .districtNames.no-hover:hover, .district-list-item.no-hover:hover {
+            background-color: inherit !important; /* Keeps the background color unchanged on hover */
+            cursor: default !important; /* Keeps the cursor as default, not pointer */
+        }
     </style>
 </head>
 
@@ -1106,12 +1151,11 @@
             <img id="imageButton" src="{% static 'userbutton.png' %}" alt="User Button" />
         </div>
         <div id="rightPanel">
-            {% if all_points %}
-            <div id="points">Points: {{ all_points }} </div>
+            <div id="imageButtonContainer">
+                <img id="imageButton2" src="{% static 'userbutton.png' %}" alt="User Button" />
+            </div>
 
-            {% else %}
-            <div id="points">Points: 0 </div>
-            {% endif %}
+            <button id="progressStatusButton">Progress Status</button>
 
             <div id="districtNames">
                 <button class="district-button district1" onclick="toggleDistrictList('districtList1')">District
@@ -1218,11 +1262,20 @@
                 <!-- Add more items as needed -->
             </div>
             <div id="usertopPanel">
-                {% if kiosk_username %}
-                <h3 class="username">{{ kiosk_username }}</h3>
-                {% else %}
-                <h3 class="username">Empty</h3>
-                {% endif %}
+                <div class="user-info">
+                    {% if kiosk_username %}
+                    <h3 class="username">{{ kiosk_username }}</h3>
+                    {% else %}
+                    <h3 class="username">Empty</h3>
+                    {% endif %}
+                </div>
+                <div class="points-container">
+                    {% if all_points %}
+                    <div id="points">Total Points: {{ all_points }}</div>
+                    {% else %}
+                    <div id="points">Total Points: 0</div>
+                    {% endif %}
+                </div>
             </div>
             <form method="post" action="{% url 'kiosk_logout' kiosk_id=kiosk_id %}">
                 {% csrf_token %}
@@ -1318,6 +1371,7 @@
 
     <script>
         const imageButton = document.getElementById('imageButton');
+        const imageButton2 = document.getElementById('imageButton2');
         const rightPanel = document.getElementById('rightPanel');
         const exploreButton = document.getElementById('exploreButton');
         const moduleContainer = document.querySelector('.modulecontainer');
@@ -1336,6 +1390,21 @@
         let isAnimating = false;
 
         imageButton.addEventListener('click', () => {
+            if (!isAnimating) {
+                if (!isPanelVisible) {
+                    rightPanel.style.display = 'block';
+                    rightPanel.style.animationName = 'slideIn';
+                    isPanelVisible = true;
+                    isAnimating = true;
+                    setTimeout(() => {
+                        isAnimating = false;
+                    }, 200); // Wait for animation to complete
+                }
+                imageButton.style.display = 'none';
+            }
+        });
+
+        imageButton2.addEventListener('click', () => {
             if (!isAnimating) {
                 if (isPanelVisible) {
                     rightPanel.style.animationName = 'slideOut';
@@ -1360,6 +1429,8 @@
                     document.querySelectorAll('.district-list').forEach(list => {
                         list.style.display = 'none';
                     });
+                    imageButton.style.display = 'block';
+
                 } else {
                     rightPanel.style.display = 'block';
                     rightPanel.style.animationName = 'slideIn';
@@ -1381,6 +1452,7 @@
         document.addEventListener('click', (event) => {
             if (!isAnimating && isPanelVisible && !rightPanel.contains(event.target) && event.target !== imageButton) {
                 rightPanel.style.animationName = 'slideOut';
+                imageButton.style.display = 'block';
                 isPanelVisible = false;
                 isAnimating = true;
                 setTimeout(() => {
@@ -1391,17 +1463,20 @@
                 if (municipalityProgress) {
                     municipalityProgress.style.display = 'none';
                 }
-
+        
                 // Reset selected and hovered states
                 document.querySelectorAll('.district-list-item, .district-button').forEach(item => {
                     item.classList.remove('selected');
                     item.classList.remove('hovered');
                 });
-
+        
                 // Hide all district lists
                 document.querySelectorAll('.district-list').forEach(list => {
                     list.style.display = 'none';
                 });
+                document.getElementById('progressStatusButton').innerHTML = "Progress Status"; // Reset button text
+                document.getElementById('districtNames').style.display = 'none'; // Hide district names
+                document.getElementById('districtNamesLower').style.display = 'none'; // Hide district names lower
             } else {
                 // Show municipality progress if a district list item was clicked
                 if (event.target.classList.contains('district-list-item')) {
@@ -1410,6 +1485,53 @@
                     }
                 }
             }
+        
+            // Check if the click was outside of any interactive elements
+            if (!rightPanel.contains(event.target) && !imageButton.contains(event.target) &&
+                !event.target.matches('.district-button, .district-list-item, .district-button *, #progressStatusButton')) {
+                if (document.getElementById('progressStatusButton').innerHTML === "Close") {
+                    document.getElementById('progressStatusButton').innerHTML = "Progress Status"; // Reset button text
+                    document.getElementById('districtNames').style.display = 'none'; // Hide district names
+                    document.getElementById('districtNamesLower').style.display = 'none'; // Hide district names lower
+                }
+            }
+        });
+
+        document.getElementById('progressStatusButton').addEventListener('click', function() {
+            let districtNames = document.getElementById('districtNames');
+            let districtNamesLower = document.getElementById('districtNamesLower');
+            let districtLists = document.querySelectorAll('.district-list');
+            let districtButtons = document.querySelectorAll('.district-button');
+        
+            // Toggle the display and the no-hover class
+            if (this.innerHTML === "Progress Status") {
+                this.innerHTML = "Close";
+                districtNames.style.display = 'block';
+                districtNamesLower.style.display = 'block';
+                // Remove no-hover class when opening the status
+                districtButtons.forEach(function(button) {
+                    button.classList.remove('no-hover');
+                });
+            } else {
+                this.innerHTML = "Progress Status";
+                districtNames.style.display = 'none';
+                districtNamesLower.style.display = 'none';
+                districtLists.forEach(function(list) {
+                    list.style.display = 'none';
+                });
+                // Add no-hover class to disable hover when closing the panel
+                districtButtons.forEach(function(button) {
+                    button.classList.add('no-hover');
+                });
+            }
+            if (municipalityProgress) {
+                municipalityProgress.style.display = 'none'; // Ensure the progress status is hidden when closing
+            }
+                            // Reset selected and hovered states
+                document.querySelectorAll('.district-list-item, .district-button').forEach(item => {
+                    item.classList.remove('selected');
+                    item.classList.remove('hovered');
+                });
         });
 
 
