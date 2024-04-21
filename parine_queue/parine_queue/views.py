@@ -83,12 +83,11 @@ def login(request):
                     return redirect('queue')
                 else:
                     messages.error(request, 'Queue is at full capacity. Please try again later.')
-                    return redirect('login')
-
-                
+                    return redirect('full_capacity')
+   
             except QueueVisitor.DoesNotExist:
                 messages.error(request, 'Invalid username or password')
-                return redirect('login')
+                return redirect('wrong')
     else:
 
         return render(request, 'login.html')
@@ -1509,3 +1508,9 @@ def done_quiz(request):
 
 def no_data(request):
     return render(request, 'no_data.html')
+
+def full_capacity(request):
+    return render(request, 'full_capacity.html')
+
+def wrong(request):
+    return render(request, 'wrong.html')
