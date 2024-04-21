@@ -384,10 +384,10 @@
                     <label for="new_module_contact">Module Contact:</label>
                     <input type="text" id="new_module_contact" name="new_module_contact"
                         value="{{ module.ModuleContact }}"><br>
-                    <label for="new_module_file">Module File:</label>
-                    {% if module.ModuleFile %}
+                    <label for="new_module_file">Module Description:</label>
+                    {% if module.ModuleDescription %}
                     <textarea id="new_module_file" name="new_module_file" class="scrollbar"
-                        rows="4">{{ module.ModuleFile }}</textarea><br>
+                        rows="4">{{ module.ModuleDescription }}</textarea><br>
                     {% else %}
                     <textarea id="new_module_file" name="new_module_file"></textarea><br>
                     {% endif %}
@@ -421,7 +421,7 @@
             <h2>{{ module.ModuleName }}</h2>
             <h3>{{ module.ModuleLocation }}</h3>
             <h3>{{ module.ModuleContact }}</h3>
-            <p class="scrollbar">{{ module.ModuleFile }}</p>
+            <p class="scrollbar">{{ module.ModuleDescription }}</p>
         </div>
         {% endfor %}
     </div>
@@ -444,7 +444,7 @@
             <input type="text" id="new_module_location" name="new_module_location" required><br>
             <label for="new_module_contact">Module Contact:</label>
             <input type="text" id="new_module_contact" name="new_module_contact"><br>
-            <label for="new_module_file">Module File:</label>
+            <label for="new_module_file">Module Description:</label>
             <textarea id="new_module_file" name="new_module_file" class="scrollbar" rows="10"></textarea><br>
             <button type="submit">Add Module</button>
         </form>

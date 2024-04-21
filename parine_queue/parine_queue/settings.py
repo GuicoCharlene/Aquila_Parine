@@ -99,7 +99,7 @@ DATABASES: dict[str, dict[str, str]] = {
         'PASSWORD': 'Cg_09355975720',
         'HOST': 'localhost',
         'PORT': '3306',
-        'TABLE_NAME': 'visitor' 
+        'TABLE_NAME': 'visitor'
     }
 }
 

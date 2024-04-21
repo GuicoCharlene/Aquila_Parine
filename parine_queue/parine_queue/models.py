@@ -56,7 +56,7 @@ class DistrictModules(models.Model):
     FirstImage = models.FileField(upload_to='module_content/')
     SecondImage = models.FileField(upload_to='module_content/')
     ThirdImage = models.FileField(upload_to='module_content/')
-    ModuleFile = models.TextField()  # Use TextField for longtext
+    ModuleDescription = models.TextField()  # Use TextField for longtext
     KioskID = models.ForeignKey('Kiosk', on_delete=models.CASCADE, db_column='KioskID')
     AdminID = models.ForeignKey('Admin', on_delete=models.CASCADE, db_column='AdminID(DM)')
 

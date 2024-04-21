@@ -1155,7 +1155,7 @@ def fetch_quiz_questions(module_type, municipality, visitor_id):
     recently_answered_questions = RewardPoints.objects.filter(
         user_id=visitor_id,
         TriviaQuestionID__isnull=False,
-        create_time__gte=timezone.now() - timedelta(days=1)
+        create_time__gte=timezone.now()
     ).values_list('TriviaQuestionID', flat=True)
 
     logger.debug("Excluding recently answered question IDs: %s", list(recently_answered_questions))
