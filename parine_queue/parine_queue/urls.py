@@ -73,6 +73,7 @@ urlpatterns = [
     path('save_quiz_changes/', save_quiz_changes, name='save_quiz_changes'),
     
     path('get_municipality_status/', get_municipality_status, name='get_municipality_status'),
+    path('get_username/<int:kiosk_id>/', views.get_username, name='get_username'),
     
     
 ]

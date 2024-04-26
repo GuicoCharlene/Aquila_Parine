@@ -56,7 +56,7 @@ class DistrictModules(models.Model):
     FirstImage = models.FileField(upload_to='module_content/')
     SecondImage = models.FileField(upload_to='module_content/')
     ThirdImage = models.FileField(upload_to='module_content/')
-    ModuleDescription = models.TextField()  # Use TextField for longtext
+    ModuleDescription = models.CharField(max_length=1000)
     KioskID = models.ForeignKey('Kiosk', on_delete=models.CASCADE, db_column='KioskID')
     AdminID = models.ForeignKey('Admin', on_delete=models.CASCADE, db_column='AdminID(DM)')
 
@@ -68,7 +68,7 @@ class TriviaQuestion(models.Model):
     Municipality = models.CharField(max_length=100)
     ModuleType = models.CharField(max_length=100)
     Images =models.FileField(upload_to='module_content/')
-    QuestionContent = models.TextField() #HOLDS THE QUESTION
+    QuestionContent = models.CharField(max_length=1000) #HOLDS THE QUESTION
     DistrictModuleID = models.ForeignKey('Kiosk', on_delete=models.CASCADE, db_column='DistrictModuleID(TQ)')
     AdminID = models.ForeignKey(Admin, on_delete=models.CASCADE, db_column='AdminID(TQ)')
 

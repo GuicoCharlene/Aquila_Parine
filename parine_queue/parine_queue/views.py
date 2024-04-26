@@ -29,6 +29,7 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.db.models import Sum, Avg
 import json
+from django.core.exceptions import ObjectDoesNotExist
 
 
 logger = logging.getLogger(__name__)
@@ -95,6 +96,7 @@ def login(request):
 # View for displaying the queue page
 def queue(request):
     return render(request, 'queue.html')
+
 
 def queue_list(request):
     is_admin = request.session.get('is_admin', False)
@@ -181,7 +183,15 @@ def adminpage(request):
 
     queue_capacity_value = Queue_Capacity.objects.values_list('limit', flat=True).first()
     if view_list:
-        queue_entries = QueueEntry.objects.all().select_related('user').order_by('PriorityLevel')
+        queue_entries = QueueEntry.objects.all().select_related('user').order_by (
+            Case(
+                When(PriorityLevel='high', then=Value(0)),
+                When(PriorityLevel='mid', then=Value(1)),
+                When(PriorityLevel='low', then=Value(2)),
+                default=Value(3),
+                output_field=CharField(),
+        ),
+        )
     
     context = {
         'queue_entries': queue_entries,
@@ -297,8 +307,21 @@ def get_queue_data(request):
     except Exception as e:
         logger.error(f"Error fetching kiosk data: {e}", exc_info=True)
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
-
-
+    
+    
+def get_username(request, kiosk_id):
+    try:
+        kiosk = Kiosk.objects.get(KioskID=kiosk_id)
+        if kiosk.QueueID:
+            kiosk_username = kiosk.QueueID.user.username
+            return JsonResponse({'username': kiosk_username})
+        else:
+            return JsonResponse({'username': None})
+    except ObjectDoesNotExist:
+        return JsonResponse({'error': f'Kiosk with ID {kiosk_id} does not exist'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
 #user login in kiosk
 @transaction.atomic
 def kiosk_login(request, kiosk_id):
@@ -310,7 +333,7 @@ def kiosk_login(request, kiosk_id):
     for kiosk in Kiosk.objects.filter(KioskStatus=True).select_related('QueueID'):
         if kiosk.QueueID and kiosk.QueueID.EndTime:
             time_elapsed = current_time - kiosk.QueueID.EndTime
-            if time_elapsed >= timedelta(minutes=2): #time limit
+            if time_elapsed >= timedelta(minutes=3): #time limit
                 queue_entry = kiosk.QueueID
                 if queue_entry.QueueStatus == 'IN KIOSK':
                     kiosk.QueueID.delete()
@@ -528,7 +551,7 @@ def add_module(request):
             district_module_id = f'{moduletype}{str(numeric_part).zfill(3)}{district_suffix}'  # Ensure numeric part is padded with zeros
 
             # Save the module to the database with the generated DistrictModuleID
-            new_module = DistrictModules(DistrictModuleID=district_module_id, Municipality=municipality, ModuleName=module_name,ModuleContact=module_contact,ModuleLocation=module_location, FirstImage = module_first, SecondImage= module_second,ThirdImage=module_third,ModuleContent=module_image, ModuleFile=module_file)
+            new_module = DistrictModules(DistrictModuleID=district_module_id, Municipality=municipality, ModuleName=module_name,ModuleContact=module_contact,ModuleLocation=module_location, FirstImage = module_first, SecondImage= module_second,ThirdImage=module_third,ModuleContent=module_image, ModuleDescription=module_file)
 
             if module_image:  # Check if module_image is not None
                 new_module.ModuleContent = os.path.basename(module_image.name)  # Save only the filename
@@ -590,7 +613,7 @@ def save_module_changes(request):
         new_module_contact = request.POST.get('new_module_contact')
         try:
             module = DistrictModules.objects.get(DistrictModuleID=module_id)
-            if module.ModuleName == new_module_name and module.ModuleFile == new_module_file == new_module_location:
+            if module.ModuleName == new_module_name and module.ModuleDescription == new_module_file == new_module_location:
                 if new_module_image:
                     module.ModuleContent = os.path.basename(new_module_image.name)  # Save only the filename
                     module.save()
@@ -598,9 +621,9 @@ def save_module_changes(request):
             else:
                 module.ModuleName = new_module_name
                 if new_module_file is not None and new_module_file != "":
-                    module.ModuleFile = new_module_file
+                    module.ModuleDescription = new_module_file
                 else:
-                    module.ModuleFile = "None"  # Set to "None" if the field is empty
+                    module.ModuleDescription= "None"  # Set to "None" if the field is empty
                 if new_module_location is not None and new_module_location != "":
                     module.ModuleLocation = new_module_location
                 else:
