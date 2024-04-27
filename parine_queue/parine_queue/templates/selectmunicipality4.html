@@ -1749,79 +1749,51 @@
                 hideAdditionalContainers();
             }
         }
-
         function hideAdditionalContainers() {
-            document.querySelectorAll('.square, .exploreSJ, .exploreI, .exploreR, .exploreT, .explorePG, .exploreSN').forEach(container => {
-                if (container.previousElementSibling !== activeButton) {
+            document.querySelectorAll('.exploreSJ, .exploreI, .exploreR, .exploreT, .explorePG, .exploreSN').forEach(container => {
+                if (container.id !== "explore" + activeButton.textContent.trim()) {
                     container.style.display = 'none';
                 }
             });
         }
-        function hideAdditionalContainerSJ() {
-            var additionalContainer = document.getElementById("exploreSJ");
-            additionalContainer.style.display = "none";
+
+        function toggleAdditionalContainer(containerId) {
+            var additionalContainer = document.getElementById(containerId);
+            if (additionalContainer.style.display === "block") {
+                additionalContainer.style.display = "none";
+            } else {
+                additionalContainer.style.display = "block";
+            }
         }
 
         document.querySelector('.district4SJ-button').addEventListener('click', function () {
-            var additionalContainer = document.getElementById("exploreSJ");
-            additionalContainer.style.display = "block";
+            toggleAdditionalContainer("exploreSJ");
             this.classList.toggle('container');
-
         });
-        function hideAdditionalContainerI() {
-            var additionalContainer = document.getElementById("exploreI");
-            additionalContainer.style.display = "none";
-        }
-
+        
         document.querySelector('.district4I-button').addEventListener('click', function () {
-            var additionalContainer = document.getElementById("exploreI");
-            additionalContainer.style.display = "block";
+            toggleAdditionalContainer("exploreI");
             this.classList.toggle('container');
-
         });
-        function hideAdditionalContainerR() {
-            var additionalContainer = document.getElementById("exploreR");
-            additionalContainer.style.display = "none";
-        }
-
+        
         document.querySelector('.district4R-button').addEventListener('click', function () {
-            var additionalContainer = document.getElementById("exploreR");
-            additionalContainer.style.display = "block";
+            toggleAdditionalContainer("exploreR");
             this.classList.toggle('container');
-
         });
-        function hideAdditionalContainerT() {
-            var additionalContainer = document.getElementById("exploreT");
-            additionalContainer.style.display = "none";
-        }
-
+        
         document.querySelector('.district4T-button').addEventListener('click', function () {
-            var additionalContainer = document.getElementById("exploreT");
-            additionalContainer.style.display = "block";
+            toggleAdditionalContainer("exploreT");
             this.classList.toggle('container');
-
         });
-        function hideAdditionalContainerPG() {
-            var additionalContainer = document.getElementById("explorePG");
-            additionalContainer.style.display = "none";
-        }
-
+        
         document.querySelector('.district4PG-button').addEventListener('click', function () {
-            var additionalContainer = document.getElementById("explorePG");
-            additionalContainer.style.display = "block";
+            toggleAdditionalContainer("explorePG");
             this.classList.toggle('container');
-
         });
-        function hideAdditionalContainerSN() {
-            var additionalContainer = document.getElementById("exploreSN");
-            additionalContainer.style.display = "none";
-        }
-
+        
         document.querySelector('.district4SN-button').addEventListener('click', function () {
-            var additionalContainer = document.getElementById("exploreSN");
-            additionalContainer.style.display = "block";
+            toggleAdditionalContainer("exploreSN");
             this.classList.toggle('container');
-
         });
 
         //----------------------MODULE SCRIPT

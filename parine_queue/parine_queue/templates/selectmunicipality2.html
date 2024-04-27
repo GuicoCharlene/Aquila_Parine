@@ -1746,75 +1746,52 @@
         }
 
         function hideAdditionalContainers() {
-            document.querySelectorAll('.square, .exploreSL, .exploreB, .exploreSP, .exploreM, .exploreT, .exploreL').forEach(container => {
-                if (container.previousElementSibling !== activeButton) {
+            document.querySelectorAll('.exploreSL, .exploreB, .exploreSP, .exploreM, .exploreT, .exploreL').forEach(container => {
+                if (container.style.display === 'block' && container.id === "explore" + activeButton.textContent.trim()) {
+                    container.style.display = 'none';
+                    activeButton = null;
+                } else {
                     container.style.display = 'none';
                 }
             });
         }
-        function hideAdditionalContainerSL() {
-            var additionalContainer = document.getElementById("exploreSL");
-            additionalContainer.style.display = "none";
-        }
 
+        function toggleAdditionalContainer(containerId) {
+            var additionalContainer = document.getElementById(containerId);
+            if (additionalContainer.style.display === "block") {
+                additionalContainer.style.display = "none";
+            } else {
+                additionalContainer.style.display = "block";
+            }
+        }
+        
         document.querySelector('.district2SL-button').addEventListener('click', function () {
-            var additionalContainer = document.getElementById("exploreSL");
-            additionalContainer.style.display = "block";
+            toggleAdditionalContainer("exploreSL");
             this.classList.toggle('container');
-
         });
-        function hideAdditionalContainerB() {
-            var additionalContainer = document.getElementById("exploreB");
-            additionalContainer.style.display = "none";
-        }
-
+        
         document.querySelector('.district2B-button').addEventListener('click', function () {
-            var additionalContainer = document.getElementById("exploreB");
-            additionalContainer.style.display = "block";
+            toggleAdditionalContainer("exploreB");
             this.classList.toggle('container');
-
         });
-        function hideAdditionalContainerSP() {
-            var additionalContainer = document.getElementById("exploreSP");
-            additionalContainer.style.display = "none";
-        }
-
+        
         document.querySelector('.district2SP-button').addEventListener('click', function () {
-            var additionalContainer = document.getElementById("exploreSP");
-            additionalContainer.style.display = "block";
+            toggleAdditionalContainer("exploreSP");
             this.classList.toggle('container');
-
         });
-        function hideAdditionalContainerM() {
-            var additionalContainer = document.getElementById("exploreM");
-            additionalContainer.style.display = "none";
-        }
-
+        
         document.querySelector('.district2M-button').addEventListener('click', function () {
-            var additionalContainer = document.getElementById("exploreM");
-            additionalContainer.style.display = "block";
+            toggleAdditionalContainer("exploreM");
             this.classList.toggle('container');
-
         });
-        function hideAdditionalContainerT() {
-            var additionalContainer = document.getElementById("exploreT");
-            additionalContainer.style.display = "none";
-        }
-
+        
         document.querySelector('.district2T-button').addEventListener('click', function () {
-            var additionalContainer = document.getElementById("exploreT");
-            additionalContainer.style.display = "block";
+            toggleAdditionalContainer("exploreT");
             this.classList.toggle('container');
-
         });
-        function hideAdditionalContainerL() {
-            var additionalContainer = document.getElementById("exploreL");
-            additionalContainer.style.display = "none";
-        }
-
+        
         document.querySelector('.district2L-button').addEventListener('click', function () {
-            var additionalContainer = document.getElementById("exploreL");
-            additionalContainer.style.display = "block";
+            toggleAdditionalContainer("exploreL");
             this.classList.toggle('container');
         });
         //----------------------MODULE SCRIPT
