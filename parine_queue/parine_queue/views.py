@@ -265,7 +265,7 @@ def selectdistrict(request, kiosk_id):
             all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
             all_points = all_points_entry.get('all_points', 0)
             progress_entries = VisitorProgress.objects.filter(VisitorID__VisitorID=visitor_id)
-            municipality_status = [(entry.Municipality, entry.Status) for entry in progress_entries]
+            municipality_status = [(entry.Municipality, entry.Status, entry.ModuleType) for entry in progress_entries]
 
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk ID.")
@@ -802,7 +802,8 @@ def selectmunicipality1(request, kiosk_id):
             all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
             all_points = all_points_entry.get('all_points', 0)
             progress_entries = VisitorProgress.objects.filter(VisitorID__VisitorID=visitor_id)
-            municipality_status = [(entry.Municipality, entry.Status) for entry in progress_entries]
+            municipality_status = [(entry.Municipality, entry.Status, entry.ModuleType) for entry in progress_entries]
+
 
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk ID.")
@@ -860,7 +861,7 @@ def selectmunicipality2(request, kiosk_id):
             all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
             all_points = all_points_entry.get('all_points', 0)
             progress_entries = VisitorProgress.objects.filter(VisitorID__VisitorID=visitor_id)
-            municipality_status = [(entry.Municipality, entry.Status) for entry in progress_entries]
+            municipality_status = [(entry.Municipality, entry.Status, entry.ModuleType) for entry in progress_entries]
 
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk ID.")
@@ -918,7 +919,8 @@ def selectmunicipality3(request, kiosk_id):
             all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
             all_points = all_points_entry.get('all_points', 0)
             progress_entries = VisitorProgress.objects.filter(VisitorID__VisitorID=visitor_id)
-            municipality_status = [(entry.Municipality, entry.Status) for entry in progress_entries]
+            municipality_status = [(entry.Municipality, entry.Status, entry.ModuleType) for entry in progress_entries]
+
 
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk ID.")
@@ -976,7 +978,8 @@ def selectmunicipality4(request, kiosk_id):
             all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
             all_points = all_points_entry.get('all_points', 0)
             progress_entries = VisitorProgress.objects.filter(VisitorID__VisitorID=visitor_id)
-            municipality_status = [(entry.Municipality, entry.Status) for entry in progress_entries]
+            municipality_status = [(entry.Municipality, entry.Status, entry.ModuleType) for entry in progress_entries]
+
 
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk ID.")
@@ -1034,7 +1037,8 @@ def selectmunicipality5(request, kiosk_id):
             all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
             all_points = all_points_entry.get('all_points', 0)
             progress_entries = VisitorProgress.objects.filter(VisitorID__VisitorID=visitor_id)
-            municipality_status = [(entry.Municipality, entry.Status) for entry in progress_entries]
+            municipality_status = [(entry.Municipality, entry.Status, entry.ModuleType) for entry in progress_entries]
+
 
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk ID.")
@@ -1092,7 +1096,8 @@ def selectmunicipality6(request, kiosk_id):
             all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
             all_points = all_points_entry.get('all_points', 0)
             progress_entries = VisitorProgress.objects.filter(VisitorID__VisitorID=visitor_id)
-            municipality_status = [(entry.Municipality, entry.Status) for entry in progress_entries]
+            municipality_status = [(entry.Municipality, entry.Status, entry.ModuleType) for entry in progress_entries]
+
 
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk ID.")
@@ -1484,8 +1489,8 @@ def get_municipality_status(request):
     visitor_id = request.session.get('visitor_id', None) 
     
     if visitor_id is not None:
-        overall_status, percentage_done = get_module_status_for_municipality(selected_municipality, visitor_id)
-        return JsonResponse({'status': overall_status, 'percentage': percentage_done})
+        overall_status, percentage_done, module_type = get_module_status_for_municipality(selected_municipality, visitor_id)
+        return JsonResponse({'status': overall_status, 'percentage': percentage_done, 'module_type': module_type})
     else:
         # Handle the case where visitor_id is not found
         return JsonResponse({'error': 'User not identified'}, status=400)
@@ -1523,7 +1528,20 @@ def get_module_status_for_municipality(selected_municipality, visitor_id):
     # Calculate the percentage of completion
     percentage_done = (module_status_count['DONE'] / total_modules) * 100
 
-    return overall_status, percentage_done
+    # Find the first completed module type
+    module_type = None
+    for mt in module_types:
+        progress_exists = VisitorProgress.objects.filter(
+            Municipality=selected_municipality,
+            ModuleType=mt,
+            Status='DONE',
+            user_id=visitor_id  # Filter by the specific visitor ID
+        ).exists()
+        if progress_exists:
+            module_type = mt
+            break
+
+    return overall_status, percentage_done, module_type
 
 
 def done_quiz(request):

@@ -1174,22 +1174,20 @@
                 <button class="district-button district6" onclick="toggleDistrictList('districtList6')">District
                     6</button>
 
-                <div id="municipality-progress" style="display: none;">
-                    <p id="default-progress-status">
-                        Progress Status: NOT STARTED
-                    </p>
-                    {% if municipality_status %}
-                    <ul>
-                        {% for municipality, status in municipality_status %}
-                        <p class="municipality-status" data-municipality="{{ municipality }}"
-                            data-done-count="{{ status|length }}">
-                            <!-- Your municipality status display code here -->
+                    <div id="municipality-progress" style="display: none;">
+                        <p id="default-progress-status">
+                            Progress Status: NOT STARTED
                         </p>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                </div>
-
+                        {% if municipality_status %}
+                        <ul>
+                            {% for municipality, status, module_type in municipality_status %}
+                            <p class="municipality-status" data-municipality="{{ municipality }}" data-done-count="{{ status|length }}" data-module-type="{{ module_type }}">
+                                <!-- Your municipality status display code here -->
+                            </p>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
             </div>
             <div id="districtList1" class="district-list">
                 <!-- Add items for district 1 -->
@@ -1616,7 +1614,15 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    updateMunicipalityProgress(data, municipalityName);
+                    const { status, percentage, module_type } = data;
+                    
+                    // Pass the municipality name and module type to the handler function
+                    handleDistrictListItemClick(municipalityName, module_type);
+                    
+                    // Optionally, you can also use the status and percentage data received
+                    // For example:
+                    console.log("Status:", status);
+                    console.log("Percentage:", percentage);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -1659,23 +1665,47 @@
         function handleDistrictListItemClick(municipalityName) {
             // Reset the progress status for all municipalities
             const allMunicipalityStatusElements = document.querySelectorAll('.municipality-status');
+            const moduleTypes = ['module_tourist', 'module_food', 'module_craft'];
             allMunicipalityStatusElements.forEach(el => {
                 el.style.display = 'none';
             });
-
+        
             // Hide the default progress status
             document.getElementById('default-progress-status').style.display = 'none';
-
-            // Get the specific status element for the clicked municipality
+        
+            let doneCount = 0;
+            let moduleTypeCount = 0; // Count of module types found
+        
+            // Iterate through each municipality status element
+            allMunicipalityStatusElements.forEach(statusElement => {
+                // Check if the status element belongs to the clicked municipality
+                if (statusElement.getAttribute('data-municipality') === municipalityName) {
+                    // Get the data-done-count attribute value
+                    const doneCountAttributeValue = parseInt(statusElement.getAttribute('data-done-count'));
+        
+                    // Check if module type exists for this status element
+                    const moduleTypeAttributeValue = statusElement.getAttribute('data-module-type');
+                    if (moduleTypeAttributeValue) {
+                        moduleTypeCount++;
+                        if (moduleTypes.includes(moduleTypeAttributeValue)) {
+                            doneCount++; // Increment doneCount if module type is found
+                        }
+                    }
+        
+                }
+            });
+        
+            // Use the doneCount and moduleTypeCount to determine the progress status
+            let progressStatus = 'NOT STARTED';
+            if (moduleTypeCount === 3) {
+                progressStatus = 'COMPLETED';
+            } else if (moduleTypeCount > 0) {
+                progressStatus = 'IN PROGRESS';
+            }
+        
+            // Display the progress status for the clicked municipality
             const statusElement = document.querySelector(`.municipality-status[data-municipality="${municipalityName}"]`);
             if (statusElement) {
-                const doneCount = statusElement.getAttribute('data-done-count');
-                let progressStatus = 'NOT STARTED';
-                if (doneCount >= 2) {
-                    progressStatus = 'IN PROGRESS';
-                } else if (doneCount == 3) {
-                    progressStatus = 'COMPLETED';
-                }
                 statusElement.textContent = `Progress Status: ${progressStatus}`;
                 statusElement.style.display = 'block';
             } else {
@@ -1683,8 +1713,9 @@
                 document.getElementById('default-progress-status').style.display = 'block';
             }
         }
+        
 
-
+        
         document.querySelectorAll('.district-list-item').forEach(item => {
             item.addEventListener('click', function () {
                 // Remove selected state from all district list items
