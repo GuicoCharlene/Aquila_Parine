@@ -10,15 +10,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
         body {
+            position: absolute;
             margin: 0;
             padding: 0;
             font-family: YAD1aYG82rc-0, sans-serif;
-            height: 100vh;
             overflow: hidden;
+            width: 100vw;
+            height: 100vh;
             background-image: url("{% static 'bg.png' %}");
             background-size: cover;
             /* Cover the whole screen */
-            background-position: center;
             /* Center the background image */
         }
 
@@ -31,10 +32,10 @@
 
         #back-icon {
             position: absolute;
-            left: 20px;
+            top: 2.6041666666666665vw;
+            left: 2.6041666666666665vw;
             color: #010355;
-            font-size: 50px;
-            margin-left: 10px;
+            font-size: 2.6041666666666665vw;
             text-decoration: none;
             transition: color 0.3s ease;
             z-index: 1;
@@ -48,11 +49,11 @@
 
         .list-container {
             position: absolute;
-            top: 208px;
+            top: 10.833333333333334vw;
             /* Adjust the position as needed */
-            left: 10px;
-            width: 20%;
-            height: calc(100% - 50%);
+            left: 0.5208333333333334vw;
+            width: 20vw;
+            height: 50vh;
             background-color: #ffffff;
             box-shadow: 3px 0 6px rgba(0, 0, 0, 0.1);
             padding: 20px;
@@ -68,14 +69,14 @@
         .content-container {
 
             position: absolute;
-            top: 20%;
-            left: 20%;
+            top: 9.84375vw;
+            left: 20.3125vw;
             /* Start to the right of the sidebar */
-            width: 80%;
+            width: 80vw;
             /* Remaining width */
-            height: calc(100% - 40%);
+            height: 60vh;
             /* Height is the full height minus the header/footer */
-            padding: 20px;
+            padding: 1.0416666666666667vw;
             box-sizing: border-box;
             /* Ensures padding does not add to width */
             display: flex;
@@ -91,9 +92,9 @@
             /* Allow items to wrap */
             justify-content: flex-start;
             /* Align items to the start of the container */
-            gap: 10px;
+            gap:  0.5208333333333334vw;
             /* Space between items */
-            margin-bottom: 20px;
+            margin-bottom: 1.0416666666666667vw;
             /* Space below kiosk list */
         }
 
@@ -103,7 +104,7 @@
             /* Kiosks will grow to fill available space */
             min-width: calc(33.333% - 20px);
             /* Three kiosks per row, adjust space for gap */
-            height: 150px;
+            height: 7.8125vw;
             /* Adjust height as needed */
             overflow: hidden;
             /* Hide overflow */
@@ -151,14 +152,13 @@
             padding: 15px;
             width: 46%;
             right: 0;
-            z-index: -1000px;
             background-color: yellow;
             border-top-right-radius: 5px;
             border-bottom-right-radius: 5px;
         }
 
         h2 {
-            font-size: 50px;
+            font-size: 2.6041666666666665vw;
             margin-bottom: 10px;
         }
 
@@ -192,12 +192,12 @@
 
         .jip-img {
             position: absolute;
-            top: 16%;
+            top:  8.229166666666666vw;
             left: 5%;
             transform: translateX(-50%);
-            width: 50%;
+            width: 50vw;
             /* Adjust width as needed */
-            max-width: 120px;
+            max-width: 6.25vw;
             z-index: 1;
             /* Ensure the image stays above other content */
             animation: moveForth 8s ease-in-out infinite, glow 1s ease-in-out infinite alternate;
@@ -253,8 +253,8 @@
         }
 
         .priority-icon {
-            width: 20px;
-            height: 20px;
+            width: 1.0416666666666667vw;
+            height: 1.0416666666666667vw;
             border-radius: 50%;
             display: inline-block;
             margin-bottom: 5px;
@@ -263,9 +263,9 @@
         }
 
         .priority_levels_card {
-            font-size: 16px;
+            font-size: 0.8333333333333334vw;
             position: absolute;
-            top: 690px;
+            top: 35.9375vw;
             width: 15%;
             left: 3%;
             height: calc(30% - 5%);
@@ -438,7 +438,6 @@
 
         }
 
-
         function updateKioskDisplay() {
             $.ajax({
                 url: "/get_queue_data/",
@@ -482,7 +481,7 @@
             setTimeout(function () {
                 window.location.reload(true);
             }, 100);
-        }, 6000); 
+        }, 14000); 
     </script>
 </body>
 
