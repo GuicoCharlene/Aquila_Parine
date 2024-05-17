@@ -8,8 +8,15 @@
     <title>Parine sa Batangas</title>
 
     <style>
+        {% load static %}
+
+        @font-face {
+          font-family: 'Batangas';
+          src: url('{% static "Batangas Bold 700.ttf" %}') format('ttf');
+        }
+        
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Batangas';
             background-color: #BFEBF4;
             margin: 0;
             padding: 20px;

@@ -7,10 +7,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Parine sa Batangas!</title>
   <style>
+    {% load static %}
+
+    @font-face {
+      font-family: 'Batangas';
+      src: url('{% static "Batangas Bold 700.ttf" %}') format('ttf');
+    }
+
     body {
       margin: 0;
       padding: 0;
-      font-family: YAD1aYG82rc-0, sans-serif;
+      font-family: 'Batangas';
       overflow: hidden;
     }
 
@@ -35,7 +42,7 @@
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
-      font-family: YAD1aYG82rc-0;
+      font-family: 'Batangas';
       color: #010355;
       border: 0.06510416666666667vw solid #0f172a;
       border-radius: 1.953125vw;
@@ -97,7 +104,7 @@
       left: 20px;
       top: 15px;
       color: #ffffff;
-      font-family: 'Georgia', serif;
+      font-family: 'Batangas';
       transform: translateY(100%);
       text-decoration: none;
       font-size: 15px;

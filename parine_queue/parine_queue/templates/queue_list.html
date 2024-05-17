@@ -9,11 +9,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
+        {% load static %}
+
+        @font-face {
+          font-family: 'Batangas';
+          src: url('{% static "Batangas Bold 700.ttf" %}') format('ttf');
+        }
+        
         body {
             position: absolute;
             margin: 0;
             padding: 0;
-            font-family: YAD1aYG82rc-0, sans-serif;
+            font-family: 'Batangas';
             overflow: hidden;
             width: 100vw;
             height: 100vh;
@@ -26,7 +33,7 @@
         .queue-container {
             text-align: center;
             font-weight: bold;
-            font-family: 'Georgia', serif;
+            font-family: 'Batangas';
             color: #010355;
         }
 
@@ -60,7 +67,7 @@
             box-sizing: border-box;
             text-align: center;
             font-weight: bold;
-            font-family: 'Georgia', serif;
+            font-family: 'Batangas';
             border: 1px solid #0f172a;
             border-radius: 10px;
         }
@@ -117,7 +124,7 @@
             box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
             font-weight: bold;
-            font-family: 'Georgia', serif;
+            font-family: 'Batangas';
             color: #010355;
         }
 
@@ -276,7 +283,7 @@
             box-sizing: border-box;
             text-align: center;
             font-weight: bold;
-            font-family: 'Georgia', serif;
+            font-family: 'Batangas';
             border: 1px solid #0f172a;
             border-radius: 20px;
             display: flex;

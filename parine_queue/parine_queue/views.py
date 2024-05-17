@@ -106,11 +106,11 @@ def queue_list(request):
         if queue_entry.StartTime:
             time_spent = timezone.now() - queue_entry.StartTime
 	        # Change priority level from low to mid
-            if queue_entry.PriorityLevel == 'low' and time_spent.total_seconds() >= 60 * 60:  # first number is equivalent to minutes
+            if queue_entry.PriorityLevel == 'low' and time_spent.total_seconds() >= 1 * 60:  # first number is equivalent to minutes
                 queue_entry.PriorityLevel = 'mid'
                 queue_entry.save()
 	        # Change priority level from mid to high
-            elif queue_entry.PriorityLevel == 'mid' and time_spent.total_seconds() >= 120 * 60:  # first number is equivalent to minutes
+            elif queue_entry.PriorityLevel == 'mid' and time_spent.total_seconds() >= 2 * 60:  # first number is equivalent to minutes
                 queue_entry.PriorityLevel = 'high'
                 queue_entry.save()
 
@@ -328,6 +328,7 @@ def kiosk_login(request, kiosk_id):
     logged_in_username = request.session.get('logged_in_username')
     current_time = timezone.now()
     kiosk_username = None
+    password = request.POST.get('password')
 
     # Check and handle kiosks that have exceeded time limits
     for kiosk in Kiosk.objects.filter(KioskStatus=True).select_related('QueueID'):
@@ -355,14 +356,15 @@ def kiosk_login(request, kiosk_id):
                 kiosk.QueueID.save()
                 
         if logged_in_username:
-            queue_entry = QueueEntry.objects.get(user__username=logged_in_username)
-            if not kiosk.QueueID:
-                kiosk.QueueID = queue_entry
-                kiosk.KioskStatus = True
-                kiosk.TimeDuration = current_time
-                kiosk.save()
-
-                # Save progress if the user was taking a quiz
+            visitor = QueueVisitor.objects.filter(username=logged_in_username).first()
+            if visitor and visitor.password == password:
+                queue_entry = QueueEntry.objects.get(user__username=logged_in_username)
+                if not kiosk.QueueID:
+                    kiosk.QueueID = queue_entry
+                    kiosk.KioskStatus = True
+                    kiosk.TimeDuration = current_time
+                    kiosk.save()
+                                    # Save progress if the user was taking a quiz
                 if 'game_session' in request.session:
                     game_session = request.session['game_session']
                     visitor_id = queue_entry.user_id
@@ -376,7 +378,18 @@ def kiosk_login(request, kiosk_id):
                         defaults={'TriviaQuestionID_id': trivia_question_id}
                     
                     )
-            history(request) 
+                    history(request) 
+                    
+                context = {
+                    'kiosk_id': kiosk_id,
+                    'kiosk_username': kiosk_username,
+                    'logged_in_username': logged_in_username,
+                }
+
+                return render(request, 'selectdistrict.html', context)
+            else:
+                messages.error(request, "Incorrect password.")
+               
     except Kiosk.DoesNotExist:
         messages.error(request, "Invalid Kiosk.")
     except QueueEntry.DoesNotExist:

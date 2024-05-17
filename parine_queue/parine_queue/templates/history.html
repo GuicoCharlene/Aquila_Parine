@@ -7,8 +7,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <title>Visitor History</title>
     <style>
+        {% load static %}
+
+        @font-face {
+          font-family: 'Batangas';
+          src: url('{% static "Batangas Bold 700.ttf" %}') format('ttf');
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Batangas';
             margin: 0;
             padding: 0;
         }
@@ -16,7 +23,7 @@
         header {
             background-color: #15375D;
             font-weight: bold;
-            font-family: 'Georgia', serif;
+            font-family: 'Batangas';
             color: #fff;
             padding: 15px;
             display: flex;
@@ -41,7 +48,7 @@
             border: 1px solid #0f172a;
             padding: 8px;
             font-weight: bold;
-            font-family: 'Georgia', serif;
+            font-family: 'Batangas';
             text-align: center;
         }
 
@@ -74,7 +81,7 @@
             bottom: 0;
             width: 100%;
             font-weight: bold;
-            font-family: 'Georgia', serif;
+            font-family: 'Batangas';
         }
 
         ul {

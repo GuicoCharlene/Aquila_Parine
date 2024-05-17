@@ -6,10 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parine sa Batangas</title>
     <style>
+        {% load static %}
+
+        @font-face {
+          font-family: 'Batangas';
+          src: url('{% static "Batangas Bold 700.ttf" %}') format('ttf');
+        }
+
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Batangas';
             height: 100%;
             background-color: #BFF4FF;
             overflow: hidden;
@@ -111,7 +118,7 @@
             transform: translateX(-50%);
             text-align: left;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Batangas';
             font-weight: bold;
             color: white;
             position: absolute;
@@ -127,7 +134,7 @@
             bottom: 1.510416666666667vw;
             left: 50%;
             transform: translateX(-50%);
-            font-family: 'Gotham', sans-serif;
+            font-family: 'Batangas';
             font-size: 1.3020833333333333vw;
             font-weight: bold;
             background-color: #15375D;
@@ -145,10 +152,10 @@
         .bubble {
             position: absolute;
             top: 25.216145833333332vw;
-            left: 11.71875vw;
+            left: 11.11875vw;
             text-align: center;
-            font-family: 'Libre Baskerville', serif;
-            font-size: 2.8229166666666667vw;
+            font-family: 'Batangas';
+            font-size: 2.6229166666666667vw;
             
             z-index: 2;
             color: #15375D;
@@ -160,7 +167,7 @@
             position: absolute;
             top: 35.807291666666664vw;
             left: 3.2552083333333335vw;
-            font-family: 'DM Serif Display', serif;
+            font-family: 'Batangas';
             font-size: 2.8645833333333335vw;
             font-weight: bold;
             display: flex;
@@ -209,7 +216,7 @@
             position: absolute;
             top: 14.322916666666666vw;
             left: 40.364583333333336vw;
-            font-family: 'Gotham', sans-serif;
+            font-family: 'Batangas';
             font-size: 1.0416666666666667vw;
             font-weight: bold;
             background-color: #06C9EF;
@@ -234,7 +241,7 @@
             position: absolute;
             top: 11.71875vw;
             left: 60.546875vw;
-            font-family: 'Gotham', sans-serif;
+            font-family: 'Batangas';
             font-size: 1.0416666666666667vw;
             font-weight: bold;
             background-color: #06C9EF;
@@ -259,7 +266,7 @@
             position: absolute;
             top: 27.34375vw;
             left: 50.78125vw;
-            font-family: 'Gotham', sans-serif;
+            font-family: 'Batangas';
             font-size: 1.0416666666666667vw;
             font-weight: bold;
             background-color: #06C9EF;
@@ -284,7 +291,7 @@
             position: absolute;
             top: 33.854166666666664vw;
             left: 58.59375vw;
-            font-family: 'Gotham', sans-serif;
+            font-family: 'Batangas';
             font-size: 1.0416666666666667vw;
             font-weight: bold;
             background-color: #06C9EF;
@@ -309,7 +316,7 @@
             position: absolute;
             top: 27.34375vw;
             left: 72.91666666666667vw;
-            font-family: 'Gotham', sans-serif;
+            font-family: 'Batangas';
             font-size: 1.0416666666666667vw;
             font-weight: bold;
             background-color: #06C9EF;
@@ -334,7 +341,7 @@
             position: absolute;
             top: 18.880208333333332vw;
             left: 68.359375vw;
-            font-family: 'Gotham', sans-serif;
+            font-family: 'Batangas';
             font-size: 1.0416666666666667vw;
             font-weight: bold;
             background-color: #06C9EF;
@@ -360,7 +367,7 @@
             top: 7.625vw;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-family: Arial, sans-serif;
+            font-family: 'Batangas'
             font-weight: bold;
             color: #fdfdfd;
             font-size: 1.0833333333333335vw;
@@ -374,7 +381,7 @@
             top: 12.208333333333334vw;
             left: 50%;
             transform: translateX(-50%);
-            font-family: Arial, sans-serif;
+            font-family: 'Batangas';
             font-weight: bold;
             color: #333;
 
@@ -390,7 +397,7 @@
             /* Adjust as needed */
             left: 50%;
             transform: translateX(-50%);
-            font-family: Arial, sans-serif;
+            font-family: 'Batangas';
             font-weight: bold;
             color: #333;
 
@@ -399,7 +406,7 @@
         }
 
         .district-button {
-            font-family: 'Gotham', sans-serif;
+            font-family: 'Batangas';
             font-weight: bold;
             color: whitesmoke;
             font-size: 0.78125vw;
@@ -443,7 +450,7 @@
         }
 
         .district-list {
-            font-family: 'Gotham', sans-serif;
+            font-family: 'Batangas';
             font-size: 2.0416666666666667vw;
             font-weight: bold;
             color: #0f172a;
@@ -458,7 +465,7 @@
             width: 100%;
             border: 0.2000125vw solid #0f172a;
             border-radius: 1.953125vw;
-            font-family: 'Gotham', sans-serif;
+            font-family: 'Batangas';
             font-size: 1.0416666666666667vw;
             font-weight: bold;
             background-color: #15375D;
