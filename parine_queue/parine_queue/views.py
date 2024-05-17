@@ -329,6 +329,10 @@ def kiosk_login(request, kiosk_id):
     current_time = timezone.now()
     kiosk_username = None
     password = request.POST.get('password')
+    visitor_id = None
+    municipality_status = []
+    modules = get_modules_by_type_and_municipality
+    all_points = 0
 
     # Check and handle kiosks that have exceeded time limits
     for kiosk in Kiosk.objects.filter(KioskStatus=True).select_related('QueueID'):
@@ -351,6 +355,7 @@ def kiosk_login(request, kiosk_id):
         kiosk = Kiosk.objects.get(KioskID=kiosk_id)
         if kiosk.QueueID:
             kiosk_username = kiosk.QueueID.user.username
+            
             if not kiosk.QueueID.QueueStatus == 'IN MODULE':
                 kiosk.QueueID.QueueStatus = 'IN MODULE'
                 kiosk.QueueID.save()
@@ -370,6 +375,12 @@ def kiosk_login(request, kiosk_id):
                     visitor_id = queue_entry.user_id
                     district_module_id = game_session.get('district_module_id')
                     trivia_question_id = game_session.get('trivia_question_id')
+                    
+                    if visitor_id:
+                        all_points_entry = RewardPoints.objects.filter(user_id=visitor_id).aggregate(all_points=Sum('TotalPoints'))
+                        all_points = all_points_entry.get('all_points', 0)
+                        progress_entries = VisitorProgress.objects.filter(VisitorID__VisitorID=visitor_id)
+                        municipality_status = [(entry.Municipality, entry.Status, entry.ModuleType) for entry in progress_entries]
 
                     # Create or update VisitorProgress record
                     VisitorProgress.objects.update_or_create(
@@ -384,16 +395,20 @@ def kiosk_login(request, kiosk_id):
                     'kiosk_id': kiosk_id,
                     'kiosk_username': kiosk_username,
                     'logged_in_username': logged_in_username,
+                    'all_points': all_points,
+                    'visitor_id': visitor_id,
+                    'municipality_status': municipality_status,
+                    'modules': modules,
                 }
 
-                return render(request, 'selectdistrict.html', context)
+                return render(request, f'selectdistrict.html', context)
             else:
                 messages.error(request, "Incorrect password.")
                
     except Kiosk.DoesNotExist:
-        messages.error(request, "Invalid Kiosk.")
+        messages.error(request, "")
     except QueueEntry.DoesNotExist:
-        messages.error(request, "No user assigned to this kiosk.")
+        messages.error(request, "")
     
     context = {
         'kiosk_id': kiosk_id,
@@ -403,6 +418,36 @@ def kiosk_login(request, kiosk_id):
 
     return render(request, f'kiosk{kiosk_id}_login.html', context)
 
+@csrf_exempt
+@transaction.atomic
+def verify_password(request):
+    if request.method == 'POST':
+        logged_in_username = request.session.get('logged_in_username')
+        logger.info(f"Logged in username: {logged_in_username}")
+        try:
+            data = json.loads(request.body)
+            password = data.get('password')
+            logger.info(f"Received password: {password}")
+
+            if logged_in_username:
+                visitor = QueueVisitor.objects.filter(username=logged_in_username).first()
+                logger.info(f"Visitor found: {visitor}")
+
+                if visitor and visitor.password == password:
+                    logger.info("Password validation successful")
+                    return JsonResponse({'valid': True})
+                else:
+                    logger.warning("Password validation failed")
+            else:
+                logger.warning("No logged-in username found in session")
+            return JsonResponse({'valid': False})
+        except json.JSONDecodeError:
+            logger.error("Invalid JSON received")
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}")
+            return JsonResponse({'error': 'Internal server error'}, status=500)
+    return JsonResponse({'error': 'Invalid method'}, status=405)
 
 #Views for logout in kiosk
 @transaction.atomic

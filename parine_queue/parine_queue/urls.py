@@ -29,6 +29,7 @@ urlpatterns = [
     path('get_queue_data/', get_queue_data, name='get_queue_data'),
     
     path('delete_queue_kiosk_data/<int:kioskId>/', views.delete_queue_kiosk_data, name='delete_queue_kiosk_data'),
+    path('verify_password/', views.verify_password, name='verify_password'),
 
     path('kiosk_login/<int:kiosk_id>/selectmunicipality1/', selectmunicipality1, name='selectmunicipality1'),
     path('kiosk_login/<int:kiosk_id>/selectmunicipality2/', selectmunicipality2, name='selectmunicipality2'),
