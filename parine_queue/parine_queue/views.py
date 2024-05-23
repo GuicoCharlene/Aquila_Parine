@@ -106,11 +106,11 @@ def queue_list(request):
         if queue_entry.StartTime:
             time_spent = timezone.now() - queue_entry.StartTime
 	        # Change priority level from low to mid
-            if queue_entry.PriorityLevel == 'low' and time_spent.total_seconds() >= 1 * 60:  # first number is equivalent to minutes
+            if queue_entry.PriorityLevel == 'low' and time_spent.total_seconds() >= 60 * 60:  # first number is equivalent to minutes
                 queue_entry.PriorityLevel = 'mid'
                 queue_entry.save()
 	        # Change priority level from mid to high
-            elif queue_entry.PriorityLevel == 'mid' and time_spent.total_seconds() >= 2 * 60:  # first number is equivalent to minutes
+            elif queue_entry.PriorityLevel == 'mid' and time_spent.total_seconds() >= 120 * 60:  # first number is equivalent to minutes
                 queue_entry.PriorityLevel = 'high'
                 queue_entry.save()
 
