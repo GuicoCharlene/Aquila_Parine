@@ -10,7 +10,7 @@
 
     @font-face {
       font-family: 'Batangas';
-      src: url('{% static "Batangas Bold 700.ttf" %}') format('ttf');
+      src: url('{% static "Batangas Bold 700.ttf" %}');
     }
     
     body {
@@ -30,7 +30,7 @@
     }
     
     .trivia-header {
-        font-family: Fira-sans;
+        font-family: 'Batangas', arial;
         font-size: 88px;
         margin-bottom: 20px;
     }
@@ -62,7 +62,7 @@
     
     .jip-img {
         position: absolute;
-        top: 15.645833333333332vw;
+        top: 13.645833333333332vw;
         left: 66.875vw;
         transform: translateX(-50%);
   
@@ -85,7 +85,7 @@
     
     .question-mark {
         font-size: 200px;
-        font-family: Fira-sans;
+        font-family: 'Batangas', arial;
         color: #2E1B5B;
         vertical-align: right;        
         display: inline-block; /* Add display property for animation */
@@ -94,7 +94,7 @@
     
     @keyframes sway {
         0% {
-            transform: translate(-5px, 0) rotate(0deg); /* Adjusted initial position */
+            transform: translate(-3px, 0) rotate(0deg); /* Adjusted initial position */
         }
         50% {
             transform: translate(5px, 0) rotate(10deg); /* Adjusted mid position */
@@ -109,7 +109,7 @@
 <body>
 
 <div class="trivia-container">
-        <div class="trivia-header">TRIVIA QUESTION <div class="question-mark">?</div></div>
+        <div class="trivia-header">TRIVIA QUESTION <div class="question-mark"></div></div>
         <img src="{% static 'jip.png' %}" class="jip-img" alt="Parine sa Batangas">
 </div>
 
